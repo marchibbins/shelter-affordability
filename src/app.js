@@ -1,4 +1,12 @@
-/* eslint-disable no-console */
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-let message = 'Hello world';
-console.log(message);
+class HelloWorld extends React.Component {
+    render() {
+        return (
+            <h1>Affordability app</h1>
+        );
+    }
+}
+
+ReactDOM.render(<HelloWorld />, document.getElementById('affordability-app'));
