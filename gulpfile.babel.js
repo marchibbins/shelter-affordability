@@ -1,5 +1,6 @@
 const gulp = require('gulp'),
     babel = require('gulp-babel'),
+    connect = require('gulp-connect'),
     eslint = require('gulp-eslint'),
     plumber = require('gulp-plumber');
 
@@ -18,6 +19,10 @@ gulp.task('lint', () => {
     return gulp.src('./src/**/*.js')
         .pipe(eslint())
         .pipe(eslint.format());
+});
+
+gulp.task('serve', () => {
+    connect.server();
 });
 
 gulp.task('watch', () => {
