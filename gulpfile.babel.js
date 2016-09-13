@@ -4,6 +4,7 @@ import browserify from 'browserify';
 import connect from 'gulp-connect';
 import eslint from 'gulp-eslint';
 import gutil from 'gulp-util';
+import history from 'connect-history-api-fallback';
 import rename from 'gulp-rename';
 import path from 'path';
 import sequence from 'run-sequence';
@@ -66,7 +67,11 @@ gulp.task('lint', () => {
 });
 
 gulp.task('serve', () => {
-    connect.server();
+    connect.server({
+        middleware: function() {
+            return [history()];
+        }
+    });
 });
 
 gulp.task('watch', () => {
