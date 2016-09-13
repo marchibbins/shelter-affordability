@@ -71,7 +71,7 @@ gulp.task('serve', () => {
 
 gulp.task('watch', () => {
     gutil.log(gutil.colors.green(`Watching '${paths.js.source}' for changes`));
-    gulp.watch(paths.js.source, ['js']);
+    gulp.watch(paths.js.source, ['bundle']);
 });
 
 gulp.task('default', ['js']);
