@@ -17,7 +17,7 @@ const dir = {
     },
     filenames = {
         js: {
-            app: 'app.js',
+            app: 'index.js',
             bundle: 'bundle.js'
         }
     },
