@@ -7,11 +7,17 @@
   "extends": "eslint:recommended",
   "parser": "babel-eslint",
   "rules": {
-    "indent": ["error", 4],
+    "indent": ["error", 4, {
+      "SwitchCase": 1
+    }],
     "comma-dangle": ["error", "never"],
+    "keyword-spacing": ["error", {
+      "before": true
+    }],
     "quotes": ["error", "single"],
-    "react/jsx-uses-react": [2],
-    "react/jsx-uses-vars": [2],
+    "react/jsx-uses-react": ["error"],
+    "react/jsx-uses-vars": ["error"],
+    "space-before-function-paren": ["error", "always"],
     "semi": ["error", "always"]
   },
   "plugins": [
