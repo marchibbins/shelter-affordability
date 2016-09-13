@@ -54,6 +54,7 @@ gulp.task('compress', () => {
 gulp.task('js', (callback) => {
     // TODO: This produces a minified development version of React,
     // set process.env.NODE_ENV = 'production' before bundle.
+    // TODO: Then include compress in sequence.
     sequence('lint', 'bundle', 'compress', callback);
 });
 
