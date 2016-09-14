@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import 'whatwg-fetch';
-
 import Pending from '../Pending';
 import { updateYobData } from '../../actions';
+import { api } from '../../utils';
 
 
 class Start extends React.Component {
@@ -31,16 +30,7 @@ class Start extends React.Component {
         this.setPending(true);
 
         // TODO: POST yob, headers etc
-        fetch('/data/age.json')
-            .then(response => {
-                if (response.status >= 200 && response.status < 300) {
-                    return response.json();
-                } else {
-                    let error = new Error(response.statusText);
-                    error.response = response;
-                    throw error;
-                }
-            })
+        api('/data/age.json')
             .then(yobData => {
                 this.props.updateYobData({yob: this.state.yob, ...yobData});
                 this.props.gotoNext();
