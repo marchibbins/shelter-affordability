@@ -2,10 +2,6 @@ import numeral from 'numeral';
 
 import 'whatwg-fetch';
 
-export function formatCurrency (value, format) {
-    return '£' + numeral(value).format(format);
-}
-
 export function api (url) {
     return fetch(url)
         .then(response => {
@@ -17,4 +13,9 @@ export function api (url) {
                 throw error;
             }
         });
+}
+
+
+export function formatCurrency (value, format) {
+    return '£' + numeral(value).format(format);
 }
