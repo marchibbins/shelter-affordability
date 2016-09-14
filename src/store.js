@@ -37,6 +37,8 @@ export default createStore((state = initialState, action) => {
             } else {
                 return state;
             }
+        case (actions.UPDATE_YOB):
+            return {...state, yob: action.yob};
         default:
             return state;
     }
