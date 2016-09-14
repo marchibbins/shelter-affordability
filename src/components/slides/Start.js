@@ -32,13 +32,19 @@ class Start extends React.Component {
 
         // TODO: POST yob, headers etc
         fetch('/data/age.json')
-            .then(function (response) {
-                return response.json();
+            .then(response => {
+                if (response.status >= 200 && response.status < 300) {
+                    return response.json();
+                } else {
+                    let error = new Error(response.statusText);
+                    error.response = response;
+                    throw error;
+                }
             })
-            .then(function (yobData) {
+            .then(yobData => {
                 this.props.updateYobData({yob: this.state.yob, ...yobData});
                 this.props.gotoNext();
-            }.bind(this))
+            })
             .catch(error => {
                 // TODO: UI
                 /* eslint-disable no-console */
