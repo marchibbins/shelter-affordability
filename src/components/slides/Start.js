@@ -74,7 +74,7 @@ class Start extends React.Component {
 
 }
 
-export default connect(state => ({}), dispatch => {
+export default connect(null, dispatch => {
     return {
         updateYobData: (yobData) => {
             dispatch(updateYobData(yobData));

@@ -15,7 +15,7 @@ class SlideContainer extends React.Component {
 
 }
 
-export default connect(state => ({}), dispatch => {
+export default connect(null, dispatch => {
     return {
         gotoNext: () => {
             dispatch(gotoNext());
