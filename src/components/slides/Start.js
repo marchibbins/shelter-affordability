@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import 'whatwg-fetch';
 
+import Pending from '../Pending';
 import { updateYobData } from '../../actions';
 
 
@@ -67,7 +68,7 @@ class Start extends React.Component {
                         value={this.state.yob} onChange={this.handleChange.bind(this)}/>
                     <input type="submit" value="Compare" disabled={!this.state.yobValid}/>
                 </form>
-                {this.state.pending && 'Pending' /* TODO: Component */}
+                {this.state.pending && <Pending/>}
             </article>
         );
     }
