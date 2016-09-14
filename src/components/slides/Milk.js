@@ -1,13 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import Pending from '../Pending';
+
 import { updateLocationData } from '../../actions';
 import { api, formatCurrency } from '../../utils';
 
 class Milk extends React.Component {
 
+    constructor (props) {
+        super(props);
+        this.state = {
+            pending: false
+        };
+    }
+
     handleSubmit (event) {
         event.preventDefault();
+        this.setPending(true);
+
         api('/data/location.json')
             .then(data => {
                 this.props.updateLocationData(data);
@@ -22,6 +33,16 @@ class Milk extends React.Component {
             });
     }
 
+    setPending (value) {
+        this.setState({
+            pending: value
+        });
+    }
+
+    componentWillUnmount () {
+        this.setPending(false);
+    }
+
     render () {
         return (
             <article>
@@ -31,6 +52,7 @@ class Milk extends React.Component {
                     <input type="text" name="postcode" placeholder="Postcode"/>
                     <input type="submit" value="Compare"/>
                 </form>
+                {this.state.pending && <Pending/>}
             </article>
         );
     }
