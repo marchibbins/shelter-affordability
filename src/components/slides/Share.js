@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default class SlideOne extends React.Component {
+export default class Share extends React.Component {
 
     render () {
         return (
             <article>
-                <h1>Slide One</h1>
+                <h1>Thank you.</h1>
             </article>
         );
     }
