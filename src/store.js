@@ -26,16 +26,20 @@ const initialState = {
     ],
     current: 0,
 
-    // Dummy values
-    yob: 1970,
-    yobAverageHousePrice: 24000,
-    todayAverageHousePrice: 280000,
-    estimatedMilkPrice: 10.5,
+    // Yob data
+    yob: '',
+    yobAverageHousePrice: '',
+    todayAverageHousePrice: '',
+    estimatedMilkPrice: '',
+
+    // Location data
     location: 'Sussex',
     locationRegion: 'the South East',
     locationIncrease: 1000,
     locationAverage: 1000,
     locationStruggling: 34,
+
+    // Graph data
     buildsLastYear: 170000,
     buildsYob: 220000
 };
@@ -48,8 +52,8 @@ export default createStore((state = initialState, action) => {
             } else {
                 return state;
             }
-        case (actions.UPDATE_YOB):
-            return {...state, yob: action.yob};
+        case (actions.UPDATE_YOBDATA):
+            return {...state, ...action.yobData};
         case (actions.UPDATE_LOCATION):
             return {...state, location: action.location};
         default:

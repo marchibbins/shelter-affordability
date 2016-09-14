@@ -1,7 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { updateYob } from '../../actions';
+import 'whatwg-fetch';
+
+import { updateYobData } from '../../actions';
+
 
 class Start extends React.Component {
 
@@ -9,7 +12,8 @@ class Start extends React.Component {
         super(props);
         this.state = {
             yob: '',
-            yobValid: false
+            yobValid: false,
+            pending: false
         };
     }
 
@@ -23,8 +27,34 @@ class Start extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault();
-        this.props.updateYob(this.state.yob);
-        this.props.gotoNext();
+        this.setPending(true);
+
+        // TODO: POST yob, headers etc
+        fetch('/data/age.json')
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (yobData) {
+                this.props.updateYobData({yob: this.state.yob, ...yobData});
+                this.props.gotoNext();
+            }.bind(this))
+            .catch(error => {
+                // TODO: UI
+                /* eslint-disable no-console */
+                console.error(error);
+                /* eslint-enable no-console */
+                this.setPending(false);
+            });
+    }
+
+    setPending (value) {
+        this.setState({
+            pending: value
+        });
+    }
+
+    componentWillUnmount () {
+        this.setPending(false);
     }
 
     render () {
@@ -37,6 +67,7 @@ class Start extends React.Component {
                         value={this.state.yob} onChange={this.handleChange.bind(this)}/>
                     <input type="submit" value="Compare" disabled={!this.state.yobValid}/>
                 </form>
+                {this.state.pending && 'Pending' /* TODO: Component */}
             </article>
         );
     }
@@ -45,8 +76,8 @@ class Start extends React.Component {
 
 export default connect(state => ({}), dispatch => {
     return {
-        updateYob: (year) => {
-            dispatch(updateYob(year));
+        updateYobData: (yobData) => {
+            dispatch(updateYobData(yobData));
         }
     };
 })(Start);
