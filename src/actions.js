@@ -1,13 +1,13 @@
 const NEXT = 'NEXT';
-const UPDATE_LOCATION = 'UPDATE_LOCATION';
+const UPDATE_LOCATIONDATA = 'UPDATE_LOCATIONDATA';
 const UPDATE_YOBDATA = 'UPDATE_YOBDATA';
 
 export function gotoNext () {
     return { type: NEXT };
 }
 
-export function updateLocation (location) {
-    return { type: UPDATE_LOCATION, location };
+export function updateLocationData (locationData) {
+    return { type: UPDATE_LOCATIONDATA, locationData };
 }
 
 export function updateYobData (yobData) {
@@ -16,6 +16,6 @@ export function updateYobData (yobData) {
 
 export const actions = {
     NEXT,
-    UPDATE_LOCATION,
+    UPDATE_LOCATIONDATA,
     UPDATE_YOBDATA
 };

@@ -33,11 +33,11 @@ const initialState = {
     estimatedMilkPrice: '',
 
     // Location data
-    location: 'Sussex',
-    locationRegion: 'the South East',
-    locationIncrease: 1000,
-    locationAverage: 1000,
-    locationStruggling: 34,
+    location: '',
+    locationRegion: '',
+    locationIncrease: '',
+    locationAverage: '',
+    locationStruggling: '',
 
     // Graph data
     buildsLastYear: 170000,
@@ -54,8 +54,8 @@ export default createStore((state = initialState, action) => {
             }
         case (actions.UPDATE_YOBDATA):
             return {...state, ...action.yobData};
-        case (actions.UPDATE_LOCATION):
-            return {...state, location: action.location};
+        case (actions.UPDATE_LOCATIONDATA):
+            return {...state, ...action.locationData};
         default:
             return state;
     }

@@ -1,15 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { updateLocation } from '../../actions';
-import { formatCurrency } from '../../utils';
+import { updateLocationData } from '../../actions';
+import { api, formatCurrency } from '../../utils';
 
 class Milk extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault();
-        this.props.updateLocation('Sussex');
-        this.props.gotoNext();
+        api('/data/location.json')
+            .then(yobData => {
+                this.props.updateLocationData(yobData);
+                this.props.gotoNext();
+            })
+            .catch(error => {
+                // TODO: UI
+                /* eslint-disable no-console */
+                console.error(error);
+                /* eslint-enable no-console */
+                this.setPending(false);
+            });
     }
 
     render () {
@@ -35,8 +45,8 @@ const stateToProps = state => {
 
 export default connect(stateToProps, dispatch => {
     return {
-        updateLocation: (location) => {
-            dispatch(updateLocation(location));
+        updateLocationData: (locationData) => {
+            dispatch(updateLocationData(locationData));
         }
     };
 })(Milk);
