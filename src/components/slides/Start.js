@@ -31,8 +31,8 @@ class Start extends React.Component {
 
         // TODO: POST yob, headers etc
         api('/data/age.json')
-            .then(yobData => {
-                this.props.updateYobData({yob: this.state.yob, ...yobData});
+            .then(data => {
+                this.props.updateYobData({yob: this.state.yob, ...data});
                 this.props.gotoNext();
             })
             .catch(error => {
@@ -73,8 +73,8 @@ class Start extends React.Component {
 
 export default connect(null, dispatch => {
     return {
-        updateYobData: (yobData) => {
-            dispatch(updateYobData(yobData));
+        updateYobData: data => {
+            dispatch(updateYobData(data));
         }
     };
 })(Start);

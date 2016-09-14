@@ -52,10 +52,9 @@ export default createStore((state = initialState, action) => {
             } else {
                 return state;
             }
-        case (actions.UPDATE_YOBDATA):
-            return {...state, ...action.yobData};
-        case (actions.UPDATE_LOCATIONDATA):
-            return {...state, ...action.locationData};
+        case (actions.UPDATE_YOB_DATA):
+        case (actions.UPDATE_LOCATION_DATA):
+            return {...state, ...action.data};
         default:
             return state;
     }

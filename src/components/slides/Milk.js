@@ -9,8 +9,8 @@ class Milk extends React.Component {
     handleSubmit (event) {
         event.preventDefault();
         api('/data/location.json')
-            .then(yobData => {
-                this.props.updateLocationData(yobData);
+            .then(data => {
+                this.props.updateLocationData(data);
                 this.props.gotoNext();
             })
             .catch(error => {
@@ -45,8 +45,8 @@ const stateToProps = state => {
 
 export default connect(stateToProps, dispatch => {
     return {
-        updateLocationData: (locationData) => {
-            dispatch(updateLocationData(locationData));
+        updateLocationData: data => {
+            dispatch(updateLocationData(data));
         }
     };
 })(Milk);

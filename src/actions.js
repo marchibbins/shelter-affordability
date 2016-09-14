@@ -1,21 +1,21 @@
 const NEXT = 'NEXT';
-const UPDATE_LOCATIONDATA = 'UPDATE_LOCATIONDATA';
-const UPDATE_YOBDATA = 'UPDATE_YOBDATA';
+const UPDATE_LOCATION_DATA = 'UPDATE_LOCATION_DATA';
+const UPDATE_YOB_DATA = 'UPDATE_YOB_DATA';
 
 export function gotoNext () {
-    return { type: NEXT };
+    return {type: NEXT};
 }
 
-export function updateLocationData (locationData) {
-    return { type: UPDATE_LOCATIONDATA, locationData };
+export function updateLocationData (data) {
+    return {type: UPDATE_LOCATION_DATA, data};
 }
 
-export function updateYobData (yobData) {
-    return { type: UPDATE_YOBDATA, yobData };
+export function updateYobData (data) {
+    return {type: UPDATE_YOB_DATA, data};
 }
 
 export const actions = {
     NEXT,
-    UPDATE_LOCATIONDATA,
-    UPDATE_YOBDATA
+    UPDATE_LOCATION_DATA,
+    UPDATE_YOB_DATA
 };
