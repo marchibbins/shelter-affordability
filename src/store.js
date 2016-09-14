@@ -11,6 +11,8 @@ import Future from './components/slides/Future';
 import Share from './components/slides/Share';
 import Questions from './components/slides/Questions';
 
+import { actions } from './actions';
+
 const initialState = {
     slides: [
         Start,
@@ -29,7 +31,7 @@ const initialState = {
 
 export default createStore((state = initialState, action) => {
     switch (action.type) {
-        case ('next'):
+        case (actions.NEXT):
             if (state.current < initialState.slides.length - 1) {
                 return {...state, current: state.current + 1};
             } else {
