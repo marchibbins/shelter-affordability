@@ -6,7 +6,6 @@ import Milk from './components/slides/Milk';
 import InYourArea from './components/slides/InYourArea';
 import Tenure from './components/slides/Tenure';
 import HomeStandard from './components/slides/HomeStandard';
-import LivingHomeStandard from './components/slides/LivingHomeStandard';
 import Future from './components/slides/Future';
 import Share from './components/slides/Share';
 import Questions from './components/slides/Questions';
@@ -21,12 +20,24 @@ const initialState = {
         InYourArea,
         Tenure,
         HomeStandard,
-        LivingHomeStandard,
         Future,
         Share,
         Questions
     ],
-    current: 0
+    current: 0,
+
+    // Dummy values
+    yob: 1970,
+    yobAverageHousePrice: 24000,
+    todayAverageHousePrice: 280000,
+    estimatedMilkPrice: 10.5,
+    location: 'Sussex',
+    locationRegion: 'the South East',
+    locationIncrease: 1000,
+    locationAverage: 1000,
+    locationStruggling: 34,
+    buildsLastYear: 170000,
+    buildsYob: 220000
 };
 
 export default createStore((state = initialState, action) => {
@@ -39,6 +50,8 @@ export default createStore((state = initialState, action) => {
             }
         case (actions.UPDATE_YOB):
             return {...state, yob: action.yob};
+        case (actions.UPDATE_LOCATION):
+            return {...state, location: action.location};
         default:
             return state;
     }

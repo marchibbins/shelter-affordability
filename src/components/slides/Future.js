@@ -1,14 +1,30 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
-export default class Future extends React.Component {
+class Future extends React.Component {
+
+    getBuildsDiff () {
+        let diff = this.props.buildsYob - this.props.buildsLastYear;
+        return Math.abs(diff) + ' ' + (diff > 0 ? 'more' : 'less');
+    }
 
     render () {
         return (
             <article>
-                <h1>We built 170K homes in the UK last year, 50,000 less than in [1985] when you were born.</h1>
+                <h1>We built {this.props.buildsLastYear} homes in the UK last year, {this.getBuildsDiff()} than in {this.props.yob} when you were born.</h1>
                 <h2>Please sign our petition</h2>
+                <button onClick={this.props.gotoNext}>Sign petition</button>
             </article>
         );
     }
 
 }
+
+const stateToProps = state => {
+    return {
+        buildsLastYear: state.buildsLastYear,
+        buildsYob: state.buildsYob
+    };
+};
+
+export default connect(stateToProps)(Future);
