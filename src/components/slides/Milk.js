@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { updateLocation } from '../../actions';
+import { formatCurrency } from '../../utils';
 
 class Milk extends React.Component {
 
@@ -14,7 +15,7 @@ class Milk extends React.Component {
     render () {
         return (
             <article>
-                <h1>If a pint of milk had risen at the same rate as house prices, it would cost £{this.props.estimatedMilkPrice} today.</h1>
+                <h1>If a pint of milk had risen at the same rate as house prices, it would cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h1>
                 <h2>What's happened to house prices in your area? Enter your postcode to find out.</h2>
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <input type="text" name="postcode" placeholder="Postcode"/>

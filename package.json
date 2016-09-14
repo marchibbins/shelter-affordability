@@ -30,6 +30,7 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "numeral": "^1.5.3",
     "react": "^15.3.1",
     "react-dom": "^15.3.1"
   }

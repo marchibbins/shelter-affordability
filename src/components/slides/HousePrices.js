@@ -1,14 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { formatCurrency } from '../../utils';
+
 class HousePrices extends React.Component {
 
     render () {
-        console.log(this.props);
         return (
             <article>
-                <h2>In {this.props.yob}, the average cost of a three-bedroom house in the UK was £{this.props.yobAverageHousePrice}.</h2>
-                <h3>Today it's a whopping £{this.props.todayAverageHousePrice}.</h3>
+                <h2>In {this.props.yob}, the average cost of a three-bedroom house in the UK was {formatCurrency(this.props.yobAverageHousePrice, '0,0')}.</h2>
+                <h3>Today it's a whopping {formatCurrency(this.props.todayAverageHousePrice, '0,0')}.</h3>
                 <button onClick={this.props.gotoNext}>What's the got to do with the price of milk?</button>
             </article>
         );
