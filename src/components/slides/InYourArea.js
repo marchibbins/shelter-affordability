@@ -16,13 +16,17 @@ class InYourArea extends React.Component {
             <article>
                 <h1>In {this.props.location}, house prices have risen {this.props.locationRentIncrease}% since you were born.</h1>
                 <h2>It's never been harder to buy or rent. Which one best describes you?</h2>
+                <ul>
                 {Object.keys(tenures).map(key => {
                     return (
-                        <button key={key} onClick={this.handleClick.bind(this, tenures[key])}>
-                            {tenures[key]}
-                        </button>
+                        <li key={key}>
+                            <button onClick={this.handleClick.bind(this, tenures[key])}>
+                                {tenures[key]}
+                            </button>
+                        </li>
                     );
                 })}
+                </ul>
             </article>
         );
     }
