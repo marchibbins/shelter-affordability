@@ -14,7 +14,8 @@ class Petition extends React.Component {
         this.state = {
             firstname: '',
             lastname: '',
-            email: ''
+            email: '',
+            optin: false
         };
         this.validatorTypes = {
             firstname: Joi.string().required().label('First name'),
@@ -29,7 +30,7 @@ class Petition extends React.Component {
 
     handleChange (name, event) {
         let state = this.state;
-        state[name] = event.target.value;
+        state[name] = event.target.type === 'checkbox' ? event.target.checked: event.target.value;
         this.setState(state);
     }
 
@@ -70,6 +71,13 @@ class Petition extends React.Component {
                     <div className='help-block'>
                         {this.props.getValidationMessages('email')[0]}
                     </div>
+                </div>
+                <div>
+                    <label>
+                        <input type="checkbox" checked={this.state.optin}
+                            onChange={this.handleChange.bind(this, 'optin')}/>
+                        Opt-in
+                    </label>
                 </div>
                 <input type="submit" value="Sign our petition"/>
             </form>
