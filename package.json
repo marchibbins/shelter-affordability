@@ -30,9 +30,12 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "joi": "^9.0.4",
+    "joi-validation-strategy": "^0.3.3",
     "numeral": "^1.5.3",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
+    "react-validation-mixin": "^5.4.0",
     "whatwg-fetch": "^1.0.0"
   }
 }
