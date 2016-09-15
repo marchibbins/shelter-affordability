@@ -23,23 +23,27 @@ const dir = {
         }
     },
     paths = {
-        assets: path.join(dir.assets, '/**/*'),
+        assets: {
+            sourceFiles: path.join(dir.assets, '/**/*'),
+            buildDir: path.join(dir.build)
+        },
         js: {
-            app: path.join(dir.source, filenames.js.app),
-            bundle: path.join(dir.build, filenames.js.bundle),
-            source: path.join(dir.source, '**/*.js')
+            appFile: path.join(dir.source, filenames.js.app),
+            bundleFile: path.join(dir.build, filenames.js.bundle),
+            sourceFiles: path.join(dir.source, '**/*.js'),
+            buildDir: path.join(dir.build, 'js/')
         }
     };
 
 gulp.task('assets', () => {
-    gutil.log(gutil.colors.green(`Copying assets '${paths.assets}'`));
-    return gulp.src(paths.assets)
-        .pipe(gulp.dest(dir.build));
+    gutil.log(gutil.colors.green(`Copying assets '${paths.assets.sourceFiles}'`));
+    return gulp.src(paths.assets.sourceFiles)
+        .pipe(gulp.dest(paths.assets.buildDir));
 });
 
 gulp.task('bundle', () => {
-    gutil.log(gutil.colors.green(`Bundling '${paths.js.app}'`));
-    return browserify(paths.js.app)
+    gutil.log(gutil.colors.green(`Bundling '${paths.js.appFile}'`));
+    return browserify(paths.js.appFile)
         .transform(babelify, {
             presets: ['es2015', 'react']
         })
@@ -49,17 +53,17 @@ gulp.task('bundle', () => {
             this.emit('end');
         })
         .pipe(source(filenames.js.bundle))
-        .pipe(gulp.dest(dir.build));
+        .pipe(gulp.dest(paths.js.buildDir));
 });
 
 gulp.task('build', ['assets', 'js']);
 
 gulp.task('compress', () => {
-    gutil.log(gutil.colors.green(`Compressing '${paths.js.bundle}'`));
-    return gulp.src(paths.js.bundle)
+    gutil.log(gutil.colors.green(`Compressing '${paths.js.bundleFile}'`));
+    return gulp.src(paths.js.bundleFile)
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest(dir.build));
+        .pipe(gulp.dest(paths.js.buildDir));
 });
 
 gulp.task('js', (callback) => {
@@ -70,8 +74,8 @@ gulp.task('js', (callback) => {
 });
 
 gulp.task('lint', () => {
-    gutil.log(gutil.colors.green(`Linting '${paths.js.source}'`));
-    return gulp.src(paths.js.source)
+    gutil.log(gutil.colors.green(`Linting '${paths.js.sourceFiles}'`));
+    return gulp.src(paths.js.sourceFiles)
         .pipe(eslint())
         .pipe(eslint.format());
 });
@@ -85,8 +89,8 @@ gulp.task('serve', () => {
 });
 
 gulp.task('watch', () => {
-    gutil.log(gutil.colors.green(`Watching '${paths.js.source}' for changes`));
-    gulp.watch(paths.js.source, ['bundle']);
+    gutil.log(gutil.colors.green(`Watching '${paths.js.sourceFiles}' for changes`));
+    gulp.watch(paths.js.sourceFiles, ['bundle']);
 });
 
 gulp.task('default', ['build']);
