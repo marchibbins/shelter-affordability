@@ -14,15 +14,15 @@ import { actions } from './actions';
 
 const initialState = {
     slides: [
-        Start,
-        HousePrices,
-        Milk,
-        InYourArea,
-        Tenure,
-        HomeStandard,
-        Future,
-        Share,
-        Questions
+        {slide: Start, slug: 'start'},
+        {slide: HousePrices, slug: 'house-prices'},
+        {slide: Milk, slug: 'milk'},
+        {slide: InYourArea, slug: 'in-your-area'},
+        {slide: Tenure, slug: 'tenure'},
+        {slide: HomeStandard, slug: 'home-standard'},
+        {slide: Future, slug: 'future'},
+        {slide: Share, slug: 'share'},
+        {slide: Questions, slug: 'questions'}
     ],
     current: 0,
 

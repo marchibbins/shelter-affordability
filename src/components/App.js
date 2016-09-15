@@ -5,13 +5,18 @@ import SlideContainer from './SlideContainer';
 
 class App extends React.Component {
 
+    getSlide () {
+        return React.createFactory(
+            this.props.slides[this.props.current].slide
+        )();
+    }
+
     render () {
-        let Slide = React.createFactory(this.props.slides[this.props.current])();
         return (
             <main>
                 <h1>Affordability</h1>
                 <SlideContainer>
-                    {Slide}
+                    {this.getSlide()}
                 </SlideContainer>
             </main>
         );
