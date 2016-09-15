@@ -15,7 +15,14 @@ export function api (url) {
         });
 }
 
-
 export function formatCurrency (value, format) {
     return '£' + numeral(value).format(format);
 }
+
+export const tenures = {
+    HOMEOWNER: 'Homeowner',
+    RENTER: 'Renter',
+    SOCIAL_RENTER: 'Social renter',
+    PARENTS: 'Living with parents',
+    TEMPORARY: 'Living in temporary accommodation'
+};

@@ -39,6 +39,9 @@ const initialState = {
     locationAverage: '',
     locationStruggling: '',
 
+    // Tenure
+    tenure: '',
+
     // Graph data
     buildsLastYear: 170000,
     buildsYob: 220000
@@ -52,6 +55,8 @@ export default createStore((state = initialState, action) => {
             } else {
                 return state;
             }
+        case (actions.UPDATE_TENURE):
+            return {...state, tenure: action.value};
         case (actions.UPDATE_YOB_DATA):
         case (actions.UPDATE_LOCATION_DATA):
             return {...state, ...action.data};
