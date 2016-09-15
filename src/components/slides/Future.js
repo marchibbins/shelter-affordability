@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 
 import Petition from '../forms/Petition';
 
+import { pick } from '../../utils';
+
 class Future extends React.Component {
 
     getBuildsDiff () {
@@ -28,13 +30,6 @@ class Future extends React.Component {
 
 Future.slug = 'future';
 
-const stateToProps = state => {
-    return {
-        buildsLastYear: state.buildsLastYear,
-        buildsYob: state.buildsYob,
-        postcode: state.postcode,
-        yob: state.yob
-    };
-};
+const stateToProps = state => pick(state, ['buildsLastYear', 'buildsYob', 'postcode', 'yob']);
 
 export default connect(stateToProps)(Future);

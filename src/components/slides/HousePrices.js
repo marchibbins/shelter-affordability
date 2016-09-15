@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { formatCurrency } from '../../utils';
+import { formatCurrency, pick } from '../../utils';
 
 class HousePrices extends React.Component {
 
@@ -19,12 +19,6 @@ class HousePrices extends React.Component {
 
 HousePrices.slug = 'house-prices';
 
-const stateToProps = state => {
-    return {
-        yob: state.yob,
-        yobAverageHousePrice: state.yobAverageHousePrice,
-        todayAverageHousePrice: state.todayAverageHousePrice
-    };
-};
+const stateToProps = state => pick(state, ['yob', 'yobAverageHousePrice', 'todayAverageHousePrice']);
 
 export default connect(stateToProps)(HousePrices);

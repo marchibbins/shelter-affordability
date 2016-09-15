@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { pick } from '../../utils';
+
 class HomeStandard extends React.Component {
 
     render () {
@@ -16,11 +18,6 @@ class HomeStandard extends React.Component {
 
 HomeStandard.slug = 'home-standard';
 
-const stateToProps = state => {
-    return {
-        locationStruggling: state.locationStruggling,
-        locationRegion: state.locationRegion
-    };
-};
+const stateToProps = state => pick(state, ['locationStruggling', 'locationRegion']);
 
 export default connect(stateToProps)(HomeStandard);

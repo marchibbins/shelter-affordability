@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { formatCurrency, tenures } from '../../utils';
+import { formatCurrency, pick, tenures } from '../../utils';
 
 class Tenure extends React.Component {
 
@@ -32,11 +32,6 @@ class Tenure extends React.Component {
 
 Tenure.slug = 'tenure';
 
-const stateToProps = state => {
-    return {
-        locationAverage: state.locationAverage,
-        tenure: state.tenure
-    };
-};
+const stateToProps = state => pick(state, ['locationAverage', 'tenure']);
 
 export default connect(stateToProps)(Tenure);

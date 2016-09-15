@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { updateTenure } from '../../actions';
-import { tenures } from '../../utils';
+import { pick, tenures } from '../../utils';
 
 class InYourArea extends React.Component {
 
@@ -31,12 +31,7 @@ class InYourArea extends React.Component {
 
 InYourArea.slug = 'in-your-area';
 
-const stateToProps = state => {
-    return {
-        location: state.location,
-        locationIncrease: state.locationIncrease
-    };
-};
+const stateToProps = state => pick(state, ['location', 'locationIncrease']);
 
 export default connect(stateToProps, dispatch => {
     return {

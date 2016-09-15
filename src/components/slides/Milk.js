@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Pending from '../Pending';
 
 import { updateLocationData } from '../../actions';
-import { api, formatCurrency } from '../../utils';
+import { api, formatCurrency, pick } from '../../utils';
 
 class Milk extends React.Component {
 
@@ -69,11 +69,7 @@ class Milk extends React.Component {
 
 Milk.slug = 'milk';
 
-const stateToProps = state => {
-    return {
-        estimatedMilkPrice: state.estimatedMilkPrice
-    };
-};
+const stateToProps = state => pick(state, ['estimatedMilkPrice']);
 
 export default connect(stateToProps, dispatch => {
     return {
