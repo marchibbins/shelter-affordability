@@ -28,9 +28,9 @@ export const api = {
     }
 };
 
-export function formatCurrency (value, format) {
+export const formatCurrency = (value, format) => {
     return '£' + numeral(value).format(format);
-}
+};
 
 export const tenures = {
     HOMEOWNER: 'Homeowner',
