@@ -14,7 +14,7 @@ class InYourArea extends React.Component {
     render () {
         return (
             <article>
-                <h1>In {this.props.location}, house prices have risen {this.props.locationIncrease}% since you were born.</h1>
+                <h1>In {this.props.location}, house prices have risen {this.props.locationRentIncrease}% since you were born.</h1>
                 <h2>It's never been harder to buy or rent. Which one best describes you?</h2>
                 {Object.keys(tenures).map(key => {
                     return (
@@ -31,7 +31,7 @@ class InYourArea extends React.Component {
 
 InYourArea.slug = 'in-your-area';
 
-const stateToProps = state => pick(state, ['location', 'locationIncrease']);
+const stateToProps = state => pick(state, ['location', 'locationRentIncrease']);
 
 export default connect(stateToProps, dispatch => {
     return {
