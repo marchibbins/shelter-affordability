@@ -35,7 +35,9 @@ const initialState = {
     // Location data
     location: '',
     locationRegion: '',
-    locationIncrease: '',
+    locationRentIncrease: '',
+    locationSocialHomes: '',
+    locationTempHouseholds: '',
     locationAverage: '',
     locationStruggling: '',
 

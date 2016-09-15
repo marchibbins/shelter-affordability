@@ -1,7 +1,9 @@
 {
     "location": "Sussex",
     "locationRegion": "the South East",
-    "locationIncrease": 1000,
+    "locationRentIncrease": 1000,
+    "locationSocialHomes": 1000,
+    "locationTempHouseholds": 1000,
     "locationAverage": 1000,
     "locationStruggling": 34
 }
