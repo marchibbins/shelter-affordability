@@ -12,13 +12,15 @@ class Milk extends React.Component {
         super(props);
         this.state = {
             postcode: '',
+            postcodeValid: false,
             pending: false
         };
     }
 
     handleChange (event) {
         this.setState({
-            postcode: event.target.value
+            postcode: event.target.value,
+            postcodeValid: event.target.value.length > 1
         });
     }
 
@@ -58,7 +60,7 @@ class Milk extends React.Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                     <input type="text" placeholder="Postcode"
                         value={this.state.postcode} onChange={this.handleChange.bind(this)}/>
-                    <input type="submit" value="Compare"/>
+                    <input type="submit" value="Compare" disabled={!this.state.postcodeValid}/>
                 </form>
                 {this.state.pending && <Pending/>}
             </article>
