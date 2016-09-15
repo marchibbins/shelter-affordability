@@ -5,6 +5,8 @@ import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
 import validation from 'react-validation-mixin';
 
+import { api } from '../../utils';
+
 class Petition extends React.Component {
 
     constructor (props) {
@@ -28,7 +30,7 @@ class Petition extends React.Component {
         event.preventDefault();
         const onValidate = (error) => {
             if (!error) {
-                // TODO: POST data
+                api.postJSON('/survey', JSON.stringify(this.getValidatorData()));
                 this.props.onSuccess();
             }
         };

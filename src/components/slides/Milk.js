@@ -19,7 +19,7 @@ class Milk extends React.Component {
         event.preventDefault();
         this.setPending(true);
 
-        api('/data/location.json')
+        api.getJSON('/data/location.json')
             .then(data => {
                 this.props.updateLocationData(data);
                 this.props.gotoNext();

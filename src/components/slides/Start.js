@@ -30,7 +30,7 @@ class Start extends React.Component {
         this.setPending(true);
 
         // TODO: POST yob, headers etc
-        api('/data/age.json')
+        api.getJSON('/data/age.json')
             .then(data => {
                 this.props.updateYobData({yob: this.state.yob, ...data});
                 this.props.gotoNext();
