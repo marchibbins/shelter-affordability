@@ -18,7 +18,7 @@ class Start extends React.Component {
     }
 
     handleChange (event) {
-        let yob = parseInt(event.target.value, 10);
+        let yob = parseInt(event.target.value, 10) || event.target.value;
         this.setState({
             yob,
             yobValid: yob > 1900 && yob < 2000
