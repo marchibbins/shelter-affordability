@@ -13,6 +13,7 @@ import uglify from 'gulp-uglify';
 
 const dir = {
         source: './src',
+        assets: './assets',
         build: './dist'
     },
     filenames = {
@@ -22,12 +23,19 @@ const dir = {
         }
     },
     paths = {
+        assets: path.join(dir.assets, '/**/*'),
         js: {
             app: path.join(dir.source, filenames.js.app),
             bundle: path.join(dir.build, filenames.js.bundle),
             source: path.join(dir.source, '**/*.js')
         }
     };
+
+gulp.task('assets', () => {
+    gutil.log(gutil.colors.green(`Copying assets '${paths.assets}'`));
+    return gulp.src(paths.assets)
+        .pipe(gulp.dest(dir.build));
+});
 
 gulp.task('bundle', () => {
     gutil.log(gutil.colors.green(`Bundling '${paths.js.app}'`));
@@ -43,6 +51,8 @@ gulp.task('bundle', () => {
         .pipe(source(filenames.js.bundle))
         .pipe(gulp.dest(dir.build));
 });
+
+gulp.task('build', ['assets', 'js']);
 
 gulp.task('compress', () => {
     gutil.log(gutil.colors.green(`Compressing '${paths.js.bundle}'`));
@@ -79,4 +89,4 @@ gulp.task('watch', () => {
     gulp.watch(paths.js.source, ['bundle']);
 });
 
-gulp.task('default', ['js']);
+gulp.task('default', ['build']);

@@ -22,6 +22,12 @@
 
         npm run gulp serve
 
-5. Lint Javascript source
+### Included in default build step
+
+- Copy assets
+
+        npm run gulp assets
+
+- Lint Javascript source
 
         npm run gulp lint
