@@ -33,6 +33,7 @@ const initialState = {
     estimatedMilkPrice: '',
 
     // Location data
+    postcode: '',
     location: '',
     locationRegion: '',
     locationRentIncrease: '',

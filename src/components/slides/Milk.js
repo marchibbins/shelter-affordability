@@ -11,8 +11,15 @@ class Milk extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            postcode: '',
             pending: false
         };
+    }
+
+    handleChange (event) {
+        this.setState({
+            postcode: event.target.value
+        });
     }
 
     handleSubmit (event) {
@@ -21,7 +28,7 @@ class Milk extends React.Component {
 
         api.getJSON('/data/location.json')
             .then(data => {
-                this.props.updateLocationData(data);
+                this.props.updateLocationData({...data, postcode: this.state.postcode});
                 this.props.gotoNext();
             })
             .catch(error => {
@@ -49,7 +56,8 @@ class Milk extends React.Component {
                 <h1>If a pint of milk had risen at the same rate as house prices, it would cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h1>
                 <h2>What's happened to house prices in your area? Enter your postcode to find out.</h2>
                 <form onSubmit={this.handleSubmit.bind(this)}>
-                    <input type="text" name="postcode" placeholder="Postcode"/>
+                    <input type="text" placeholder="Postcode"
+                        value={this.state.postcode} onChange={this.handleChange.bind(this)}/>
                     <input type="submit" value="Compare"/>
                 </form>
                 {this.state.pending && <Pending/>}
