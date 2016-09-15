@@ -11,6 +11,7 @@ class Petition extends React.Component {
 
     constructor (props) {
         super(props);
+        this.state = {};
         this.validatorTypes = {
             firstname: Joi.string().required().label('First name'),
             lastname: Joi.string().required().label('Last name'),
@@ -19,11 +20,13 @@ class Petition extends React.Component {
     }
 
     getValidatorData () {
-        return {
-            firstname: ReactDOM.findDOMNode(this.refs.firstname).value,
-            lastname: ReactDOM.findDOMNode(this.refs.lastname).value,
-            email: ReactDOM.findDOMNode(this.refs.email).value
-        };
+        return this.state;
+    }
+
+    handleChange (name, event) {
+        let state = {};
+        state[name] = event.target.value;
+        this.setState(state);
     }
 
     handleSubmit (event) {
@@ -40,15 +43,21 @@ class Petition extends React.Component {
     render () {
         return (
             <form onSubmit={this.handleSubmit.bind(this)} noValidate>
-                <label>First name</label>
-                <input type="text" ref="firstname"/>
-                <span className='help-block'>{this.props.getValidationMessages('firstname')[0]}</span>
-                <label>Last name</label>
-                <input type="text" ref="lastname"/>
-                <span className='help-block'>{this.props.getValidationMessages('lastname')[0]}</span>
-                <label>Email</label>
-                <input type="email" ref="email"/>
-                <span className='help-block'>{this.props.getValidationMessages('email')[0]}</span>
+                <div>
+                    <label>First name</label>
+                    <input type="text" onChange={this.handleChange.bind(this, 'firstname')}/>
+                    <span className='help-block'>{this.props.getValidationMessages('firstname')[0]}</span>
+                </div>
+                <div>
+                    <label>Last name</label>
+                    <input type="text" onChange={this.handleChange.bind(this, 'lastname')}/>
+                    <span className='help-block'>{this.props.getValidationMessages('lastname')[0]}</span>
+                </div>
+                <div>
+                    <label>Email</label>
+                    <input type="email" onChange={this.handleChange.bind(this, 'email')}/>
+                    <span className='help-block'>{this.props.getValidationMessages('email')[0]}</span>
+                </div>
                 <input type="submit" value="Sign our petition"/>
             </form>
         );
@@ -59,7 +68,7 @@ class Petition extends React.Component {
 const options = {
     language: {
         any: {
-            empty: '{{key}} is required'
+            required: '{{key}} is required'
         },
         string: {
             email: '{{key}} must be valid'
