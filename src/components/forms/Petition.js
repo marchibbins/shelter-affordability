@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Joi from 'joi';
 import strategy from 'joi-validation-strategy';
@@ -38,7 +37,9 @@ class Petition extends React.Component {
         event.preventDefault();
         const onValidate = (error) => {
             if (!error) {
-                api.postJSON('/survey', JSON.stringify(this.getValidatorData()));
+                api.postJSON('/survey', JSON.stringify({
+                    ...this.props.submitData, ...this.getValidatorData()
+                }));
                 this.props.onSuccess();
             }
         };

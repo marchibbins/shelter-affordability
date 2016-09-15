@@ -19,7 +19,7 @@ class Future extends React.Component {
             <article>
                 <h1>We built {this.props.buildsLastYear} homes in the UK last year, {this.getBuildsDiff()} than in {this.props.yob} when you were born.</h1>
                 <h2>Please sign our petition to demand that Theresa May and her government start building the homes we all urgently need.</h2>
-                <Petition onSuccess={this.props.gotoNext}/>
+                <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob}}/>
             </article>
         );
     }
@@ -31,7 +31,8 @@ Future.slug = 'future';
 const stateToProps = state => {
     return {
         buildsLastYear: state.buildsLastYear,
-        buildsYob: state.buildsYob
+        buildsYob: state.buildsYob,
+        yob: state.yob
     };
 };
 
