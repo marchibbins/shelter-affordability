@@ -29,6 +29,8 @@ class Tenure extends React.Component {
 
 }
 
+Tenure.slug = 'tenure';
+
 const stateToProps = state => {
     return {
         locationAverage: state.locationAverage,

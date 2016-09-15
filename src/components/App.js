@@ -7,7 +7,7 @@ class App extends React.Component {
 
     getSlide () {
         return React.createFactory(
-            this.props.slides[this.props.current].slide
+            this.props.slides[this.props.current]
         )();
     }
 

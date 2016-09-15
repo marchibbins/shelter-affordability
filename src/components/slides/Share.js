@@ -14,4 +14,6 @@ class Share extends React.Component {
 
 }
 
+Share.slug = 'share';
+
 export default connect()(Share);

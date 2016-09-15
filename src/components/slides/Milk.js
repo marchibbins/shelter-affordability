@@ -59,6 +59,8 @@ class Milk extends React.Component {
 
 }
 
+Milk.slug = 'milk';
+
 const stateToProps = state => {
     return {
         estimatedMilkPrice: state.estimatedMilkPrice

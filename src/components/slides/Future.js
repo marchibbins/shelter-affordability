@@ -20,6 +20,8 @@ class Future extends React.Component {
 
 }
 
+Future.slug = 'future';
+
 const stateToProps = state => {
     return {
         buildsLastYear: state.buildsLastYear,

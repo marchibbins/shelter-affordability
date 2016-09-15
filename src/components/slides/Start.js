@@ -71,6 +71,8 @@ class Start extends React.Component {
 
 }
 
+Start.slug = 'start';
+
 export default connect(null, dispatch => {
     return {
         updateYobData: data => {

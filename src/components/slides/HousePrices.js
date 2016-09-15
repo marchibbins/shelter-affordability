@@ -17,6 +17,8 @@ class HousePrices extends React.Component {
 
 }
 
+HousePrices.slug = 'house-prices';
+
 const stateToProps = state => {
     return {
         yob: state.yob,

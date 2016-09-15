@@ -11,3 +11,5 @@ export default class Questions extends React.Component {
     }
 
 }
+
+Questions.slug = 'questions';

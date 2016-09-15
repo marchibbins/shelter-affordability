@@ -29,6 +29,8 @@ class InYourArea extends React.Component {
 
 }
 
+InYourArea.slug = 'in-your-area';
+
 const stateToProps = state => {
     return {
         location: state.location,

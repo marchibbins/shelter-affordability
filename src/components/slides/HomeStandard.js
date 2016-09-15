@@ -14,6 +14,8 @@ class HomeStandard extends React.Component {
 
 }
 
+HomeStandard.slug = 'home-standard';
+
 const stateToProps = state => {
     return {
         locationStruggling: state.locationStruggling,
