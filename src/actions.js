@@ -1,10 +1,15 @@
-const NEXT = 'NEXT';
+const GOTO_NEXT = 'GOTO_NEXT';
+const GOTO_SLIDE = 'GOTO_SLIDE';
 const UPDATE_TENURE = 'UPDATE_TENURE';
 const UPDATE_LOCATION_DATA = 'UPDATE_LOCATION_DATA';
 const UPDATE_YOB_DATA = 'UPDATE_YOB_DATA';
 
 export function gotoNext () {
-    return {type: NEXT};
+    return {type: GOTO_NEXT};
+}
+
+export function gotoSlide (slug) {
+    return {type: GOTO_SLIDE, slug};
 }
 
 export function updateTenure (value) {
@@ -20,7 +25,8 @@ export function updateYobData (data) {
 }
 
 export const actions = {
-    NEXT,
+    GOTO_NEXT,
+    GOTO_SLIDE,
     UPDATE_TENURE,
     UPDATE_LOCATION_DATA,
     UPDATE_YOB_DATA

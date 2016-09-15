@@ -51,12 +51,15 @@ const initialState = {
 
 export default createStore((state = initialState, action) => {
     switch (action.type) {
-        case (actions.NEXT):
+        case (actions.GOTO_NEXT):
             if (state.current < initialState.slides.length - 1) {
                 return {...state, current: state.current + 1};
             } else {
                 return state;
             }
+        case (actions.GOTO_SLIDE):
+            return {...state,
+                current: initialState.slides.map(slide => slide.slug).indexOf(action.slug)};
         case (actions.UPDATE_TENURE):
             return {...state, tenure: action.value};
         case (actions.UPDATE_YOB_DATA):

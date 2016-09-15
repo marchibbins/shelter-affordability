@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { gotoNext } from '../actions';
+import { gotoNext, gotoSlide } from '../actions';
 
 class SlideContainer extends React.Component {
 
@@ -19,6 +19,9 @@ export default connect(null, dispatch => {
     return {
         gotoNext: () => {
             dispatch(gotoNext());
+        },
+        gotoSlide: (slug) => {
+            dispatch(gotoSlide(slug));
         }
     };
 })(SlideContainer);

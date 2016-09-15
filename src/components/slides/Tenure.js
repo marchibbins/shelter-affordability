@@ -23,6 +23,7 @@ class Tenure extends React.Component {
             <article>
                 {this.getStatement()}
                 <button onClick={this.props.gotoNext}>Just how many people are struggling?</button>
+                <button onClick={this.props.gotoSlide.bind(this, 'future')}>Sign the petition</button>
             </article>
         );
     }
