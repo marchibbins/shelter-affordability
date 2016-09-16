@@ -5,6 +5,7 @@ import connect from 'gulp-connect';
 import eslint from 'gulp-eslint';
 import gutil from 'gulp-util';
 import history from 'connect-history-api-fallback';
+import modrewrite from 'connect-modrewrite';
 import rename from 'gulp-rename';
 import path from 'path';
 import sequence from 'run-sequence';
@@ -29,11 +30,15 @@ const dir = {
         },
         js: {
             appFile: path.join(dir.source, filenames.js.app),
-            bundleFile: path.join(dir.build, filenames.js.bundle),
             sourceFiles: path.join(dir.source, '**/*.js'),
             buildDir: path.join(dir.build, 'js/')
         }
     };
+
+
+if (gutil.env.production) {
+    process.env.NODE_ENV = 'production';
+}
 
 gulp.task('assets', () => {
     gutil.log(gutil.colors.green(`Copying assets '${paths.assets.sourceFiles}'`));
@@ -59,17 +64,14 @@ gulp.task('bundle', () => {
 gulp.task('build', ['assets', 'js']);
 
 gulp.task('compress', () => {
-    gutil.log(gutil.colors.green(`Compressing '${paths.js.bundleFile}'`));
-    return gulp.src(paths.js.bundleFile)
+    gutil.log(gutil.colors.green(`Compressing '${paths.js.buildDir + filenames.js.bundle}'`));
+    return gulp.src(paths.js.buildDir + filenames.js.bundle)
         .pipe(uglify())
         .pipe(rename({suffix: '.min'}))
         .pipe(gulp.dest(paths.js.buildDir));
 });
 
 gulp.task('js', (callback) => {
-    // TODO: This produces a minified development version of React,
-    // set process.env.NODE_ENV = 'production' before bundle.
-    // TODO: Then include compress in sequence.
     sequence('lint', 'bundle', 'compress', callback);
 });
 
@@ -82,8 +84,13 @@ gulp.task('lint', () => {
 
 gulp.task('serve', () => {
     connect.server({
-        middleware: function() {
-            return [history()];
+        middleware: function () {
+            return [
+                history(),
+                modrewrite([
+                    '^(.*?)\.min\.js$ $1.js'
+                ])
+            ];
         }
     });
 });

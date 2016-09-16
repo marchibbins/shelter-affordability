@@ -22,6 +22,8 @@
 
         npm run gulp serve
 
+    This will modrewrite `.min.js` files to unminified versions
+
 ### Included in default build step
 
 - Copy assets
@@ -31,3 +33,16 @@
 - Lint Javascript source
 
         npm run gulp lint
+
+## Production
+
+- Build with
+
+        npm run gulp -- --production
+
+### Node global
+
+You can substitute `npm run gulp` for just `gulp` if you have a compatible version of `gulp` installed globally. For example:
+
+    gulp watch
+    gulp --production
