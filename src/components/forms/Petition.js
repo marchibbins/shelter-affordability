@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Joi from 'joi';
-import strategy from 'joi-validation-strategy';
+import strategy from 'react-validatorjs-strategy';
 import validation from 'react-validation-mixin';
 
 import { api } from '../../utils';
@@ -16,11 +15,11 @@ class Petition extends React.Component {
             email: '',
             optin: false
         };
-        this.validatorTypes = {
-            firstname: Joi.string().required().label('First name'),
-            lastname: Joi.string().required().label('Last name'),
-            email: Joi.string().email().required().label('Email')
-        };
+        this.validatorTypes = strategy.createSchema({
+            firstname: 'required',
+            lastname: 'required',
+            email: 'required|email'
+        });
     }
 
     getValidatorData () {
@@ -87,15 +86,4 @@ class Petition extends React.Component {
 
 }
 
-const options = {
-    language: {
-        any: {
-            required: '{{key}} is required'
-        },
-        string: {
-            email: '{{key}} must be valid'
-        }
-    }
-};
-
-export default validation(strategy(options))(Petition);
+export default validation(strategy)(Petition);
