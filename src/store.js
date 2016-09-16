@@ -56,9 +56,11 @@ const initialState = {
 
 export default createStore((state = initialState, action) => {
     switch (action.type) {
-        case (actions.GOTO_NEXT):
-            browserHistory.push(slugs[slugs.indexOf(action.currentSlug || slides[0].slug) + 1]);
+        case (actions.GOTO_NEXT): {
+            let defaultSlug = action.currentSlug || slides[0].slug;
+            browserHistory.push(slugs[slugs.indexOf(defaultSlug) + 1]);
             return state;
+        }
         case (actions.GOTO_SLIDE):
             browserHistory.push(action.nextSlug);
             return state;
