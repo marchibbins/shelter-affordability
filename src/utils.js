@@ -32,6 +32,10 @@ export const formatCurrency = (value, format) => {
     return '£' + numeral(value).format(format);
 };
 
+export const formatNumber = value => {
+    return numeral(value).format('0,0');
+};
+
 export const pick = (obj, props) => {
     return Object.assign({}, ...props.map(prop => {
         return {[prop]: obj[prop]};
