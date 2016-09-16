@@ -27,7 +27,7 @@ class Yob extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault();
-        const onValidate = (error) => {
+        const onValidate = error => {
             if (!error) {
                 this.props.onSubmit(this.getValidatorData());
             }

@@ -34,7 +34,7 @@ class Petition extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault();
-        const onValidate = (error) => {
+        const onValidate = error => {
             if (!error) {
                 api.postJSON('/survey', JSON.stringify({
                     ...this.props.submitData, ...this.getValidatorData()
