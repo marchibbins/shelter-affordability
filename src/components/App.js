@@ -4,19 +4,29 @@ import { connect } from 'react-redux';
 import SlideContainer from './SlideContainer';
 import Progress from './Progress';
 
+import { slugs } from '../store';
+
 class App extends React.Component {
+
+    getSlideFromSlug (slug) {
+        if (slug) {
+            return this.props.slides[slugs.indexOf(slug)];
+        } else {
+            return this.props.slides[0];
+        }
+    }
 
     render () {
         let Slide = React.createFactory(
-            this.props.slides[this.props.current]
+            this.getSlideFromSlug(this.props.params.slug)
         )();
         return (
             <main>
                 <h1>Affordability</h1>
-                <SlideContainer>
+                <SlideContainer slug={this.props.params.slug}>
                     {Slide}
                 </SlideContainer>
-                <Progress slides={this.props.slides} current={this.props.current}/>
+                <Progress slides={this.props.slides} index={slugs.indexOf(this.props.params.slug)}/>
             </main>
         );
     }

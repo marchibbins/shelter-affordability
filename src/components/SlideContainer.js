@@ -15,13 +15,13 @@ class SlideContainer extends React.Component {
 
 }
 
-export default connect(null, dispatch => {
+export default connect(null, (dispatch, ownProps) => {
     return {
         gotoNext: () => {
-            dispatch(gotoNext());
+            dispatch(gotoNext(ownProps.slug));
         },
-        gotoSlide: (slug) => {
-            dispatch(gotoSlide(slug));
+        gotoSlide: nextSlug => {
+            dispatch(gotoSlide(nextSlug));
         }
     };
 })(SlideContainer);

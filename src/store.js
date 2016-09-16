@@ -1,4 +1,5 @@
 import { createStore } from 'redux';
+import { browserHistory } from 'react-router';
 
 import Start from './components/slides/Start';
 import HousePrices from './components/slides/HousePrices';
@@ -12,19 +13,22 @@ import Questions from './components/slides/Questions';
 
 import { actions } from './actions';
 
+const slides = [
+    Start,
+    HousePrices,
+    Milk,
+    InYourArea,
+    Tenure,
+    HomeStandard,
+    Future,
+    Share,
+    Questions
+];
+
+export const slugs = (() => slides.map(slide => slide.slug))();
+
 const initialState = {
-    slides: [
-        Start,
-        HousePrices,
-        Milk,
-        InYourArea,
-        Tenure,
-        HomeStandard,
-        Future,
-        Share,
-        Questions
-    ],
-    current: 0,
+    slides: slides,
 
     // Yob data
     yob: '',
@@ -53,14 +57,11 @@ const initialState = {
 export default createStore((state = initialState, action) => {
     switch (action.type) {
         case (actions.GOTO_NEXT):
-            if (state.current < initialState.slides.length - 1) {
-                return {...state, current: state.current + 1};
-            } else {
-                return state;
-            }
+            browserHistory.push(slugs[slugs.indexOf(action.currentSlug || slides[0].slug) + 1]);
+            return state;
         case (actions.GOTO_SLIDE):
-            return {...state,
-                current: initialState.slides.map(slide => slide.slug).indexOf(action.slug)};
+            browserHistory.push(action.nextSlug);
+            return state;
         case (actions.UPDATE_TENURE):
             return {...state, tenure: action.value};
         case (actions.UPDATE_YOB_DATA):

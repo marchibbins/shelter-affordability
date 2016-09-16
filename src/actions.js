@@ -6,12 +6,12 @@ export const actions = {
     UPDATE_YOB_DATA: 'UPDATE_YOB_DATA'
 };
 
-export const gotoNext = () =>{
-    return {type: actions.GOTO_NEXT};
+export const gotoNext = currentSlug => {
+    return {type: actions.GOTO_NEXT, currentSlug};
 };
 
-export const gotoSlide = slug => {
-    return {type: actions.GOTO_SLIDE, slug};
+export const gotoSlide = nextSlug => {
+    return {type: actions.GOTO_SLIDE, nextSlug};
 };
 
 export const updateTenure = value => {

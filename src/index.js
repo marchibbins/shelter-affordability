@@ -10,7 +10,8 @@ ReactDOM.render(
 
     <Provider store={store}>
         <Router history={browserHistory}>
-            <Route path="/" component={App} />
+            <Route path="/" component={App}/>
+            <Route path="/:slug" component={App}/>
         </Router>
     </Provider>,
 
