@@ -7,7 +7,6 @@ import Yob from '../forms/Yob';
 import { updateYobData } from '../../actions';
 import { api } from '../../utils';
 
-
 class Start extends React.Component {
 
     constructor (props) {

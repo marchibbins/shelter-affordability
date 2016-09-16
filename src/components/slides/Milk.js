@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Pending from '../Pending';
+import Postcode from '../forms/Postcode';
 
 import { updateLocationData } from '../../actions';
 import { api, formatCurrency, pick } from '../../utils';
@@ -11,31 +12,20 @@ class Milk extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            postcode: '',
-            postcodeValid: false,
             pending: false
         };
     }
 
-    handleChange (event) {
-        this.setState({
-            postcode: event.target.value,
-            postcodeValid: event.target.value.length > 1
-        });
-    }
-
-    handleSubmit (event) {
-        event.preventDefault();
+    handleSubmit (formData) {
         this.setPending(true);
-
         api.getJSON('/data/location.json')
             .then(data => {
-                this.props.updateLocationData({...data, postcode: this.state.postcode});
+                this.props.updateLocationData({postcode: formData.postcode, ...data});
                 this.props.gotoNext();
             })
             .catch(error => {
-                // TODO: UI
                 /* eslint-disable no-console */
+                // TODO: UI
                 console.error(error);
                 /* eslint-enable no-console */
                 this.setPending(false);
@@ -57,11 +47,7 @@ class Milk extends React.Component {
             <article>
                 <h1>If a pint of milk had risen at the same rate as house prices, it would cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h1>
                 <h2>What's happened to house prices in your area? Enter your postcode to find out.</h2>
-                <form onSubmit={this.handleSubmit.bind(this)}>
-                    <input type="text" placeholder="Postcode"
-                        value={this.state.postcode} onChange={this.handleChange.bind(this)}/>
-                    <input type="submit" value="Compare" disabled={!this.state.postcodeValid}/>
-                </form>
+                <Postcode onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
             </article>
         );
