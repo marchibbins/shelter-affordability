@@ -8,11 +8,20 @@ class Postcode extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            postcode: ''
+            postcode: '',
+            submitted: false
         };
         this.validatorTypes = strategy.createSchema({
             postcode: 'required|regex:/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/i'
         });
+    }
+
+    getFieldClass (name) {
+        if (this.state.submitted) {
+            return this.props.getValidationMessages(name).length ? 'field-error' : 'field-valid';
+        } else {
+            return '';
+        }
     }
 
     getValidatorData () {
@@ -27,6 +36,7 @@ class Postcode extends React.Component {
 
     handleSubmit (event) {
         event.preventDefault();
+        this.setState({submitted: true});
         const onValidate = error => {
             if (!error) {
                 this.props.onSubmit(this.getValidatorData());
@@ -37,16 +47,22 @@ class Postcode extends React.Component {
 
     render () {
         return (
-            <form onSubmit={this.handleSubmit.bind(this)} noValidate>
-                <div>
-                    <label>What's happened to house prices in your area? Enter your postcode to find out.</label>
-                    <input type="text" value={this.state.postcode}
-                        onChange={this.handleChange.bind(this, 'postcode')}/>
-                    <div className='help-block'>
-                        {this.props.getValidationMessages('postcode')[0]}
-                    </div>
-                </div>
-                <input type="submit" className="button button--cta" value="Compare"/>
+            <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
+                <label htmlFor="postcode">What's happened to house prices in your area? Enter your postcode to find out.</label>
+                <ul className="unbulleted">
+                    <li className="col--2up">
+                        <input type="text" id="postcode" value={this.state.postcode}
+                            onChange={this.handleChange.bind(this, 'postcode')}
+                            className={this.getFieldClass('postcode')}
+                            required aria-required="true"/>
+                        <div className='help-block'>
+                            {this.props.getValidationMessages('postcode')[0]}
+                        </div>
+                    </li>
+                    <li className="col--2up">
+                        <input type="submit" className="button button--cta" value="Compare"/>
+                    </li>
+                </ul>
             </form>
         );
     }
