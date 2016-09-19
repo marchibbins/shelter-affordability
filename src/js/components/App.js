@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
 
+import SlideBackground from './SlideBackground';
 import SlideContainer from './SlideContainer';
 import Progress from './Progress';
 
@@ -8,25 +10,27 @@ import { slugs } from '../store';
 
 class App extends React.Component {
 
-    getSlideFromSlug (slug) {
-        if (slug) {
-            return this.props.slides[slugs.indexOf(slug)];
-        } else {
-            return this.props.slides[0];
-        }
+    getSlug () {
+        return this.props.params.slug || this.props.slides[0].slug;
     }
 
     render () {
-        let Slide = React.createFactory(
-            this.getSlideFromSlug(this.props.params.slug)
-        )();
+        const slug = this.getSlug();
         return (
-            <main>
-                <SlideContainer slug={this.props.params.slug}>
-                    {Slide}
-                </SlideContainer>
-                <Progress slides={this.props.slides} index={slugs.indexOf(this.props.params.slug)}/>
-            </main>
+            <div>
+                <ReactCSSTransitionGroup transitionName="transition"
+                    transitionEnterTimeout={300} transitionLeaveTimeout={300}>
+                    {React.createFactory(SlideBackground)({key: slug, slug: slug})}
+                </ReactCSSTransitionGroup>
+                <main>
+                    <SlideContainer slug={slug}>
+                        {React.createFactory(
+                            this.props.slides[slugs.indexOf(slug)]
+                        )()}
+                    </SlideContainer>
+                    <Progress slides={this.props.slides} index={slugs.indexOf(slug)}/>
+                </main>
+            </div>
         );
     }
 
