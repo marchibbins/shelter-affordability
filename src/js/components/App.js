@@ -22,7 +22,6 @@ class App extends React.Component {
         )();
         return (
             <main>
-                <h1>Affordability</h1>
                 <SlideContainer slug={this.props.params.slug}>
                     {Slide}
                 </SlideContainer>

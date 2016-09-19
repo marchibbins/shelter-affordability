@@ -34,7 +34,7 @@ class Tenure extends React.Component {
         return (
             <article>
                 {this.getStatement()}
-                <ul>
+                <ul className="unbulleted">
                     <li><button onClick={this.props.gotoNext}
                         className="button button--cta">
                             Just how many people are struggling?
