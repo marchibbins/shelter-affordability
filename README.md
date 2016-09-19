@@ -22,7 +22,7 @@
 
         npm run gulp serve
 
-    This will modrewrite `.min.js` files to unminified versions
+    This will modrewrite `.min` files to unminified versions
 
 ### Included in default build step
 
