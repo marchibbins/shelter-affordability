@@ -39,7 +39,7 @@ class Postcode extends React.Component {
         return (
             <form onSubmit={this.handleSubmit.bind(this)} noValidate>
                 <div>
-                    <label>What year were you born?</label>
+                    <label>What's happened to house prices in your area? Enter your postcode to find out.</label>
                     <input type="text" value={this.state.postcode}
                         onChange={this.handleChange.bind(this, 'postcode')}/>
                     <div className='help-block'>
