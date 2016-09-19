@@ -46,7 +46,7 @@ class Postcode extends React.Component {
                         {this.props.getValidationMessages('postcode')[0]}
                     </div>
                 </div>
-                <input type="submit" value="Compare"/>
+                <input type="submit" className="button button--cta" value="Compare"/>
             </form>
         );
     }

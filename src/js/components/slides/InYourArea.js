@@ -20,7 +20,8 @@ class InYourArea extends React.Component {
                 {Object.keys(tenures).map(key => {
                     return (
                         <li key={key}>
-                            <button onClick={this.handleClick.bind(this, tenures[key])}>
+                            <button onClick={this.handleClick.bind(this, tenures[key])}
+                                className="button button--cta">
                                 {tenures[key]}
                             </button>
                         </li>

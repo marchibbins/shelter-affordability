@@ -79,7 +79,7 @@ class Petition extends React.Component {
                         Opt-in
                     </label>
                 </div>
-                <input type="submit" value="Sign our petition"/>
+                <input type="submit" className="button button--cta" value="Sign our petition"/>
             </form>
         );
     }

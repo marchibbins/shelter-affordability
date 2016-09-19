@@ -66,7 +66,7 @@ export default class Petition extends React.Component {
                     <label>Your mobile number</label>
                     <input type="email"/>
                 </div>
-                <input type="submit" value="Submit"/>
+                <input type="submit" className="button button--cta" value="Submit"/>
             </form>
         );
     }

@@ -25,14 +25,18 @@ class HomeStandard extends React.Component {
                 <article>
                     <h1>Living Home Standard</h1>
                     <h2>The Living Home Standard has been developed by the British public to define what everyone needs from a home in order to live rather than just get by. As part of it, the public have defined acceptable levels of affordability, security and space.</h2>
-                    <button onClick={this.toggleDescription.bind(this)}>Close</button>
+                    <button onClick={this.toggleDescription.bind(this)} className="button button--cta">
+                        Close
+                    </button>
                 </article>
             );
         } else {
             return (
                 <article>
                     <h1>Today, {this.props.locationStruggling}% of people in {this.props.locationRegion} struggle to pay their rent or mortgage, according to research for <a href="#" onClick={this.toggleDescription.bind(this)}>Living Home Standard</a>.</h1>
-                    <button onClick={this.props.gotoNext}>Surely things aren't all bad?</button>
+                    <button onClick={this.props.gotoNext} className="button button--cta">
+                        Surely things aren't all bad?
+                    </button>
                 </article>
             );
         }

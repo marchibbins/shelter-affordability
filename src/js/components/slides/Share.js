@@ -13,7 +13,9 @@ class Share extends React.Component {
                     <li><a href="https://twitter.com/intent/tweet?text=" target="_blank">Share on Twitter</a></li>
                     <li><a href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank">Share on Facebook</a></li>
                 </ul>
-                <button onClick={this.props.gotoNext}>One last thing</button>
+                <button onClick={this.props.gotoNext} className="button button--cta">
+                    One last thing
+                </button>
             </article>
         );
     }
