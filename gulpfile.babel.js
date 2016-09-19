@@ -13,7 +13,7 @@ import source from 'vinyl-source-stream';
 import uglify from 'gulp-uglify';
 
 const dir = {
-        source: './src',
+        sourceJs: './src/js/',
         assets: './assets',
         build: './dist'
     },
@@ -29,8 +29,8 @@ const dir = {
             buildDir: path.join(dir.build)
         },
         js: {
-            appFile: path.join(dir.source, filenames.js.app),
-            sourceFiles: path.join(dir.source, '**/*.js'),
+            appFile: path.join(dir.sourceJs, filenames.js.app),
+            sourceFiles: path.join(dir.sourceJs, '**/*.js'),
             buildDir: path.join(dir.build, 'js/')
         }
     };
