@@ -40,10 +40,10 @@ const initialState = {
     postcode: '',
     location: '',
     locationRegion: '',
-    locationRentIncrease: '',
+    locationIncrease: '',
+    locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',
-    locationAverage: '',
     locationStruggling: '',
 
     // Tenure
