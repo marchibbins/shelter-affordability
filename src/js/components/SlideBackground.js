@@ -4,7 +4,7 @@ export default class SlideBackground extends React.Component {
 
     render () {
         return (
-            <div className={`slideBackground ${this.props.slug}`}></div>
+            <div className={`slide-background ${this.props.slug}`}></div>
         );
     }
 
