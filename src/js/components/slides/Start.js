@@ -16,10 +16,19 @@ class Start extends React.Component {
         };
     }
 
+    handleMissingYears (yob, data, missingYears = [1939, 1945]) {
+        if (yob >= missingYears[0] && yob <= missingYears[1]) {
+            data['yobAgeReplacement'] = (missingYears[1] + 1) - yob;
+        } else {
+            data['yobAgeReplacement'] = null;
+        }
+    }
+
     handleSubmit (formData) {
         this.setPending(true);
         api.getJSON('/data/age.json')
             .then(data => {
+                this.handleMissingYears(formData.yob, data);
                 this.props.updateYobData({yob: formData.yob, ...data});
                 this.props.gotoNext();
             })
