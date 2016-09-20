@@ -32,6 +32,7 @@ const initialState = {
 
     // Yob data
     yob: '',
+    yobAgeReplacement: '',
     yobAverageHousePrice: '',
     todayAverageHousePrice: '',
     estimatedMilkPrice: '',
