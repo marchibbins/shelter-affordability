@@ -43,4 +43,22 @@ body {
         }
 
     }
+
+    .slide-progress {
+        list-style: none;
+        margin: 10px 0;
+
+        .slide-progress__dot {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            border-radius: 15px;
+            margin-right: 5px;
+            background: darkgrey;
+
+            &.active {
+                background: red;
+            }
+        }
+    }
 }

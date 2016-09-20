@@ -4,7 +4,13 @@ export default class Progress extends React.Component {
 
     render () {
         return (
-            <h3>{Math.max(this.props.index + 1, 1)} of {this.props.slides.length}</h3>
+            <ul className="unbulleted slide-progress">
+                {[...Array(this.props.slides.length).keys()].map(i => {
+                    return (
+                        <li key={i} className={'slide-progress__dot ' + (i <= this.props.index ? 'active' : '')}></li>
+                    );
+                })}
+            </ul>
         );
     }
 
