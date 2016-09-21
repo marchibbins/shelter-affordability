@@ -22,7 +22,7 @@ class Milk extends React.Component {
             error: false,
             pending: true
         });
-        api.getJSON('/data/location.json')
+        api.getJSON(`${api.URL}/HouseData/${formData.postcode}`)
             .then(data => {
                 this.props.updateLocationData({postcode: formData.postcode, ...data});
                 this.props.gotoNext();

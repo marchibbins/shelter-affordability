@@ -39,7 +39,9 @@ class Postcode extends React.Component {
         this.setState({submitted: true});
         const onValidate = error => {
             if (!error) {
-                this.props.onSubmit(this.getValidatorData());
+                let data = this.getValidatorData(),
+                    postcode = data['postcode'].replace(/ /g,'').toLowerCase();
+                this.props.onSubmit({...data, postcode});
             }
         };
         this.props.validate(onValidate);
