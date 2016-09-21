@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import ErrorMessage from '../ErrorMessage';
 import Pending from '../Pending';
 import Postcode from '../forms/Postcode';
 
@@ -17,29 +18,27 @@ class Milk extends React.Component {
     }
 
     handleSubmit (formData) {
-        this.setPending(true);
+        this.setState({
+            error: false,
+            pending: true
+        });
         api.getJSON('/data/location.json')
             .then(data => {
                 this.props.updateLocationData({postcode: formData.postcode, ...data});
                 this.props.gotoNext();
             })
             .catch(error => {
-                /* eslint-disable no-console */
-                // TODO: UI
-                console.error(error);
-                /* eslint-enable no-console */
-                this.setPending(false);
+                this.setState({
+                    error: error,
+                    pending: false
+                });
             });
     }
 
-    setPending (value) {
-        this.setState({
-            pending: value
-        });
-    }
-
     componentWillUnmount () {
-        this.setPending(false);
+        this.setState({
+            pending: false
+        });
     }
 
     render () {
@@ -48,6 +47,7 @@ class Milk extends React.Component {
                 <h1>If a pint of milk had risen at the same rate as house prices, it would cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h1>
                 <Postcode onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
+                {this.state.error && <ErrorMessage message={this.state.error.message}/>}
             </article>
         );
     }

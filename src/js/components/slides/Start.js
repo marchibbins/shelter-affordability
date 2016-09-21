@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import ErrorMessage from '../ErrorMessage';
 import Pending from '../Pending';
 import Yob from '../forms/Yob';
 
@@ -12,6 +13,7 @@ class Start extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            error: false,
             pending: false
         };
     }
@@ -25,7 +27,10 @@ class Start extends React.Component {
     }
 
     handleSubmit (formData) {
-        this.setPending(true);
+        this.setState({
+            error: false,
+            pending: true
+        });
         api.getJSON('/data/age.json')
             .then(data => {
                 this.handleMissingYears(formData.yob, data);
@@ -33,22 +38,17 @@ class Start extends React.Component {
                 this.props.gotoNext();
             })
             .catch(error => {
-                /* eslint-disable no-console */
-                // TODO: UI
-                console.error(error);
-                /* eslint-enable no-console */
-                this.setPending(false);
+                this.setState({
+                    error: error,
+                    pending: false
+                });
             });
     }
 
-    setPending (value) {
-        this.setState({
-            pending: value
-        });
-    }
-
     componentWillUnmount () {
-        this.setPending(false);
+        this.setState({
+            pending: false
+        });
     }
 
     render () {
@@ -57,6 +57,7 @@ class Start extends React.Component {
                 <h1>How have house prices changed in your lifetime?</h1>
                 <Yob onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
+                {this.state.error && <ErrorMessage message={this.state.error.message}/>}
             </article>
         );
     }
