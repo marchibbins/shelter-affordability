@@ -9,7 +9,7 @@ import Tenure from './components/slides/Tenure';
 import HomeStandard from './components/slides/HomeStandard';
 import Future from './components/slides/Future';
 import Share from './components/slides/Share';
-import Questions from './components/slides/Questions';
+import ThankYou from './components/slides/ThankYou';
 
 import { actions } from './actions';
 
@@ -22,7 +22,7 @@ const slides = [
     HomeStandard,
     Future,
     Share,
-    Questions
+    ThankYou
 ];
 
 export const slugs = (() => slides.map(slide => slide.slug))();
