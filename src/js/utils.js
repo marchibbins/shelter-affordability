@@ -3,7 +3,7 @@ import numeral from 'numeral';
 import 'whatwg-fetch';
 
 export const api = {
-    URL: 'http://england.shelter.org.uk/content/api',
+    URL: '//england.shelter.org.uk/content/api',
 
     getJSON: url => {
         return fetch(url)
