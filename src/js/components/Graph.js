@@ -18,6 +18,9 @@ export default class Graph extends React.Component {
         this.end = new Date(graphData.map(
                 obj => obj.values[obj.values.length - 1][0])
                     .reduce((a, b) => Math.max(a, b))).getTime(),
+
+        this.peakYear = 1945;
+        this.peakPosition = (new Date(this.peakYear, 0, 1).getTime() - this.start) / (this.end - this.start);
         this.yobPosition = (new Date(this.props.yob, 0, 1).getTime() - this.start) / (this.end - this.start);
     }
 
@@ -43,13 +46,14 @@ export default class Graph extends React.Component {
             .range(['#000000', '#ea232d', '#cccccc']);
     }
 
-    getTick () {
-        // TODO: Determine breakpoints and intervals
-        const breakpoint = 400;
-        return {
-            unit: 'year',
-            interval: this.state.width > breakpoint ? 2 : 4
-        };
+    getTickInterval () {
+        if (this.state.width > 500) {
+            return 15;
+        } else if (this.state.width > 400) {
+            return 20;
+        } else {
+            return 30;
+        }
     }
 
     render () {
@@ -60,7 +64,7 @@ export default class Graph extends React.Component {
                     width={this.state.width}
                     height={this.state.width * .75}
                     colors={this.getColours()}
-                    xAxisTickInterval={this.getTick()}
+                    xAxisTickInterval={{unit: 'year', interval: this.getTickInterval()}}
                     xAxisLabel="Year"
                     xAccessor={d => new Date(d[0])}
                     yAxisLabel="New dwellings per year"
@@ -69,9 +73,14 @@ export default class Graph extends React.Component {
                 <div className="graph-wrapper__labels" style={
                     {width: `${this.state.width - 65}px`
                 }}>
-                    <div className="graph-wrapper__yob" style={{
-                        left: `${this.yobPosition * 100}%`
-                    }}>Year you were born</div>
+                    <div className="graph-wrapper__marker"
+                        style={{left: `${this.peakPosition * 100}%`}}>
+                        Peak {this.peakYear}
+                    </div>
+                    <div className="graph-wrapper__marker"
+                        style={{left: `${this.yobPosition * 100}%`}}>
+                        Year you were born
+                    </div>
                 </div>
             </div>
         );
