@@ -31,8 +31,8 @@ export default class Graph extends React.Component {
 
     getColours () {
         return d3.scale.ordinal()
-            .domain(['Local authorities', 'Private market'])
-            .range(['#000000', '#ea232d']);
+            .domain(['Local authorities', 'Private market', 'Housing associations'])
+            .range(['#000000', '#ea232d', '#cccccc']);
     }
 
     getTick () {
