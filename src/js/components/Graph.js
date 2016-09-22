@@ -9,7 +9,9 @@ export default class Graph extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            width: 0
+            width: 0,
+            peakClass: '',
+            yobClass: ''
         };
 
         this.start = new Date(graphData.map(
@@ -29,11 +31,19 @@ export default class Graph extends React.Component {
         if (width !== this.state.width) {
             this.setState({ width });
         }
+
+        let { offsetLeft: yLeft, offsetWidth: yWidth } = this.refs.yobMarker,
+            { offsetLeft: pLeft, offsetWidth: pWidth } = this.refs.peakMarker;
+
+        this.setState({
+            yobClass: (yLeft > pLeft) && ((pLeft + pWidth) > yLeft) ? 'offset' : '',
+            peakClass: (pLeft > yLeft) && ((yLeft + yWidth) > pLeft) ? 'offset' : ''
+        });
     }
 
     componentDidMount () {
         window.addEventListener('resize', this.handleResize.bind(this));
-        this.handleResize();
+        setTimeout(this.handleResize.bind(this), 10);
     }
 
     componentWillUnmount () {
@@ -73,12 +83,12 @@ export default class Graph extends React.Component {
                 <div className="graph-wrapper__labels" style={
                     {width: `${this.state.width - 65}px`
                 }}>
-                    <div className="graph-wrapper__marker"
-                        style={{left: `${this.peakPosition * 100}%`}}>
+                    <div className={'graph-wrapper__marker ' + this.state.peakClass}
+                        style={{left: `${this.peakPosition * 100}%`}} ref="peakMarker">
                         Peak {this.peakYear}
                     </div>
-                    <div className="graph-wrapper__marker"
-                        style={{left: `${this.yobPosition * 100}%`}}>
+                    <div className={'graph-wrapper__marker ' + this.state.yobClass}
+                        style={{left: `${this.yobPosition * 100}%`}} ref="yobMarker">
                         Year you were born
                     </div>
                 </div>
