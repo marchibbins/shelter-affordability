@@ -43,6 +43,7 @@ const dir = {
         js: {
             appFile: path.join(dir.sourceJs, filenames.js.app),
             sourceFiles: path.join(dir.sourceJs, '**/*.js'),
+            jsonFiles: path.join(dir.sourceJs, '**/*.json'),
             buildDir: path.join(dir.build, 'js/')
         }
     };
@@ -133,7 +134,7 @@ gulp.task('watch', () => {
     gutil.log(gutil.colors.green(`Watching '${paths.css.sourceFiles}'`
         + ` and '${paths.js.sourceFiles}' for changes`));
     gulp.watch(paths.css.sourceFiles, ['css']);
-    gulp.watch(paths.js.sourceFiles, ['bundle']);
+    gulp.watch([paths.js.sourceFiles, paths.js.jsonFiles], ['bundle']);
 });
 
 gulp.task('default', ['build']);
