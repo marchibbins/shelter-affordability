@@ -2,8 +2,6 @@ import React from 'react';
 import d3 from 'd3';
 import { AreaChart } from 'rd3';
 
-import graphData from '../data/graph.json';
-
 export default class Graph extends React.Component {
 
     constructor (props) {
@@ -14,10 +12,10 @@ export default class Graph extends React.Component {
             yobClass: ''
         };
 
-        this.start = new Date(graphData.map(
+        this.start = new Date(this.props.data.map(
                 obj => obj.values[0][0])
                     .reduce((a, b) => Math.min(a, b))).getTime(),
-        this.end = new Date(graphData.map(
+        this.end = new Date(this.props.data.map(
                 obj => obj.values[obj.values.length - 1][0])
                     .reduce((a, b) => Math.max(a, b))).getTime(),
 
@@ -70,7 +68,7 @@ export default class Graph extends React.Component {
         return (
             <div className="graph-wrapper" ref="wrapper">
                 <AreaChart
-                    data={graphData}
+                    data={this.props.data}
                     width={this.state.width}
                     height={this.state.width * .75}
                     colors={this.getColours()}

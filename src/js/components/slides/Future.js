@@ -6,6 +6,8 @@ import Petition from '../forms/Petition';
 
 import { pick } from '../../utils';
 
+import graphData from '../../data/graph.json';
+
 class Future extends React.Component {
 
     getBuildsDiff () {
@@ -21,7 +23,7 @@ class Future extends React.Component {
         return (
             <article>
                 <h1>We built {this.props.buildsLastYear} homes in the UK last year, {this.getBuildsDiff()} than in {this.props.yob} when you were born.</h1>
-                <Graph yob={this.props.yob}/>
+                <Graph data={graphData} yob={this.props.yob}/>
                 <h2>Please sign our petition to demand that Theresa May and her government start building the homes we all urgently need.</h2>
                 <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode}}/>
             </article>
