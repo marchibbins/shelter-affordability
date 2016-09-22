@@ -6,11 +6,7 @@ import { gotoNext, gotoSlide } from '../actions';
 class SlideContainer extends React.Component {
 
     render () {
-        return (
-            <article>
-                {React.cloneElement(this.props.children, this.props)}
-            </article>
-        );
+        return React.cloneElement(this.props.children, this.props);
     }
 
 }
