@@ -11,6 +11,14 @@ export default class Graph extends React.Component {
         this.state = {
             width: 0
         };
+
+        this.start = new Date(graphData.map(
+                obj => obj.values[0][0])
+                    .reduce((a, b) => Math.min(a, b))).getTime(),
+        this.end = new Date(graphData.map(
+                obj => obj.values[obj.values.length - 1][0])
+                    .reduce((a, b) => Math.max(a, b))).getTime(),
+        this.yobPosition = (new Date(this.props.yob, 0, 1).getTime() - this.start) / (this.end - this.start);
     }
 
     handleResize () {
@@ -46,7 +54,7 @@ export default class Graph extends React.Component {
 
     render () {
         return (
-            <div className="chart-wrapper" ref="wrapper">
+            <div className="graph-wrapper" ref="wrapper">
                 <AreaChart
                     data={graphData}
                     width={this.state.width}
@@ -58,6 +66,13 @@ export default class Graph extends React.Component {
                     yAxisLabel="New dwellings per year"
                     yAccessor={d => d[1]}
                     domain={{y: [0,60]}}/>
+                <div className="graph-wrapper__labels" style={
+                    {width: `${this.state.width - 65}px`
+                }}>
+                    <div className="graph-wrapper__yob" style={{
+                        left: `${this.yobPosition * 100}%`
+                    }}>Year you were born</div>
+                </div>
             </div>
         );
     }
