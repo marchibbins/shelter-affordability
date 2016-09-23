@@ -3,12 +3,15 @@ import React from 'react';
 import strategy from 'react-validatorjs-strategy';
 import validation from 'react-validation-mixin';
 
+import { api } from '../../utils';
+
 class Phone extends React.Component {
 
     constructor (props) {
         super(props);
         this.state = {
             phone: '',
+            showForm: true,
             submitted: false
         };
         this.validatorTypes = strategy.createSchema({
@@ -39,7 +42,8 @@ class Phone extends React.Component {
         this.setState({submitted: true});
         const onValidate = error => {
             if (!error) {
-                this.props.onSubmit(this.getValidatorData());
+                api.postJSON('/phone', JSON.stringify(this.getValidatorData()));
+                this.setState({showForm: false});
             }
         };
         this.props.validate(onValidate);
@@ -47,23 +51,27 @@ class Phone extends React.Component {
 
     render () {
         return (
-            <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
-                <label htmlFor="phone">Phone number</label>
-                <ul className="unbulleted">
-                    <li className="col--2up">
-                        <input type="number" id="phone" value={this.state.phone}
-                            onChange={this.handleChange.bind(this, 'phone')}
-                            className={this.getFieldClass('phone')}
-                            required aria-required="true"/>
-                        <div className='help-block'>
-                            {this.props.getValidationMessages('phone')[0]}
-                        </div>
-                    </li>
-                    <li className="col--2up">
-                        <input type="submit" className="button button--cta" value="Submit"/>
-                    </li>
-                </ul>
-            </form>
+            <div>
+                <h2>Lorem ipsum</h2>
+                {this.state.showForm &&
+                <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
+                    <label htmlFor="phone">Phone number</label>
+                    <ul className="unbulleted">
+                        <li className="col--2up">
+                            <input type="number" id="phone" value={this.state.phone}
+                                onChange={this.handleChange.bind(this, 'phone')}
+                                className={this.getFieldClass('phone')}
+                                required aria-required="true"/>
+                            <div className='help-block'>
+                                {this.props.getValidationMessages('phone')[0]}
+                            </div>
+                        </li>
+                        <li className="col--2up">
+                            <input type="submit" className="button button--cta" value="Submit"/>
+                        </li>
+                    </ul>
+                </form>}
+            </div>
         );
     }
 
