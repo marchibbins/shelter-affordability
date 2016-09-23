@@ -13,15 +13,21 @@
     z-index: -1;
     background-size: cover;
 
-    &.start {
+    &.start,
+    &.milk,
+    &.home-standard {
         background: url(/dist/img/bg1.jpg) center center no-repeat;
     }
 
-    &.house-prices {
+    &.house-prices,
+    &.in-your-area,
+    &.future {
         background: url(/dist/img/bg2.jpg) center center no-repeat;
     }
 
-    &.milk {
+    &.milk,
+    &.tenure,
+    &.share {
         background: url(/dist/img/bg3.jpg) center center no-repeat;
     }
 
