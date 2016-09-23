@@ -1,0 +1,36 @@
+.slide__title {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 50px;
+}
+
+.slide-background {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: -1;
+    background-size: cover;
+
+    &.start {
+        background: url(/dist/img/bg1.jpg) center center no-repeat;
+    }
+
+    &.house-prices {
+        background: url(/dist/img/bg2.jpg) center center no-repeat;
+    }
+
+    &.milk {
+        background: url(/dist/img/bg3.jpg) center center no-repeat;
+    }
+
+    &.transition-leave {
+      opacity: 1;
+    }
+
+    &.transition-leave.transition-leave-active {
+      opacity: 0.01;
+      transition: opacity 300ms ease-in-out;
+    }
+}   

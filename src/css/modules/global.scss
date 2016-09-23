@@ -1,0 +1,23 @@
+body {
+    background: black;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+#affordability-app {
+    padding: 20px 40px;
+
+    main {
+        padding: 30px 38px;
+        margin: 20px auto;
+        max-width: 500px;
+        min-height: 312px;
+        background: rgba(0, 0, 0, 0.8);
+
+        h1, h2, h3, label {
+            color: white;
+        }
+    }
+}

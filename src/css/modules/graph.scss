@@ -1,0 +1,28 @@
+.graph-wrapper {
+    position: relative;
+    overflow: hidden;
+
+    .graph-wrapper__labels {
+        position: absolute;
+        bottom: 45px;
+        left: 45px;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .graph-wrapper__marker {
+        position: absolute;
+        top: 50px;
+        height: 100%;
+        border-left: 1px dotted #999;
+        padding-left: 5px;
+
+        &.offset {
+            padding-top: 20px;
+        }
+    }
+
+    .rd3-areachart-area {
+        transform: translate(1px, 0);
+    }
+}

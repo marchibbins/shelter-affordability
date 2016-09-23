@@ -1,0 +1,23 @@
+$headerHeight: 120px;
+
+.header {
+    height: $headerHeight;
+    background: white;
+
+    .header__logo {
+        width: 310px;
+        height: $headerHeight;
+        float: left;
+        background: url(/dist/img/header-logo.png);
+        @include hide-text;
+    }
+
+    .header__image {
+        width: 310px;
+        height: $headerHeight;
+        float: right;
+        clear: none;
+        background: url(/dist/img/header-image.png);
+        @include hide-text;
+    }
+}
