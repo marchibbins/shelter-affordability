@@ -44,7 +44,9 @@ class Milk extends React.Component {
     render () {
         return (
             <article>
-                <h1>If a pint of milk had risen at the same rate as house prices, it would cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h1>
+                <h3 className="slide__title">
+                    If a pint of milk had risen in line with house prices, it would
+                    cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h3>
                 <Postcode onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
                 {this.state.error && <ErrorMessage message={this.state.error.message}/>}

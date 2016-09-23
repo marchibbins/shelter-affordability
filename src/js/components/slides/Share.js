@@ -21,8 +21,10 @@ export default class Share extends React.Component {
         if (!this.state.shared) {
             return (
                 <div>
-                    <h2>With you support, we will send a strong, loud message to the Prime Minister and her government.</h2>
-                    <h2>To help us spread the word about our campaign, please can you share the below with your friends and followers?</h2>
+                    <h4 className="slide__title">With you support, we will send a strong,
+                        loud message to the Prime Minister and her government.</h4>
+                    <h4 className="slide__title">To help us spread the word about our campaign,
+                        please can you share the below with your friends and followers?</h4>
                     <ul className="unbulleted">
                         <li>
                             <a href="https://twitter.com/intent/tweet?text="
@@ -47,7 +49,7 @@ export default class Share extends React.Component {
     render () {
         return (
             <article>
-                <h1>Thank you.</h1>
+                <h3 className="slide__title">Thank you.</h3>
                 {this.getContent()}
             </article>
         );

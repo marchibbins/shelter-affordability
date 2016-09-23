@@ -50,13 +50,15 @@ class Postcode extends React.Component {
     render () {
         return (
             <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
-                <label htmlFor="postcode">What's happened to house prices in your area? Enter your postcode to find out.</label>
+                <label htmlFor="postcode">
+                    What's happened to house prices in your area?
+                    <span className="hide">Enter your postcode to find out.</span></label>
                 <ul className="unbulleted">
                     <li className="col--2up">
                         <input type="text" id="postcode" value={this.state.postcode}
                             onChange={this.handleChange.bind(this, 'postcode')}
                             className={this.getFieldClass('postcode')}
-                            required aria-required="true"/>
+                            required aria-required="true" placeholder="Postcode"/>
                         <div className='help-block'>
                             {this.props.getValidationMessages('postcode')[0]}
                         </div>

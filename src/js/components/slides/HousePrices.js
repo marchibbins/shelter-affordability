@@ -6,14 +6,18 @@ import { formatCurrency, pick } from '../../utils';
 class HousePrices extends React.Component {
 
     render () {
-        let statement = `In ${this.props.yob}`;
+        let openingStatement = `In ${this.props.yob}`;
         if (this.props.yobAgeReplacement) {
-            statement = `When you were ${this.props.yobAgeReplacement} years old`;
+            openingStatement = `When you were ${this.props.yobAgeReplacement} years old`;
         }
         return (
             <article>
-                <h2>{statement}, the average cost of a three-bedroom house in the UK was {formatCurrency(this.props.yobAverageHousePrice, '0,0')}.</h2>
-                <h3>Today it's a whopping {formatCurrency(this.props.todayAverageHousePrice, '0,0')}.</h3>
+                <h3 className="slide__title">
+                    {openingStatement}, the average cost
+                    of a three-bedroom house in the UK
+                    was {formatCurrency(this.props.yobAverageHousePrice, '0,0')}.</h3>
+                <h3 className="slide__title">
+                    Today, it's shot up to {formatCurrency(this.props.todayAverageHousePrice, '0,0')}.</h3>
                 <button onClick={this.props.gotoNext} className="button button--cta">
                     What's the got to do with the price of milk?
                 </button>

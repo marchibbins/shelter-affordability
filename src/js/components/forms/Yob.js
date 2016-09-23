@@ -54,7 +54,7 @@ class Yob extends React.Component {
                         <input type="number" id="yob" value={this.state.yob}
                             onChange={this.handleChange.bind(this, 'yob')}
                             className={this.getFieldClass('yob')}
-                            required aria-required="true"/>
+                            required aria-required="true" placeholder="Year of birth"/>
                         <div className='help-block'>
                             {this.props.getValidationMessages('yob')[0]}
                         </div>

@@ -16,8 +16,17 @@ h1, h2, h3, h4 {
         min-height: 312px;
         background: rgba(0, 0, 0, 0.8);
 
-        h1, h2, h3, label {
+        h1, h2, h3, h4, label {
             color: white;
+        }
+
+        a, a:visited {
+            color: $blue;
+            text-decoration: underline;
+        }
+
+        a:hover, a:active, a:focus {
+            color: lighten($blue, 10%);
         }
     }
 }

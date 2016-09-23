@@ -8,26 +8,32 @@ class InYourArea extends React.Component {
 
     handleClick (tenure) {
         this.props.updateTenure(tenure);
+    }
+
+    handleSubmit (event) {
+        event.preventDefault();
         this.props.gotoNext();
     }
 
     render () {
         return (
             <article>
-                <h1>In {this.props.location}, house prices have risen {this.props.locationIncrease}% since you were born.</h1>
-                <h2>It's never been harder to buy or rent. Which one best describes you?</h2>
-                <ul className="unbulleted">
-                {Object.keys(tenures).map(key => {
-                    return (
-                        <li key={key}>
-                            <button onClick={this.handleClick.bind(this, tenures[key])}
-                                className="button button--cta">
-                                {tenures[key]}
-                            </button>
-                        </li>
-                    );
-                })}
-                </ul>
+                <h3 className="slide__title">In {this.props.location}, house prices have
+                    risen {this.props.locationIncrease} fold since you were born.
+                    It's only getting harder and harder to buy or rent.</h3>
+
+                <form className="form" onSubmit={this.handleSubmit.bind(this)}>
+                    <label>What's your housing situation in {this.props.location}?</label>
+                    <div className="form__button-list">
+                        {Object.keys(tenures).map(key => {
+                            return (
+                                <button key={key} className="button button--cta"
+                                    onClick={this.handleClick.bind(this, tenures[key])}>
+                                    {tenures[key]}</button>
+                            );
+                        })}
+                    </div>
+                </form>
             </article>
         );
     }

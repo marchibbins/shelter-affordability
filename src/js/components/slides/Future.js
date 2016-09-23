@@ -22,9 +22,10 @@ class Future extends React.Component {
     render () {
         return (
             <article>
-                <h1>We built {this.props.buildsLastYear} homes in the UK last year, {this.getBuildsDiff()} than in {this.props.yob} when you were born.</h1>
+                <h3 className="slide__title">We built {this.props.buildsLastYear} homes in the UK last
+                    year, {this.getBuildsDiff()} than in {this.props.yob} when you were born.</h3>
                 <Graph data={graphData} yob={this.props.yob}/>
-                <h2>Please sign our petition to demand that Theresa May and her government start building the homes we all urgently need.</h2>
+                <h4 className="slide__title">Please sign our petition to demand that Theresa May and her government start building the homes we all urgently need.</h4>
                 <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode}}/>
             </article>
         );
