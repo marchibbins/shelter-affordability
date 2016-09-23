@@ -1,15 +1,71 @@
 @import "styleguide";
 
+$red: #e0222c;
+$grey: #dadada;
+$headerHeight: 120px;
+
+@mixin hide-text {
+    text-indent: -9999px;
+    overflow: hidden;
+}
+
 body {
     background: black;
 }
 
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+.header {
+    height: $headerHeight;
+    background: white;
+
+    .header__logo {
+        width: 310px;
+        height: $headerHeight;
+        float: left;
+        background: url(/dist/img/header-logo.png);
+        @include hide-text;
+    }
+
+    .header__image {
+        width: 310px;
+        height: $headerHeight;
+        float: right;
+        clear: none;
+        background: url(/dist/img/header-image.png);
+        @include hide-text;
+    }
+}
+
 #affordability-app {
+    padding: 20px 40px;
+
     main {
-        background: white;
-        padding: 20px 40px;
+        padding: 30px 38px;
         margin: 20px auto;
-        width: 600px;
+        max-width: 500px;
+        min-height: 312px;
+        background: rgba(0, 0, 0, 0.8);
+
+        h1, h2, h3, label {
+            color: white;
+        }
+    }
+
+    form {
+        label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+    }
+
+    .slide__title {
+        font-size: 24px;
+        line-height: 28px;
+        margin-bottom: 50px;
     }
 
     .graph-wrapper {
@@ -75,19 +131,20 @@ body {
 
     .slide-progress {
         list-style: none;
-        margin: 10px 0;
+        margin: 10px auto;
+        text-align: center;
 
         .slide-progress__dot {
             display: inline-block;
-            width: 15px;
-            height: 15px;
-            border-radius: 15px;
+            width: 10px;
+            height: 10px;
+            border-radius: 10px;
             margin-right: 5px;
-            background: darkgrey;
+            background: $grey;
             transition: background 300ms ease-in-out;
 
             &.active {
-                background: red;
+                background: $red;
             }
         }
     }

@@ -54,7 +54,7 @@ class Start extends React.Component {
     render () {
         return (
             <article>
-                <h1>How have house prices changed in your lifetime?</h1>
+                <h3 className="slide__title">How have house prices changed in your lifetime?</h3>
                 <Yob onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
                 {this.state.error && <ErrorMessage message={this.state.error.message}/>}

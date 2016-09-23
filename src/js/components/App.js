@@ -28,8 +28,8 @@ class App extends React.Component {
                             this.props.slides[slugs.indexOf(slug)]
                         )()}
                     </SlideContainer>
-                    <Progress slides={this.props.slides} index={slugs.indexOf(slug)}/>
                 </main>
+                <Progress slides={this.props.slides} index={slugs.indexOf(slug)}/>
             </div>
         );
     }
