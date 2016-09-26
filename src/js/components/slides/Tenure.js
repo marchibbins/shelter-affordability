@@ -12,7 +12,7 @@ class Tenure extends React.Component {
                     <div>
                         <h3 className="slide__title">Home ownership is getting harder for
                             the next generation because of high rent and house prices.</h3>
-                        <h3 className="slide__title">XX% of working adults ages 20-34
+                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults ages 20-34
                             in {this.props.location} are living at home with their parents.</h3>
                     </div>
                 );
@@ -32,7 +32,7 @@ class Tenure extends React.Component {
                 return (
                     <div>
                         <h3 className="slide__title">You’re not alone – this is a growing trend.</h3>
-                        <h3 className="slide__title">XX% of working adults ages 20-34
+                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults ages 20-34
                             in {this.props.location} are living at home with their parents
                             because of high rent and house prices.</h3>
                     </div>
@@ -70,6 +70,13 @@ class Tenure extends React.Component {
 
 Tenure.slug = 'tenure';
 
-const stateToProps = state => pick(state, ['location', 'locationRentAverage', 'locationSocialHomes', 'locationTempHouseholds', 'tenure']);
+const stateToProps = state => pick(state, [
+    'location',
+    'locationLivingParents',
+    'locationRentAverage',
+    'locationSocialHomes',
+    'locationTempHouseholds',
+    'tenure'
+]);
 
 export default connect(stateToProps)(Tenure);

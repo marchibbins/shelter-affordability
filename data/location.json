@@ -2,6 +2,7 @@
     "location": "Sussex",
     "locationRegion": "the South East",
     "locationIncrease": 1000,
+    "locationLivingParents": 50,
     "locationRentAverage": 1500,
     "locationSocialHomes": 1200,
     "locationTempHouseholds": 1600,
