@@ -98,10 +98,16 @@ class Petition extends React.Component {
                         <input type="checkbox" id="optin" checked={this.state.optin}
                             onChange={this.handleChange.bind(this, 'optin')}
                             required aria-required="true"/>
-                        Opt-in
+                        Keep my informed by email <br/>
+                        <small>By giving your details you agree that we may use them to
+                        send you information about our work, campaigning and
+                        fundraising activities. We will never share your personal 
+                        details. <a href="#">Privacy policy</a>. If you prefer
+                        not to hear from us, please contact our supporter helpdesk
+                        on 0300 330 1234 or e-mail <a href="mailto:campaign@shelter.org.uk">campaign@shelter.org.uk</a>.</small>
                     </label>
                 </div>
-                <input type="submit" className="button button--cta" value="Sign our petition"/>
+                <input type="submit" className="button button--cta" value="Add my name"/>
             </form>
         );
     }
