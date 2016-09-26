@@ -4,7 +4,7 @@ export default class ErrorMessage extends React.Component {
 
     render () {
         return (
-            <em>ErrorMessage {this.props.message}</em>
+            <em className="message">ErrorMessage {this.props.message}</em>
         );
     }
 
