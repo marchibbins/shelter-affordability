@@ -19,7 +19,7 @@ class HousePrices extends React.Component {
                 <h3 className="slide__title">
                     Today, it's shot up to {formatCurrency(this.props.todayAverageHousePrice, '0,0')}.</h3>
                 <button onClick={this.props.gotoNext} className="button button--cta">
-                    What's the got to do with the price of milk?
+                    What's that got to do with the price of milk?
                 </button>
             </article>
         );
