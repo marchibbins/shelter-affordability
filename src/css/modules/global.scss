@@ -2,32 +2,38 @@ body {
     background: black;
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, label {
+    color: white;
     margin: 0;
+}
+
+a, a:visited {
+    color: $blue;
+    text-decoration: underline;
+}
+
+a:hover, a:active, a:focus {
+    color: lighten($blue, 10%);
 }
 
 #affordability-app {
     font-family: $fontFamily;
-    padding: 20px 40px;
+
+    @include tablet {
+        padding: 20px 40px;
+    }
 
     main {
-        padding: 30px 38px;
-        margin: 20px auto;
-        max-width: 500px;
-        min-height: 312px;
+        min-height: 400px;
+        margin-bottom: 20px;
+        padding: 20px 10px;
         background: rgba(0, 0, 0, 0.8);
 
-        h1, h2, h3, h4, label {
-            color: white;
-        }
-
-        a, a:visited {
-            color: $blue;
-            text-decoration: underline;
-        }
-
-        a:hover, a:active, a:focus {
-            color: lighten($blue, 10%);
+        @include tablet {
+            min-height: 312px;
+            margin: 20px auto;
+            padding: 30px 38px;
+            max-width: 500px;
         }
     }
 
