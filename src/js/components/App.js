@@ -18,7 +18,7 @@ class App extends React.Component {
         const slug = this.getSlug();
         return (
             <div>
-                <ReactCSSTransitionGroup transitionName="transition"
+                <ReactCSSTransitionGroup transitionName="transition" component="div"
                     transitionEnterTimeout={300} transitionLeaveTimeout={300}>
                     {React.createFactory(SlideBackground)({key: slug, slug: slug})}
                 </ReactCSSTransitionGroup>
