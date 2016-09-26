@@ -13,6 +13,9 @@ class Postcode extends React.Component {
         };
         this.validatorTypes = strategy.createSchema({
             postcode: 'required|regex:/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/i'
+        }, {
+            'regex.postcode': 'Postcode is invalid',
+            'required.postcode': 'Postcode is required'
         });
     }
 

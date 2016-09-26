@@ -20,6 +20,11 @@ class Petition extends React.Component {
             firstname: 'required',
             lastname: 'required',
             email: 'required|email'
+        }, {
+            'required.firstname': 'First name is required',
+            'required.lastname': 'Last name is required',
+            'required.email': 'Email is required',
+            'email.email': 'Email is invalid'
         });
     }
 

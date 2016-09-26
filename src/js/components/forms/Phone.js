@@ -16,6 +16,8 @@ class Phone extends React.Component {
         };
         this.validatorTypes = strategy.createSchema({
             phone: 'required'
+        }, {
+            'required.phone': 'Phone number is required'
         });
     }
 
