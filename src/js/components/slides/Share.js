@@ -28,12 +28,14 @@ export default class Share extends React.Component {
                     <ul className="unbulleted">
                         <li>
                             <a href="https://twitter.com/intent/tweet?text="
+                                className="button button--cta button--social button--twitter"
                                 onClick={this.handleClick.bind(this)} target="_blank">
                                 Share on Twitter
                             </a>
                         </li>
                         <li>
                             <a href="https://www.facebook.com/sharer/sharer.php?u="
+                                className="button button--cta button--social button--facebook"
                                 onClick={this.handleClick.bind(this)} target="_blank">
                                 Share on Facebook
                             </a>
