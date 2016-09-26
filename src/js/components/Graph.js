@@ -73,9 +73,9 @@ export default class Graph extends React.Component {
                     height={this.state.width * .75}
                     colors={this.getColours()}
                     xAxisTickInterval={{unit: 'year', interval: this.getTickInterval()}}
-                    xAxisLabel="Year"
+                    xAxisLabel='Year'
                     xAccessor={d => new Date(d[0])}
-                    yAxisLabel="New dwellings per year"
+                    yAxisLabel='New dwellings per year'
                     yAccessor={d => d[1]}
                     domain={{y: [0,60]}}/>
                 <div className="graph-wrapper__labels" style={

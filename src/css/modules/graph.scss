@@ -1,3 +1,6 @@
+$graphTextColor: #fff;
+$graphLineColor: #666;
+
 .graph-wrapper {
     position: relative;
     overflow: hidden;
@@ -14,8 +17,11 @@
         position: absolute;
         top: 50px;
         height: 100%;
-        border-left: 1px dotted #999;
+        border-left: 1px dotted $graphLineColor;
         padding-left: 5px;
+        color: $graphTextColor;
+        font-size: 15px;
+        line-height: 16px;
 
         &.offset {
             padding-top: 20px;
@@ -24,5 +30,28 @@
 
     .rd3-areachart-area {
         transform: translate(1px, 0);
+    }
+
+    .rd3-areachart-xaxis,
+    .rd3-areachart-yaxis {
+        .domain {
+            stroke: $graphLineColor;
+        }
+
+        .tick {
+            line {
+                stroke: $graphLineColor !important;
+            }
+
+            text {
+                fill: $graphTextColor !important;
+                font-size: 12px;
+            }
+        }
+
+        text {
+            fill: $graphTextColor;
+            font-size: 15px;
+        }
     }
 }
