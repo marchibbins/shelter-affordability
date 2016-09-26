@@ -50,18 +50,9 @@ class Tenure extends React.Component {
         return (
             <article>
                 {this.getStatement()}
-                <ul className="unbulleted">
-                    <li><button onClick={this.props.gotoNext}
-                        className="button button--cta">
-                            Just how many people are struggling?
-                        </button>
-                    </li>
-                    <li><button onClick={this.props.gotoSlide.bind(this, 'future')}
-                        className="button button--cta--secondary">
-                            Sign the petition
-                        </button>
-                    </li>
-                </ul>
+                <button onClick={this.props.gotoNext} className="button button--cta">
+                    Just how many people are struggling?
+                </button>
             </article>
         );
     }
