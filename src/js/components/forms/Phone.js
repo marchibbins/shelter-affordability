@@ -52,29 +52,33 @@ class Phone extends React.Component {
     }
 
     render () {
-        return (
-            <div>
-                <h2>Lorem ipsum</h2>
-                {this.state.showForm &&
-                <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
-                    <label htmlFor="phone">Phone number</label>
-                    <ul className="unbulleted">
-                        <li className="col--2up">
-                            <input type="number" id="phone" value={this.state.phone}
-                                onChange={this.handleChange.bind(this, 'phone')}
-                                className={this.getFieldClass('phone')}
-                                required aria-required="true"/>
-                            <div className='help-block'>
-                                {this.props.getValidationMessages('phone')[0]}
-                            </div>
-                        </li>
-                        <li className="col--2up">
-                            <input type="submit" className="button button--cta" value="Submit"/>
-                        </li>
-                    </ul>
-                </form>}
-            </div>
-        );
+        if (this.state.showForm) {
+            return (
+                <div>
+                    <h2 className="slide__title">Want to find out how else you can help? If you’d like to chat to us
+                        about other ways you can get involved, please enter your phone number below.</h2>
+                    <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
+                        <label htmlFor="phone">Phone number</label>
+                        <ul className="unbulleted">
+                            <li className="col--2up">
+                                <input type="number" id="phone" value={this.state.phone}
+                                    onChange={this.handleChange.bind(this, 'phone')}
+                                    className={this.getFieldClass('phone')}
+                                    required aria-required="true"/>
+                                <div className='help-block'>
+                                    {this.props.getValidationMessages('phone')[0]}
+                                </div>
+                            </li>
+                            <li className="col--2up">
+                                <input type="submit" className="button button--cta" value="Submit"/>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+            );
+        } else {
+            return <div/>; // TODO
+        }
     }
 
 }

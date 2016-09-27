@@ -21,7 +21,7 @@ export default class Share extends React.Component {
         if (!this.state.shared) {
             return (
                 <div>
-                    <h4 className="slide__title">With you support, we will send a strong,
+                    <h4 className="slide__title">With your support, we will send a strong,
                         loud message to the Prime Minister and her government.</h4>
                     <h4 className="slide__title">To help us spread the word about our campaign,
                         please can you share the below with your friends and followers?</h4>

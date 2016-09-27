@@ -12,8 +12,8 @@ class Tenure extends React.Component {
                     <div>
                         <h3 className="slide__title">Home ownership is getting harder for
                             the next generation because of high rent and house prices.</h3>
-                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults ages 20-34
-                            in {this.props.location} are living at home with their parents.</h3>
+                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults
+                            aged 20-34 in {this.props.location} are living at home with their parents.</h3>
                     </div>
                 );
             case tenures.RENTER:
@@ -32,7 +32,7 @@ class Tenure extends React.Component {
                 return (
                     <div>
                         <h3 className="slide__title">You’re not alone – this is a growing trend.</h3>
-                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults ages 20-34
+                        <h3 className="slide__title">{this.props.locationLivingParents}% of working adults aged 20-34
                             in {this.props.location} are living at home with their parents
                             because of high rent and house prices.</h3>
                     </div>
@@ -51,7 +51,7 @@ class Tenure extends React.Component {
             <article>
                 {this.getStatement()}
                 <button onClick={this.props.gotoNext} className="button button--cta">
-                    Just how many people are struggling?
+                    How many people are struggling in {this.props.locationRegion}?
                 </button>
             </article>
         );
@@ -63,6 +63,7 @@ Tenure.slug = 'tenure';
 
 const stateToProps = state => pick(state, [
     'location',
+    'locationRegion',
     'locationLivingParents',
     'locationRentAverage',
     'locationSocialHomes',

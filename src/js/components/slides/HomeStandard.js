@@ -44,7 +44,7 @@ class HomeStandard extends React.Component {
                             Living Home Standard</a>.
                     </h3>
                     <button onClick={this.props.gotoNext} className="button button--cta">
-                        Surely things aren't all bad?
+                        How did we end up like this?
                     </button>
                 </article>
             );
