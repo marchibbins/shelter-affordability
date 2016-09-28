@@ -8,15 +8,15 @@ $graphLineColor: #666;
 
     .graph-wrapper__labels {
         position: absolute;
-        bottom: 45px;
-        left: 45px;
+        bottom: 50px;
+        left: 60px;
         height: 100%;
         overflow: hidden;
     }
 
     .graph-wrapper__marker {
         position: absolute;
-        top: 50px;
+        top: 55px;
         height: 100%;
         border-left: 1px dotted $graphLineColor;
         padding-left: 5px;

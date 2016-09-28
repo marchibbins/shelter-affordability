@@ -12,16 +12,16 @@ export default class Graph extends React.Component {
             yobClass: ''
         };
 
-        this.start = new Date(this.props.data.map(
-                obj => obj.values[0][0])
-                    .reduce((a, b) => Math.min(a, b))).getTime(),
-        this.end = new Date(this.props.data.map(
-                obj => obj.values[obj.values.length - 1][0])
-                    .reduce((a, b) => Math.max(a, b))).getTime(),
+        let series = this.props.data[0].values,
+            values = series.map(t => t[1]);
 
-        this.peakYear = 1945;
-        this.peakPosition = (new Date(this.peakYear, 0, 1).getTime() - this.start) / (this.end - this.start);
-        this.yobPosition = (new Date(this.props.yob, 0, 1).getTime() - this.start) / (this.end - this.start);
+        this.start = new Date(series[0][0], 0).getTime(),
+        this.end = new Date(series[series.length - 1][0], 0).getTime(),
+
+        this.peakYear = series.map(t => t[0])[values.indexOf(values.reduce((a, b) => Math.max(a, b)))];
+
+        this.peakPosition = (new Date(this.peakYear, 0).getTime() - this.start) / (this.end - this.start);
+        this.yobPosition = (new Date(this.props.yob, 0).getTime() - this.start) / (this.end - this.start);
     }
 
     handleResize () {
@@ -50,8 +50,8 @@ export default class Graph extends React.Component {
 
     getColours () {
         return d3.scale.ordinal()
-            .domain(['Local authorities', 'Private market', 'Housing associations'])
-            .range(['#000000', '#ea232d', '#cccccc']);
+            .domain(['Total'])
+            .range(['#ea232d']);
     }
 
     getTickInterval () {
@@ -71,15 +71,19 @@ export default class Graph extends React.Component {
                     data={this.props.data}
                     width={this.state.width}
                     height={this.state.width * .75}
+                    margins={{top: 10, right: 20, bottom: 45, left: 60}}
                     colors={this.getColours()}
                     xAxisTickInterval={{unit: 'year', interval: this.getTickInterval()}}
                     xAxisLabel='Year'
-                    xAccessor={d => new Date(d[0])}
+                    xAccessor={d => new Date(d[0], 0, 1)}
+                    xAxisLabelOffset={45}
                     yAxisLabel='New dwellings per year'
                     yAccessor={d => d[1]}
-                    domain={{y: [0,60]}}/>
+                    yAxisLabelOffset={45}
+                    yAxisFormatter={d => `${d / 1000}k`}
+                    domain={{y: [0, 500000]}}/>
                 <div className="graph-wrapper__labels" style={
-                    {width: `${this.state.width - 65}px`
+                    {width: `${this.state.width - 80}px`
                 }}>
                     <div className={'graph-wrapper__marker ' + this.state.peakClass}
                         style={{left: `${this.peakPosition * 100}%`}} ref="peakMarker">
