@@ -58,11 +58,11 @@ export default createStore((state = initialState, action) => {
     switch (action.type) {
         case (actions.GOTO_NEXT): {
             let defaultSlug = action.currentSlug || slides[0].slug;
-            browserHistory.push(slugs[slugs.indexOf(defaultSlug) + 1]);
+            browserHistory.push('/affordability/' + slugs[slugs.indexOf(defaultSlug) + 1]);
             return state;
         }
         case (actions.GOTO_SLIDE):
-            browserHistory.push(action.nextSlug);
+            browserHistory.push('/affordability/' + action.nextSlug);
             return state;
         case (actions.UPDATE_TENURE):
             return {...state, tenure: action.value};

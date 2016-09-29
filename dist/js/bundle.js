@@ -10978,1733 +10978,6 @@ if ("production" !== 'production') {
 module.exports = warning;
 },{"./emptyFunction":13}],31:[function(require,module,exports){
 /**
- * Indicates that navigation was caused by a call to history.push.
- */
-'use strict';
-
-exports.__esModule = true;
-var PUSH = 'PUSH';
-
-exports.PUSH = PUSH;
-/**
- * Indicates that navigation was caused by a call to history.replace.
- */
-var REPLACE = 'REPLACE';
-
-exports.REPLACE = REPLACE;
-/**
- * Indicates that navigation was caused by some other action such
- * as using a browser's back/forward buttons and/or manually manipulating
- * the URL in a browser's location bar. This is the default.
- *
- * See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
- * for more information.
- */
-var POP = 'POP';
-
-exports.POP = POP;
-exports['default'] = {
-  PUSH: PUSH,
-  REPLACE: REPLACE,
-  POP: POP
-};
-},{}],32:[function(require,module,exports){
-"use strict";
-
-exports.__esModule = true;
-var _slice = Array.prototype.slice;
-exports.loopAsync = loopAsync;
-
-function loopAsync(turns, work, callback) {
-  var currentTurn = 0,
-      isDone = false;
-  var sync = false,
-      hasNext = false,
-      doneArgs = undefined;
-
-  function done() {
-    isDone = true;
-    if (sync) {
-      // Iterate instead of recursing if possible.
-      doneArgs = [].concat(_slice.call(arguments));
-      return;
-    }
-
-    callback.apply(this, arguments);
-  }
-
-  function next() {
-    if (isDone) {
-      return;
-    }
-
-    hasNext = true;
-    if (sync) {
-      // Iterate instead of recursing if possible.
-      return;
-    }
-
-    sync = true;
-
-    while (!isDone && currentTurn < turns && hasNext) {
-      hasNext = false;
-      work.call(this, currentTurn++, next, done);
-    }
-
-    sync = false;
-
-    if (isDone) {
-      // This means the loop finished synchronously.
-      callback.apply(this, doneArgs);
-      return;
-    }
-
-    if (currentTurn >= turns && hasNext) {
-      isDone = true;
-      callback();
-    }
-  }
-
-  next();
-}
-},{}],33:[function(require,module,exports){
-(function (process){
-/*eslint-disable no-empty */
-'use strict';
-
-exports.__esModule = true;
-exports.saveState = saveState;
-exports.readState = readState;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var KeyPrefix = '@@History/';
-var QuotaExceededErrors = ['QuotaExceededError', 'QUOTA_EXCEEDED_ERR'];
-
-var SecurityError = 'SecurityError';
-
-function createKey(key) {
-  return KeyPrefix + key;
-}
-
-function saveState(key, state) {
-  try {
-    if (state == null) {
-      window.sessionStorage.removeItem(createKey(key));
-    } else {
-      window.sessionStorage.setItem(createKey(key), JSON.stringify(state));
-    }
-  } catch (error) {
-    if (error.name === SecurityError) {
-      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
-      // attempt to access window.sessionStorage.
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available due to security settings') : undefined;
-
-      return;
-    }
-
-    if (QuotaExceededErrors.indexOf(error.name) >= 0 && window.sessionStorage.length === 0) {
-      // Safari "private mode" throws QuotaExceededError.
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available in Safari private mode') : undefined;
-
-      return;
-    }
-
-    throw error;
-  }
-}
-
-function readState(key) {
-  var json = undefined;
-  try {
-    json = window.sessionStorage.getItem(createKey(key));
-  } catch (error) {
-    if (error.name === SecurityError) {
-      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
-      // attempt to access window.sessionStorage.
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to read state; sessionStorage is not available due to security settings') : undefined;
-
-      return null;
-    }
-  }
-
-  if (json) {
-    try {
-      return JSON.parse(json);
-    } catch (error) {
-      // Ignore invalid JSON.
-    }
-  }
-
-  return null;
-}
-}).call(this,require('_process'))
-},{"_process":62,"warning":47}],34:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-exports.addEventListener = addEventListener;
-exports.removeEventListener = removeEventListener;
-exports.getHashPath = getHashPath;
-exports.replaceHashPath = replaceHashPath;
-exports.getWindowPath = getWindowPath;
-exports.go = go;
-exports.getUserConfirmation = getUserConfirmation;
-exports.supportsHistory = supportsHistory;
-exports.supportsGoWithoutReloadUsingHash = supportsGoWithoutReloadUsingHash;
-
-function addEventListener(node, event, listener) {
-  if (node.addEventListener) {
-    node.addEventListener(event, listener, false);
-  } else {
-    node.attachEvent('on' + event, listener);
-  }
-}
-
-function removeEventListener(node, event, listener) {
-  if (node.removeEventListener) {
-    node.removeEventListener(event, listener, false);
-  } else {
-    node.detachEvent('on' + event, listener);
-  }
-}
-
-function getHashPath() {
-  // We can't use window.location.hash here because it's not
-  // consistent across browsers - Firefox will pre-decode it!
-  return window.location.href.split('#')[1] || '';
-}
-
-function replaceHashPath(path) {
-  window.location.replace(window.location.pathname + window.location.search + '#' + path);
-}
-
-function getWindowPath() {
-  return window.location.pathname + window.location.search + window.location.hash;
-}
-
-function go(n) {
-  if (n) window.history.go(n);
-}
-
-function getUserConfirmation(message, callback) {
-  callback(window.confirm(message));
-}
-
-/**
- * Returns true if the HTML5 history API is supported. Taken from Modernizr.
- *
- * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
- * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
- * changed to avoid false negatives for Windows Phones: https://github.com/rackt/react-router/issues/586
- */
-
-function supportsHistory() {
-  var ua = navigator.userAgent;
-  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) {
-    return false;
-  }
-  return window.history && 'pushState' in window.history;
-}
-
-/**
- * Returns false if using go(n) with hash history causes a full page reload.
- */
-
-function supportsGoWithoutReloadUsingHash() {
-  var ua = navigator.userAgent;
-  return ua.indexOf('Firefox') === -1;
-}
-},{}],35:[function(require,module,exports){
-'use strict';
-
-exports.__esModule = true;
-var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
-exports.canUseDOM = canUseDOM;
-},{}],36:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-exports.extractPath = extractPath;
-exports.parsePath = parsePath;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function extractPath(string) {
-  var match = string.match(/^https?:\/\/[^\/]*/);
-
-  if (match == null) return string;
-
-  return string.substring(match[0].length);
-}
-
-function parsePath(path) {
-  var pathname = extractPath(path);
-  var search = '';
-  var hash = '';
-
-  process.env.NODE_ENV !== 'production' ? _warning2['default'](path === pathname, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', path) : undefined;
-
-  var hashIndex = pathname.indexOf('#');
-  if (hashIndex !== -1) {
-    hash = pathname.substring(hashIndex);
-    pathname = pathname.substring(0, hashIndex);
-  }
-
-  var searchIndex = pathname.indexOf('?');
-  if (searchIndex !== -1) {
-    search = pathname.substring(searchIndex);
-    pathname = pathname.substring(0, searchIndex);
-  }
-
-  if (pathname === '') pathname = '/';
-
-  return {
-    pathname: pathname,
-    search: search,
-    hash: hash
-  };
-}
-}).call(this,require('_process'))
-},{"_process":62,"warning":47}],37:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _invariant = require('invariant');
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _Actions = require('./Actions');
-
-var _PathUtils = require('./PathUtils');
-
-var _ExecutionEnvironment = require('./ExecutionEnvironment');
-
-var _DOMUtils = require('./DOMUtils');
-
-var _DOMStateStorage = require('./DOMStateStorage');
-
-var _createDOMHistory = require('./createDOMHistory');
-
-var _createDOMHistory2 = _interopRequireDefault(_createDOMHistory);
-
-/**
- * Creates and returns a history object that uses HTML5's history API
- * (pushState, replaceState, and the popstate event) to manage history.
- * This is the recommended method of managing history in browsers because
- * it provides the cleanest URLs.
- *
- * Note: In browsers that do not support the HTML5 history API full
- * page reloads will be used to preserve URLs.
- */
-function createBrowserHistory() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Browser history needs a DOM') : _invariant2['default'](false) : undefined;
-
-  var forceRefresh = options.forceRefresh;
-
-  var isSupported = _DOMUtils.supportsHistory();
-  var useRefresh = !isSupported || forceRefresh;
-
-  function getCurrentLocation(historyState) {
-    try {
-      historyState = historyState || window.history.state || {};
-    } catch (e) {
-      historyState = {};
-    }
-
-    var path = _DOMUtils.getWindowPath();
-    var _historyState = historyState;
-    var key = _historyState.key;
-
-    var state = undefined;
-    if (key) {
-      state = _DOMStateStorage.readState(key);
-    } else {
-      state = null;
-      key = history.createKey();
-
-      if (isSupported) window.history.replaceState(_extends({}, historyState, { key: key }), null);
-    }
-
-    var location = _PathUtils.parsePath(path);
-
-    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
-  }
-
-  function startPopStateListener(_ref) {
-    var transitionTo = _ref.transitionTo;
-
-    function popStateListener(event) {
-      if (event.state === undefined) return; // Ignore extraneous popstate events in WebKit.
-
-      transitionTo(getCurrentLocation(event.state));
-    }
-
-    _DOMUtils.addEventListener(window, 'popstate', popStateListener);
-
-    return function () {
-      _DOMUtils.removeEventListener(window, 'popstate', popStateListener);
-    };
-  }
-
-  function finishTransition(location) {
-    var basename = location.basename;
-    var pathname = location.pathname;
-    var search = location.search;
-    var hash = location.hash;
-    var state = location.state;
-    var action = location.action;
-    var key = location.key;
-
-    if (action === _Actions.POP) return; // Nothing to do.
-
-    _DOMStateStorage.saveState(key, state);
-
-    var path = (basename || '') + pathname + search + hash;
-    var historyState = {
-      key: key
-    };
-
-    if (action === _Actions.PUSH) {
-      if (useRefresh) {
-        window.location.href = path;
-        return false; // Prevent location update.
-      } else {
-          window.history.pushState(historyState, null, path);
-        }
-    } else {
-      // REPLACE
-      if (useRefresh) {
-        window.location.replace(path);
-        return false; // Prevent location update.
-      } else {
-          window.history.replaceState(historyState, null, path);
-        }
-    }
-  }
-
-  var history = _createDOMHistory2['default'](_extends({}, options, {
-    getCurrentLocation: getCurrentLocation,
-    finishTransition: finishTransition,
-    saveState: _DOMStateStorage.saveState
-  }));
-
-  var listenerCount = 0,
-      stopPopStateListener = undefined;
-
-  function listenBefore(listener) {
-    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
-
-    var unlisten = history.listenBefore(listener);
-
-    return function () {
-      unlisten();
-
-      if (--listenerCount === 0) stopPopStateListener();
-    };
-  }
-
-  function listen(listener) {
-    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
-
-    var unlisten = history.listen(listener);
-
-    return function () {
-      unlisten();
-
-      if (--listenerCount === 0) stopPopStateListener();
-    };
-  }
-
-  // deprecated
-  function registerTransitionHook(hook) {
-    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
-
-    history.registerTransitionHook(hook);
-  }
-
-  // deprecated
-  function unregisterTransitionHook(hook) {
-    history.unregisterTransitionHook(hook);
-
-    if (--listenerCount === 0) stopPopStateListener();
-  }
-
-  return _extends({}, history, {
-    listenBefore: listenBefore,
-    listen: listen,
-    registerTransitionHook: registerTransitionHook,
-    unregisterTransitionHook: unregisterTransitionHook
-  });
-}
-
-exports['default'] = createBrowserHistory;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./Actions":31,"./DOMStateStorage":33,"./DOMUtils":34,"./ExecutionEnvironment":35,"./PathUtils":36,"./createDOMHistory":38,"_process":62,"invariant":49}],38:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _invariant = require('invariant');
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _ExecutionEnvironment = require('./ExecutionEnvironment');
-
-var _DOMUtils = require('./DOMUtils');
-
-var _createHistory = require('./createHistory');
-
-var _createHistory2 = _interopRequireDefault(_createHistory);
-
-function createDOMHistory(options) {
-  var history = _createHistory2['default'](_extends({
-    getUserConfirmation: _DOMUtils.getUserConfirmation
-  }, options, {
-    go: _DOMUtils.go
-  }));
-
-  function listen(listener) {
-    !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'DOM history needs a DOM') : _invariant2['default'](false) : undefined;
-
-    return history.listen(listener);
-  }
-
-  return _extends({}, history, {
-    listen: listen
-  });
-}
-
-exports['default'] = createDOMHistory;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./DOMUtils":34,"./ExecutionEnvironment":35,"./createHistory":40,"_process":62,"invariant":49}],39:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _invariant = require('invariant');
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _Actions = require('./Actions');
-
-var _PathUtils = require('./PathUtils');
-
-var _ExecutionEnvironment = require('./ExecutionEnvironment');
-
-var _DOMUtils = require('./DOMUtils');
-
-var _DOMStateStorage = require('./DOMStateStorage');
-
-var _createDOMHistory = require('./createDOMHistory');
-
-var _createDOMHistory2 = _interopRequireDefault(_createDOMHistory);
-
-function isAbsolutePath(path) {
-  return typeof path === 'string' && path.charAt(0) === '/';
-}
-
-function ensureSlash() {
-  var path = _DOMUtils.getHashPath();
-
-  if (isAbsolutePath(path)) return true;
-
-  _DOMUtils.replaceHashPath('/' + path);
-
-  return false;
-}
-
-function addQueryStringValueToPath(path, key, value) {
-  return path + (path.indexOf('?') === -1 ? '?' : '&') + (key + '=' + value);
-}
-
-function stripQueryStringValueFromPath(path, key) {
-  return path.replace(new RegExp('[?&]?' + key + '=[a-zA-Z0-9]+'), '');
-}
-
-function getQueryStringValueFromPath(path, key) {
-  var match = path.match(new RegExp('\\?.*?\\b' + key + '=(.+?)\\b'));
-  return match && match[1];
-}
-
-var DefaultQueryKey = '_k';
-
-function createHashHistory() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Hash history needs a DOM') : _invariant2['default'](false) : undefined;
-
-  var queryKey = options.queryKey;
-
-  if (queryKey === undefined || !!queryKey) queryKey = typeof queryKey === 'string' ? queryKey : DefaultQueryKey;
-
-  function getCurrentLocation() {
-    var path = _DOMUtils.getHashPath();
-
-    var key = undefined,
-        state = undefined;
-    if (queryKey) {
-      key = getQueryStringValueFromPath(path, queryKey);
-      path = stripQueryStringValueFromPath(path, queryKey);
-
-      if (key) {
-        state = _DOMStateStorage.readState(key);
-      } else {
-        state = null;
-        key = history.createKey();
-        _DOMUtils.replaceHashPath(addQueryStringValueToPath(path, queryKey, key));
-      }
-    } else {
-      key = state = null;
-    }
-
-    var location = _PathUtils.parsePath(path);
-
-    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
-  }
-
-  function startHashChangeListener(_ref) {
-    var transitionTo = _ref.transitionTo;
-
-    function hashChangeListener() {
-      if (!ensureSlash()) return; // Always make sure hashes are preceeded with a /.
-
-      transitionTo(getCurrentLocation());
-    }
-
-    ensureSlash();
-    _DOMUtils.addEventListener(window, 'hashchange', hashChangeListener);
-
-    return function () {
-      _DOMUtils.removeEventListener(window, 'hashchange', hashChangeListener);
-    };
-  }
-
-  function finishTransition(location) {
-    var basename = location.basename;
-    var pathname = location.pathname;
-    var search = location.search;
-    var state = location.state;
-    var action = location.action;
-    var key = location.key;
-
-    if (action === _Actions.POP) return; // Nothing to do.
-
-    var path = (basename || '') + pathname + search;
-
-    if (queryKey) {
-      path = addQueryStringValueToPath(path, queryKey, key);
-      _DOMStateStorage.saveState(key, state);
-    } else {
-      // Drop key and state.
-      location.key = location.state = null;
-    }
-
-    var currentHash = _DOMUtils.getHashPath();
-
-    if (action === _Actions.PUSH) {
-      if (currentHash !== path) {
-        window.location.hash = path;
-      } else {
-        process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'You cannot PUSH the same path using hash history') : undefined;
-      }
-    } else if (currentHash !== path) {
-      // REPLACE
-      _DOMUtils.replaceHashPath(path);
-    }
-  }
-
-  var history = _createDOMHistory2['default'](_extends({}, options, {
-    getCurrentLocation: getCurrentLocation,
-    finishTransition: finishTransition,
-    saveState: _DOMStateStorage.saveState
-  }));
-
-  var listenerCount = 0,
-      stopHashChangeListener = undefined;
-
-  function listenBefore(listener) {
-    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
-
-    var unlisten = history.listenBefore(listener);
-
-    return function () {
-      unlisten();
-
-      if (--listenerCount === 0) stopHashChangeListener();
-    };
-  }
-
-  function listen(listener) {
-    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
-
-    var unlisten = history.listen(listener);
-
-    return function () {
-      unlisten();
-
-      if (--listenerCount === 0) stopHashChangeListener();
-    };
-  }
-
-  function push(location) {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || location.state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
-
-    history.push(location);
-  }
-
-  function replace(location) {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || location.state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
-
-    history.replace(location);
-  }
-
-  var goIsSupportedWithoutReload = _DOMUtils.supportsGoWithoutReloadUsingHash();
-
-  function go(n) {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](goIsSupportedWithoutReload, 'Hash history go(n) causes a full page reload in this browser') : undefined;
-
-    history.go(n);
-  }
-
-  function createHref(path) {
-    return '#' + history.createHref(path);
-  }
-
-  // deprecated
-  function registerTransitionHook(hook) {
-    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
-
-    history.registerTransitionHook(hook);
-  }
-
-  // deprecated
-  function unregisterTransitionHook(hook) {
-    history.unregisterTransitionHook(hook);
-
-    if (--listenerCount === 0) stopHashChangeListener();
-  }
-
-  // deprecated
-  function pushState(state, path) {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
-
-    history.pushState(state, path);
-  }
-
-  // deprecated
-  function replaceState(state, path) {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
-
-    history.replaceState(state, path);
-  }
-
-  return _extends({}, history, {
-    listenBefore: listenBefore,
-    listen: listen,
-    push: push,
-    replace: replace,
-    go: go,
-    createHref: createHref,
-
-    registerTransitionHook: registerTransitionHook, // deprecated - warning is in createHistory
-    unregisterTransitionHook: unregisterTransitionHook, // deprecated - warning is in createHistory
-    pushState: pushState, // deprecated - warning is in createHistory
-    replaceState: replaceState // deprecated - warning is in createHistory
-  });
-}
-
-exports['default'] = createHashHistory;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./Actions":31,"./DOMStateStorage":33,"./DOMUtils":34,"./ExecutionEnvironment":35,"./PathUtils":36,"./createDOMHistory":38,"_process":62,"invariant":49,"warning":47}],40:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _deepEqual = require('deep-equal');
-
-var _deepEqual2 = _interopRequireDefault(_deepEqual);
-
-var _PathUtils = require('./PathUtils');
-
-var _AsyncUtils = require('./AsyncUtils');
-
-var _Actions = require('./Actions');
-
-var _createLocation2 = require('./createLocation');
-
-var _createLocation3 = _interopRequireDefault(_createLocation2);
-
-var _runTransitionHook = require('./runTransitionHook');
-
-var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
-
-var _deprecate = require('./deprecate');
-
-var _deprecate2 = _interopRequireDefault(_deprecate);
-
-function createRandomKey(length) {
-  return Math.random().toString(36).substr(2, length);
-}
-
-function locationsAreEqual(a, b) {
-  return a.pathname === b.pathname && a.search === b.search &&
-  //a.action === b.action && // Different action !== location change.
-  a.key === b.key && _deepEqual2['default'](a.state, b.state);
-}
-
-var DefaultKeyLength = 6;
-
-function createHistory() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-  var getCurrentLocation = options.getCurrentLocation;
-  var finishTransition = options.finishTransition;
-  var saveState = options.saveState;
-  var go = options.go;
-  var getUserConfirmation = options.getUserConfirmation;
-  var keyLength = options.keyLength;
-
-  if (typeof keyLength !== 'number') keyLength = DefaultKeyLength;
-
-  var transitionHooks = [];
-
-  function listenBefore(hook) {
-    transitionHooks.push(hook);
-
-    return function () {
-      transitionHooks = transitionHooks.filter(function (item) {
-        return item !== hook;
-      });
-    };
-  }
-
-  var allKeys = [];
-  var changeListeners = [];
-  var location = undefined;
-
-  function getCurrent() {
-    if (pendingLocation && pendingLocation.action === _Actions.POP) {
-      return allKeys.indexOf(pendingLocation.key);
-    } else if (location) {
-      return allKeys.indexOf(location.key);
-    } else {
-      return -1;
-    }
-  }
-
-  function updateLocation(newLocation) {
-    var current = getCurrent();
-
-    location = newLocation;
-
-    if (location.action === _Actions.PUSH) {
-      allKeys = [].concat(allKeys.slice(0, current + 1), [location.key]);
-    } else if (location.action === _Actions.REPLACE) {
-      allKeys[current] = location.key;
-    }
-
-    changeListeners.forEach(function (listener) {
-      listener(location);
-    });
-  }
-
-  function listen(listener) {
-    changeListeners.push(listener);
-
-    if (location) {
-      listener(location);
-    } else {
-      var _location = getCurrentLocation();
-      allKeys = [_location.key];
-      updateLocation(_location);
-    }
-
-    return function () {
-      changeListeners = changeListeners.filter(function (item) {
-        return item !== listener;
-      });
-    };
-  }
-
-  function confirmTransitionTo(location, callback) {
-    _AsyncUtils.loopAsync(transitionHooks.length, function (index, next, done) {
-      _runTransitionHook2['default'](transitionHooks[index], location, function (result) {
-        if (result != null) {
-          done(result);
-        } else {
-          next();
-        }
-      });
-    }, function (message) {
-      if (getUserConfirmation && typeof message === 'string') {
-        getUserConfirmation(message, function (ok) {
-          callback(ok !== false);
-        });
-      } else {
-        callback(message !== false);
-      }
-    });
-  }
-
-  var pendingLocation = undefined;
-
-  function transitionTo(nextLocation) {
-    if (location && locationsAreEqual(location, nextLocation)) return; // Nothing to do.
-
-    pendingLocation = nextLocation;
-
-    confirmTransitionTo(nextLocation, function (ok) {
-      if (pendingLocation !== nextLocation) return; // Transition was interrupted.
-
-      if (ok) {
-        // treat PUSH to current path like REPLACE to be consistent with browsers
-        if (nextLocation.action === _Actions.PUSH) {
-          var prevPath = createPath(location);
-          var nextPath = createPath(nextLocation);
-
-          if (nextPath === prevPath && _deepEqual2['default'](location.state, nextLocation.state)) nextLocation.action = _Actions.REPLACE;
-        }
-
-        if (finishTransition(nextLocation) !== false) updateLocation(nextLocation);
-      } else if (location && nextLocation.action === _Actions.POP) {
-        var prevIndex = allKeys.indexOf(location.key);
-        var nextIndex = allKeys.indexOf(nextLocation.key);
-
-        if (prevIndex !== -1 && nextIndex !== -1) go(prevIndex - nextIndex); // Restore the URL.
-      }
-    });
-  }
-
-  function push(location) {
-    transitionTo(createLocation(location, _Actions.PUSH, createKey()));
-  }
-
-  function replace(location) {
-    transitionTo(createLocation(location, _Actions.REPLACE, createKey()));
-  }
-
-  function goBack() {
-    go(-1);
-  }
-
-  function goForward() {
-    go(1);
-  }
-
-  function createKey() {
-    return createRandomKey(keyLength);
-  }
-
-  function createPath(location) {
-    if (location == null || typeof location === 'string') return location;
-
-    var pathname = location.pathname;
-    var search = location.search;
-    var hash = location.hash;
-
-    var result = pathname;
-
-    if (search) result += search;
-
-    if (hash) result += hash;
-
-    return result;
-  }
-
-  function createHref(location) {
-    return createPath(location);
-  }
-
-  function createLocation(location, action) {
-    var key = arguments.length <= 2 || arguments[2] === undefined ? createKey() : arguments[2];
-
-    if (typeof action === 'object') {
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'The state (2nd) argument to history.createLocation is deprecated; use a ' + 'location descriptor instead') : undefined;
-
-      if (typeof location === 'string') location = _PathUtils.parsePath(location);
-
-      location = _extends({}, location, { state: action });
-
-      action = key;
-      key = arguments[3] || createKey();
-    }
-
-    return _createLocation3['default'](location, action, key);
-  }
-
-  // deprecated
-  function setState(state) {
-    if (location) {
-      updateLocationState(location, state);
-      updateLocation(location);
-    } else {
-      updateLocationState(getCurrentLocation(), state);
-    }
-  }
-
-  function updateLocationState(location, state) {
-    location.state = _extends({}, location.state, state);
-    saveState(location.key, location.state);
-  }
-
-  // deprecated
-  function registerTransitionHook(hook) {
-    if (transitionHooks.indexOf(hook) === -1) transitionHooks.push(hook);
-  }
-
-  // deprecated
-  function unregisterTransitionHook(hook) {
-    transitionHooks = transitionHooks.filter(function (item) {
-      return item !== hook;
-    });
-  }
-
-  // deprecated
-  function pushState(state, path) {
-    if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-    push(_extends({ state: state }, path));
-  }
-
-  // deprecated
-  function replaceState(state, path) {
-    if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-    replace(_extends({ state: state }, path));
-  }
-
-  return {
-    listenBefore: listenBefore,
-    listen: listen,
-    transitionTo: transitionTo,
-    push: push,
-    replace: replace,
-    go: go,
-    goBack: goBack,
-    goForward: goForward,
-    createKey: createKey,
-    createPath: createPath,
-    createHref: createHref,
-    createLocation: createLocation,
-
-    setState: _deprecate2['default'](setState, 'setState is deprecated; use location.key to save state instead'),
-    registerTransitionHook: _deprecate2['default'](registerTransitionHook, 'registerTransitionHook is deprecated; use listenBefore instead'),
-    unregisterTransitionHook: _deprecate2['default'](unregisterTransitionHook, 'unregisterTransitionHook is deprecated; use the callback returned from listenBefore instead'),
-    pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
-    replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
-  };
-}
-
-exports['default'] = createHistory;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./Actions":31,"./AsyncUtils":32,"./PathUtils":36,"./createLocation":41,"./deprecate":43,"./runTransitionHook":44,"_process":62,"deep-equal":2,"warning":47}],41:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _Actions = require('./Actions');
-
-var _PathUtils = require('./PathUtils');
-
-function createLocation() {
-  var location = arguments.length <= 0 || arguments[0] === undefined ? '/' : arguments[0];
-  var action = arguments.length <= 1 || arguments[1] === undefined ? _Actions.POP : arguments[1];
-  var key = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
-
-  var _fourthArg = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
-
-  if (typeof location === 'string') location = _PathUtils.parsePath(location);
-
-  if (typeof action === 'object') {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'The state (2nd) argument to createLocation is deprecated; use a ' + 'location descriptor instead') : undefined;
-
-    location = _extends({}, location, { state: action });
-
-    action = key || _Actions.POP;
-    key = _fourthArg;
-  }
-
-  var pathname = location.pathname || '/';
-  var search = location.search || '';
-  var hash = location.hash || '';
-  var state = location.state || null;
-
-  return {
-    pathname: pathname,
-    search: search,
-    hash: hash,
-    state: state,
-    action: action,
-    key: key
-  };
-}
-
-exports['default'] = createLocation;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./Actions":31,"./PathUtils":36,"_process":62,"warning":47}],42:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _invariant = require('invariant');
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
-var _PathUtils = require('./PathUtils');
-
-var _Actions = require('./Actions');
-
-var _createHistory = require('./createHistory');
-
-var _createHistory2 = _interopRequireDefault(_createHistory);
-
-function createStateStorage(entries) {
-  return entries.filter(function (entry) {
-    return entry.state;
-  }).reduce(function (memo, entry) {
-    memo[entry.key] = entry.state;
-    return memo;
-  }, {});
-}
-
-function createMemoryHistory() {
-  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  if (Array.isArray(options)) {
-    options = { entries: options };
-  } else if (typeof options === 'string') {
-    options = { entries: [options] };
-  }
-
-  var history = _createHistory2['default'](_extends({}, options, {
-    getCurrentLocation: getCurrentLocation,
-    finishTransition: finishTransition,
-    saveState: saveState,
-    go: go
-  }));
-
-  var _options = options;
-  var entries = _options.entries;
-  var current = _options.current;
-
-  if (typeof entries === 'string') {
-    entries = [entries];
-  } else if (!Array.isArray(entries)) {
-    entries = ['/'];
-  }
-
-  entries = entries.map(function (entry) {
-    var key = history.createKey();
-
-    if (typeof entry === 'string') return { pathname: entry, key: key };
-
-    if (typeof entry === 'object' && entry) return _extends({}, entry, { key: key });
-
-    !false ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Unable to create history entry from %s', entry) : _invariant2['default'](false) : undefined;
-  });
-
-  if (current == null) {
-    current = entries.length - 1;
-  } else {
-    !(current >= 0 && current < entries.length) ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Current index must be >= 0 and < %s, was %s', entries.length, current) : _invariant2['default'](false) : undefined;
-  }
-
-  var storage = createStateStorage(entries);
-
-  function saveState(key, state) {
-    storage[key] = state;
-  }
-
-  function readState(key) {
-    return storage[key];
-  }
-
-  function getCurrentLocation() {
-    var entry = entries[current];
-    var basename = entry.basename;
-    var pathname = entry.pathname;
-    var search = entry.search;
-
-    var path = (basename || '') + pathname + (search || '');
-
-    var key = undefined,
-        state = undefined;
-    if (entry.key) {
-      key = entry.key;
-      state = readState(key);
-    } else {
-      key = history.createKey();
-      state = null;
-      entry.key = key;
-    }
-
-    var location = _PathUtils.parsePath(path);
-
-    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
-  }
-
-  function canGo(n) {
-    var index = current + n;
-    return index >= 0 && index < entries.length;
-  }
-
-  function go(n) {
-    if (n) {
-      if (!canGo(n)) {
-        process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'Cannot go(%s) there is not enough history', n) : undefined;
-        return;
-      }
-
-      current += n;
-
-      var currentLocation = getCurrentLocation();
-
-      // change action to POP
-      history.transitionTo(_extends({}, currentLocation, { action: _Actions.POP }));
-    }
-  }
-
-  function finishTransition(location) {
-    switch (location.action) {
-      case _Actions.PUSH:
-        current += 1;
-
-        // if we are not on the top of stack
-        // remove rest and push new
-        if (current < entries.length) entries.splice(current);
-
-        entries.push(location);
-        saveState(location.key, location.state);
-        break;
-      case _Actions.REPLACE:
-        entries[current] = location;
-        saveState(location.key, location.state);
-        break;
-    }
-  }
-
-  return history;
-}
-
-exports['default'] = createMemoryHistory;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./Actions":31,"./PathUtils":36,"./createHistory":40,"_process":62,"invariant":49,"warning":47}],43:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function deprecate(fn, message) {
-  return function () {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] ' + message) : undefined;
-    return fn.apply(this, arguments);
-  };
-}
-
-exports['default'] = deprecate;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"_process":62,"warning":47}],44:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-function runTransitionHook(hook, location, callback) {
-  var result = hook(location, callback);
-
-  if (hook.length < 2) {
-    // Assume the hook runs synchronously and automatically
-    // call the callback with the return value.
-    callback(result);
-  } else {
-    process.env.NODE_ENV !== 'production' ? _warning2['default'](result === undefined, 'You should not "return" in a transition hook with a callback argument; call the callback instead') : undefined;
-  }
-}
-
-exports['default'] = runTransitionHook;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"_process":62,"warning":47}],45:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _ExecutionEnvironment = require('./ExecutionEnvironment');
-
-var _PathUtils = require('./PathUtils');
-
-var _runTransitionHook = require('./runTransitionHook');
-
-var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
-
-var _deprecate = require('./deprecate');
-
-var _deprecate2 = _interopRequireDefault(_deprecate);
-
-function useBasename(createHistory) {
-  return function () {
-    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    var history = createHistory(options);
-
-    var basename = options.basename;
-
-    var checkedBaseHref = false;
-
-    function checkBaseHref() {
-      if (checkedBaseHref) {
-        return;
-      }
-
-      // Automatically use the value of <base href> in HTML
-      // documents as basename if it's not explicitly given.
-      if (basename == null && _ExecutionEnvironment.canUseDOM) {
-        var base = document.getElementsByTagName('base')[0];
-        var baseHref = base && base.getAttribute('href');
-
-        if (baseHref != null) {
-          basename = baseHref;
-
-          process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'Automatically setting basename using <base href> is deprecated and will ' + 'be removed in the next major release. The semantics of <base href> are ' + 'subtly different from basename. Please pass the basename explicitly in ' + 'the options to createHistory') : undefined;
-        }
-      }
-
-      checkedBaseHref = true;
-    }
-
-    function addBasename(location) {
-      checkBaseHref();
-
-      if (basename && location.basename == null) {
-        if (location.pathname.indexOf(basename) === 0) {
-          location.pathname = location.pathname.substring(basename.length);
-          location.basename = basename;
-
-          if (location.pathname === '') location.pathname = '/';
-        } else {
-          location.basename = '';
-        }
-      }
-
-      return location;
-    }
-
-    function prependBasename(location) {
-      checkBaseHref();
-
-      if (!basename) return location;
-
-      if (typeof location === 'string') location = _PathUtils.parsePath(location);
-
-      var pname = location.pathname;
-      var normalizedBasename = basename.slice(-1) === '/' ? basename : basename + '/';
-      var normalizedPathname = pname.charAt(0) === '/' ? pname.slice(1) : pname;
-      var pathname = normalizedBasename + normalizedPathname;
-
-      return _extends({}, location, {
-        pathname: pathname
-      });
-    }
-
-    // Override all read methods with basename-aware versions.
-    function listenBefore(hook) {
-      return history.listenBefore(function (location, callback) {
-        _runTransitionHook2['default'](hook, addBasename(location), callback);
-      });
-    }
-
-    function listen(listener) {
-      return history.listen(function (location) {
-        listener(addBasename(location));
-      });
-    }
-
-    // Override all write methods with basename-aware versions.
-    function push(location) {
-      history.push(prependBasename(location));
-    }
-
-    function replace(location) {
-      history.replace(prependBasename(location));
-    }
-
-    function createPath(location) {
-      return history.createPath(prependBasename(location));
-    }
-
-    function createHref(location) {
-      return history.createHref(prependBasename(location));
-    }
-
-    function createLocation(location) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      return addBasename(history.createLocation.apply(history, [prependBasename(location)].concat(args)));
-    }
-
-    // deprecated
-    function pushState(state, path) {
-      if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-      push(_extends({ state: state }, path));
-    }
-
-    // deprecated
-    function replaceState(state, path) {
-      if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-      replace(_extends({ state: state }, path));
-    }
-
-    return _extends({}, history, {
-      listenBefore: listenBefore,
-      listen: listen,
-      push: push,
-      replace: replace,
-      createPath: createPath,
-      createHref: createHref,
-      createLocation: createLocation,
-
-      pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
-      replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
-    });
-  };
-}
-
-exports['default'] = useBasename;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./ExecutionEnvironment":35,"./PathUtils":36,"./deprecate":43,"./runTransitionHook":44,"_process":62,"warning":47}],46:[function(require,module,exports){
-(function (process){
-'use strict';
-
-exports.__esModule = true;
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-var _warning = require('warning');
-
-var _warning2 = _interopRequireDefault(_warning);
-
-var _queryString = require('query-string');
-
-var _runTransitionHook = require('./runTransitionHook');
-
-var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
-
-var _PathUtils = require('./PathUtils');
-
-var _deprecate = require('./deprecate');
-
-var _deprecate2 = _interopRequireDefault(_deprecate);
-
-var SEARCH_BASE_KEY = '$searchBase';
-
-function defaultStringifyQuery(query) {
-  return _queryString.stringify(query).replace(/%20/g, '+');
-}
-
-var defaultParseQueryString = _queryString.parse;
-
-function isNestedObject(object) {
-  for (var p in object) {
-    if (Object.prototype.hasOwnProperty.call(object, p) && typeof object[p] === 'object' && !Array.isArray(object[p]) && object[p] !== null) return true;
-  }return false;
-}
-
-/**
- * Returns a new createHistory function that may be used to create
- * history objects that know how to handle URL queries.
- */
-function useQueries(createHistory) {
-  return function () {
-    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-    var history = createHistory(options);
-
-    var stringifyQuery = options.stringifyQuery;
-    var parseQueryString = options.parseQueryString;
-
-    if (typeof stringifyQuery !== 'function') stringifyQuery = defaultStringifyQuery;
-
-    if (typeof parseQueryString !== 'function') parseQueryString = defaultParseQueryString;
-
-    function addQuery(location) {
-      if (location.query == null) {
-        var search = location.search;
-
-        location.query = parseQueryString(search.substring(1));
-        location[SEARCH_BASE_KEY] = { search: search, searchBase: '' };
-      }
-
-      // TODO: Instead of all the book-keeping here, this should just strip the
-      // stringified query from the search.
-
-      return location;
-    }
-
-    function appendQuery(location, query) {
-      var _extends2;
-
-      var searchBaseSpec = location[SEARCH_BASE_KEY];
-      var queryString = query ? stringifyQuery(query) : '';
-      if (!searchBaseSpec && !queryString) {
-        return location;
-      }
-
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](stringifyQuery !== defaultStringifyQuery || !isNestedObject(query), 'useQueries does not stringify nested query objects by default; ' + 'use a custom stringifyQuery function') : undefined;
-
-      if (typeof location === 'string') location = _PathUtils.parsePath(location);
-
-      var searchBase = undefined;
-      if (searchBaseSpec && location.search === searchBaseSpec.search) {
-        searchBase = searchBaseSpec.searchBase;
-      } else {
-        searchBase = location.search || '';
-      }
-
-      var search = searchBase;
-      if (queryString) {
-        search += (search ? '&' : '?') + queryString;
-      }
-
-      return _extends({}, location, (_extends2 = {
-        search: search
-      }, _extends2[SEARCH_BASE_KEY] = { search: search, searchBase: searchBase }, _extends2));
-    }
-
-    // Override all read methods with query-aware versions.
-    function listenBefore(hook) {
-      return history.listenBefore(function (location, callback) {
-        _runTransitionHook2['default'](hook, addQuery(location), callback);
-      });
-    }
-
-    function listen(listener) {
-      return history.listen(function (location) {
-        listener(addQuery(location));
-      });
-    }
-
-    // Override all write methods with query-aware versions.
-    function push(location) {
-      history.push(appendQuery(location, location.query));
-    }
-
-    function replace(location) {
-      history.replace(appendQuery(location, location.query));
-    }
-
-    function createPath(location, query) {
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](!query, 'the query argument to createPath is deprecated; use a location descriptor instead') : undefined;
-
-      return history.createPath(appendQuery(location, query || location.query));
-    }
-
-    function createHref(location, query) {
-      process.env.NODE_ENV !== 'production' ? _warning2['default'](!query, 'the query argument to createHref is deprecated; use a location descriptor instead') : undefined;
-
-      return history.createHref(appendQuery(location, query || location.query));
-    }
-
-    function createLocation(location) {
-      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-
-      var fullLocation = history.createLocation.apply(history, [appendQuery(location, location.query)].concat(args));
-      if (location.query) {
-        fullLocation.query = location.query;
-      }
-      return addQuery(fullLocation);
-    }
-
-    // deprecated
-    function pushState(state, path, query) {
-      if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-      push(_extends({ state: state }, path, { query: query }));
-    }
-
-    // deprecated
-    function replaceState(state, path, query) {
-      if (typeof path === 'string') path = _PathUtils.parsePath(path);
-
-      replace(_extends({ state: state }, path, { query: query }));
-    }
-
-    return _extends({}, history, {
-      listenBefore: listenBefore,
-      listen: listen,
-      push: push,
-      replace: replace,
-      createPath: createPath,
-      createHref: createHref,
-      createLocation: createLocation,
-
-      pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
-      replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
-    });
-  };
-}
-
-exports['default'] = useQueries;
-module.exports = exports['default'];
-}).call(this,require('_process'))
-},{"./PathUtils":36,"./deprecate":43,"./runTransitionHook":44,"_process":62,"query-string":63,"warning":47}],47:[function(require,module,exports){
-/**
- * Copyright 2014-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-'use strict';
-
-/**
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-
-var warning = function() {};
-
-if ("production" !== 'production') {
-  warning = function(condition, format, args) {
-    var len = arguments.length;
-    args = new Array(len > 2 ? len - 2 : 0);
-    for (var key = 2; key < len; key++) {
-      args[key - 2] = arguments[key];
-    }
-    if (format === undefined) {
-      throw new Error(
-        '`warning(condition, format, ...args)` requires a warning ' +
-        'message argument'
-      );
-    }
-
-    if (format.length < 10 || (/^[s\W]*$/).test(format)) {
-      throw new Error(
-        'The warning format should be able to uniquely identify this ' +
-        'warning. Please, use a more descriptive format than: ' + format
-      );
-    }
-
-    if (!condition) {
-      var argIndex = 0;
-      var message = 'Warning: ' +
-        format.replace(/%s/g, function() {
-          return args[argIndex++];
-        });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch(x) {}
-    }
-  };
-}
-
-module.exports = warning;
-
-},{}],48:[function(require,module,exports){
-/**
  * Copyright 2015, Yahoo! Inc.
  * Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
@@ -12755,7 +11028,7 @@ module.exports = function hoistNonReactStatics(targetComponent, sourceComponent,
     return targetComponent;
 };
 
-},{}],49:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /**
  * Copyright 2013-2015, Facebook, Inc.
  * All rights reserved.
@@ -12808,7 +11081,7 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 
 module.exports = invariant;
 
-},{}],50:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -13161,7 +11434,7 @@ function isObjectLike(value) {
 module.exports = flatten;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],51:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -14096,7 +12369,7 @@ function get(object, path, defaultValue) {
 module.exports = get;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],52:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -14682,7 +12955,7 @@ function stubFalse() {
 module.exports = isEmpty;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],53:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 (function (global){
 /**
  * lodash (Custom Build) <https://lodash.com/>
@@ -15618,7 +13891,7 @@ function result(object, path, defaultValue) {
 module.exports = result;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],54:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 /**
  * lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -16087,7 +14360,7 @@ function values(object) {
 
 module.exports = values;
 
-},{}],55:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /** Built-in value references. */
@@ -16095,7 +14368,7 @@ var getPrototype = overArg(Object.getPrototypeOf, Object);
 
 module.exports = getPrototype;
 
-},{"./_overArg":57}],56:[function(require,module,exports){
+},{"./_overArg":40}],39:[function(require,module,exports){
 /**
  * Checks if `value` is a host object in IE < 9.
  *
@@ -16117,7 +14390,7 @@ function isHostObject(value) {
 
 module.exports = isHostObject;
 
-},{}],57:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -16134,7 +14407,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],58:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -16165,7 +14438,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],59:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 var getPrototype = require('./_getPrototype'),
     isHostObject = require('./_isHostObject'),
     isObjectLike = require('./isObjectLike');
@@ -16237,7 +14510,7 @@ function isPlainObject(value) {
 
 module.exports = isPlainObject;
 
-},{"./_getPrototype":55,"./_isHostObject":56,"./isObjectLike":58}],60:[function(require,module,exports){
+},{"./_getPrototype":38,"./_isHostObject":39,"./isObjectLike":41}],43:[function(require,module,exports){
 /*!
  * numeral.js
  * version : 1.5.3
@@ -16918,7 +15191,7 @@ module.exports = isPlainObject;
     }
 }).call(this);
 
-},{}],61:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 'use strict';
 /* eslint-disable no-unused-vars */
 var hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -17003,7 +15276,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 	return to;
 };
 
-},{}],62:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -17185,7 +15458,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],63:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 'use strict';
 var strictUriEncode = require('strict-uri-encode');
 
@@ -17253,7 +15526,7 @@ exports.stringify = function (obj) {
 	}).join('&') : '';
 };
 
-},{"strict-uri-encode":333}],64:[function(require,module,exports){
+},{"strict-uri-encode":333}],47:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -17285,7 +15558,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],65:[function(require,module,exports){
+},{"react":325}],48:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -17466,7 +15739,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"./DataSeries":67,"d3":1,"react":325}],66:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"./DataSeries":50,"d3":1,"react":325}],49:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -17533,7 +15806,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./Area":64,"react":325}],67:[function(require,module,exports){
+},{"../utils":105,"./Area":47,"react":325}],50:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -17575,12 +15848,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"./AreaContainer":66,"d3":1,"react":325}],68:[function(require,module,exports){
+},{"./AreaContainer":49,"d3":1,"react":325}],51:[function(require,module,exports){
 'use strict';
 
 exports.AreaChart = require('./AreaChart');
 
-},{"./AreaChart":65}],69:[function(require,module,exports){
+},{"./AreaChart":48}],52:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -17626,7 +15899,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],70:[function(require,module,exports){
+},{"react":325}],53:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -17831,7 +16104,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"./DataSeries":72,"d3":1,"react":325}],71:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"./DataSeries":55,"d3":1,"react":325}],54:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -17899,7 +16172,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./Bar":69,"react":325,"react-dom":124}],72:[function(require,module,exports){
+},{"../utils":105,"./Bar":52,"react":325,"react-dom":107}],55:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -17971,12 +16244,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"./BarContainer":71,"react":325}],73:[function(require,module,exports){
+},{"./BarContainer":54,"react":325}],56:[function(require,module,exports){
 'use strict';
 
 exports.BarChart = require('./BarChart');
 
-},{"./BarChart":70}],74:[function(require,module,exports){
+},{"./BarChart":53}],57:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18019,7 +16292,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],75:[function(require,module,exports){
+},{"react":325}],58:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18178,7 +16451,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"../utils":122,"./DataSeries":77,"d3":1,"react":325}],76:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"../utils":105,"./DataSeries":60,"d3":1,"react":325}],59:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18258,7 +16531,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./Candle":74,"./Wick":78,"react":325}],77:[function(require,module,exports){
+},{"../utils":105,"./Candle":57,"./Wick":61,"react":325}],60:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18313,7 +16586,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./CandlestickContainer":76,"react":325}],78:[function(require,module,exports){
+},{"./CandlestickContainer":59,"react":325}],61:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18352,12 +16625,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],79:[function(require,module,exports){
+},{"react":325}],62:[function(require,module,exports){
 'use strict';
 
 exports.CandlestickChart = require('./CandlestickChart');
 
-},{"./CandlestickChart":75}],80:[function(require,module,exports){
+},{"./CandlestickChart":58}],63:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18434,7 +16707,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"d3":1,"react":325}],81:[function(require,module,exports){
+},{"d3":1,"react":325}],64:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18478,7 +16751,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],82:[function(require,module,exports){
+},{"react":325}],65:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18520,7 +16793,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],83:[function(require,module,exports){
+},{"react":325}],66:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18561,7 +16834,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./Polygon":81,"d3":1,"react":325}],84:[function(require,module,exports){
+},{"./Polygon":64,"d3":1,"react":325}],67:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18623,7 +16896,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],85:[function(require,module,exports){
+},{"react":325}],68:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -18861,7 +17134,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],86:[function(require,module,exports){
+},{"react":325}],69:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -18928,7 +17201,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],87:[function(require,module,exports){
+},{"react":325}],70:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -19037,7 +17310,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./AxisLine":84,"./AxisTicks":85,"./Label":86,"d3":1,"react":325}],88:[function(require,module,exports){
+},{"./AxisLine":67,"./AxisTicks":68,"./Label":69,"d3":1,"react":325}],71:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -19150,13 +17423,13 @@ module.exports = React.createClass({
   }
 });
 
-},{"./AxisLine":84,"./AxisTicks":85,"./Label":86,"d3":1,"react":325}],89:[function(require,module,exports){
+},{"./AxisLine":67,"./AxisTicks":68,"./Label":69,"d3":1,"react":325}],72:[function(require,module,exports){
 'use strict';
 
 exports.XAxis = require('./XAxis');
 exports.YAxis = require('./YAxis');
 
-},{"./XAxis":87,"./YAxis":88}],90:[function(require,module,exports){
+},{"./XAxis":70,"./YAxis":71}],73:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19212,7 +17485,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],91:[function(require,module,exports){
+},{"react":325}],74:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -19267,7 +17540,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./BasicChart":90,"./LegendChart":92,"react":325}],92:[function(require,module,exports){
+},{"./BasicChart":73,"./LegendChart":75,"react":325}],75:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19358,14 +17631,14 @@ module.exports = React.createClass({
   }
 });
 
-},{"../Legend":80,"d3":1,"react":325}],93:[function(require,module,exports){
+},{"../Legend":63,"d3":1,"react":325}],76:[function(require,module,exports){
 'use strict';
 
 exports.BasicChart = require('./BasicChart');
 exports.Chart = require('./Chart');
 exports.LegendChart = require('./LegendChart');
 
-},{"./BasicChart":90,"./Chart":91,"./LegendChart":92}],94:[function(require,module,exports){
+},{"./BasicChart":73,"./Chart":74,"./LegendChart":75}],77:[function(require,module,exports){
 'use strict';
 
 exports.XAxis = require('./axes').XAxis;
@@ -19376,7 +17649,7 @@ exports.Legend = require('./Legend');
 exports.Tooltip = require('./Tooltip');
 exports.Voronoi = require('./Voronoi');
 
-},{"./Legend":80,"./Tooltip":82,"./Voronoi":83,"./axes":89,"./charts":93}],95:[function(require,module,exports){
+},{"./Legend":63,"./Tooltip":65,"./Voronoi":66,"./axes":72,"./charts":76}],78:[function(require,module,exports){
 'use strict';
 
 exports.BarChart = require('./barchart').BarChart;
@@ -19387,7 +17660,7 @@ exports.Treemap = require('./treemap').Treemap;
 exports.ScatterChart = require('./scatterchart').ScatterChart;
 exports.CandlestickChart = require('./candlestick').CandlestickChart;
 
-},{"./areachart":68,"./barchart":73,"./candlestick":79,"./linechart":101,"./piechart":111,"./scatterchart":116,"./treemap":121}],96:[function(require,module,exports){
+},{"./areachart":51,"./barchart":56,"./candlestick":62,"./linechart":84,"./piechart":94,"./scatterchart":99,"./treemap":104}],79:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19493,7 +17766,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./Line":97,"./VoronoiCircleContainer":100,"d3":1,"react":325}],97:[function(require,module,exports){
+},{"./Line":80,"./VoronoiCircleContainer":83,"d3":1,"react":325}],80:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19531,7 +17804,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],98:[function(require,module,exports){
+},{"react":325}],81:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19688,7 +17961,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"../utils":122,"./DataSeries":96,"react":325}],99:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"../utils":105,"./DataSeries":79,"react":325}],82:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19732,7 +18005,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],100:[function(require,module,exports){
+},{"react":325}],83:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19813,12 +18086,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./VoronoiCircle":99,"react":325,"react-dom":124}],101:[function(require,module,exports){
+},{"../utils":105,"./VoronoiCircle":82,"react":325,"react-dom":107}],84:[function(require,module,exports){
 'use strict';
 
 exports.LineChart = require('./LineChart');
 
-},{"./LineChart":98}],102:[function(require,module,exports){
+},{"./LineChart":81}],85:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19911,7 +18184,7 @@ module.exports = {
   }
 };
 
-},{"d3":1,"react":325}],103:[function(require,module,exports){
+},{"d3":1,"react":325}],86:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -19934,7 +18207,7 @@ module.exports = {
   }
 };
 
-},{"react":325}],104:[function(require,module,exports){
+},{"react":325}],87:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20000,7 +18273,7 @@ module.exports = {
   }
 };
 
-},{"react":325}],105:[function(require,module,exports){
+},{"react":325}],88:[function(require,module,exports){
 
 'use strict';
 
@@ -20079,7 +18352,7 @@ module.exports = {
   }
 };
 
-},{"react":325}],106:[function(require,module,exports){
+},{"react":325}],89:[function(require,module,exports){
 'use strict';
 
 exports.CartesianChartPropsMixin = require('./CartesianChartPropsMixin');
@@ -20087,7 +18360,7 @@ exports.DefaultAccessorsMixin = require('./DefaultAccessorsMixin');
 exports.ViewBoxMixin = require('./ViewBoxMixin');
 exports.TooltipMixin = require('./TooltipMixin');
 
-},{"./CartesianChartPropsMixin":102,"./DefaultAccessorsMixin":103,"./TooltipMixin":104,"./ViewBoxMixin":105}],107:[function(require,module,exports){
+},{"./CartesianChartPropsMixin":85,"./DefaultAccessorsMixin":86,"./TooltipMixin":87,"./ViewBoxMixin":88}],90:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20179,7 +18452,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"d3":1,"react":325}],108:[function(require,module,exports){
+},{"d3":1,"react":325}],91:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -20243,7 +18516,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./Arc":107,"react":325,"react-dom":124}],109:[function(require,module,exports){
+},{"../utils":105,"./Arc":90,"react":325,"react-dom":107}],92:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20312,7 +18585,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./ArcContainer":108,"d3":1,"react":325}],110:[function(require,module,exports){
+},{"./ArcContainer":91,"d3":1,"react":325}],93:[function(require,module,exports){
 'use strict';
 
 var d3 = require('d3');
@@ -20407,12 +18680,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"./DataSeries":109,"d3":1,"react":325}],111:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"./DataSeries":92,"d3":1,"react":325}],94:[function(require,module,exports){
 'use strict';
 
 exports.PieChart = require('./PieChart');
 
-},{"./PieChart":110}],112:[function(require,module,exports){
+},{"./PieChart":93}],95:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20495,7 +18768,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./VoronoiCircleContainer":115,"d3":1,"react":325}],113:[function(require,module,exports){
+},{"./VoronoiCircleContainer":98,"d3":1,"react":325}],96:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20658,7 +18931,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"../mixins":106,"../utils":122,"./DataSeries":112,"react":325}],114:[function(require,module,exports){
+},{"../common":77,"../mixins":89,"../utils":105,"./DataSeries":95,"react":325}],97:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20705,7 +18978,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],115:[function(require,module,exports){
+},{"react":325}],98:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20794,12 +19067,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./VoronoiCircle":114,"react":325,"react-dom":124}],116:[function(require,module,exports){
+},{"../utils":105,"./VoronoiCircle":97,"react":325,"react-dom":107}],99:[function(require,module,exports){
 'use strict';
 
 exports.ScatterChart = require('./ScatterChart');
 
-},{"./ScatterChart":113}],117:[function(require,module,exports){
+},{"./ScatterChart":96}],100:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20843,7 +19116,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"react":325}],118:[function(require,module,exports){
+},{"react":325}],101:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) {
@@ -20896,7 +19169,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"../utils":122,"./Cell":117,"react":325}],119:[function(require,module,exports){
+},{"../utils":105,"./Cell":100,"react":325}],102:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -20956,7 +19229,7 @@ module.exports = React.createClass({
   }
 });
 
-},{"./CellContainer":118,"d3":1,"react":325}],120:[function(require,module,exports){
+},{"./CellContainer":101,"d3":1,"react":325}],103:[function(require,module,exports){
 'use strict';
 
 var d3 = require('d3');
@@ -21019,12 +19292,12 @@ module.exports = React.createClass({
   }
 });
 
-},{"../common":94,"./DataSeries":119,"d3":1,"react":325}],121:[function(require,module,exports){
+},{"../common":77,"./DataSeries":102,"d3":1,"react":325}],104:[function(require,module,exports){
 'use strict';
 
 exports.Treemap = require('./Treemap');
 
-},{"./Treemap":120}],122:[function(require,module,exports){
+},{"./Treemap":103}],105:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -21190,7 +19463,7 @@ exports.shade = function (hex, percent) {
   return '#' + red + green + blue;
 };
 
-},{"d3":1}],123:[function(require,module,exports){
+},{"d3":1}],106:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21199,12 +19472,12 @@ var getDisplayName = function getDisplayName(Component) {
 };
 
 exports.default = getDisplayName;
-},{}],124:[function(require,module,exports){
+},{}],107:[function(require,module,exports){
 'use strict';
 
 module.exports = require('react/lib/ReactDOM');
 
-},{"react/lib/ReactDOM":217}],125:[function(require,module,exports){
+},{"react/lib/ReactDOM":217}],108:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21283,7 +19556,7 @@ Provider.propTypes = {
 Provider.childContextTypes = {
   store: _storeShape2["default"].isRequired
 };
-},{"../utils/storeShape":129,"../utils/warning":130,"react":325}],126:[function(require,module,exports){
+},{"../utils/storeShape":112,"../utils/warning":113,"react":325}],109:[function(require,module,exports){
 'use strict';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
@@ -21677,7 +19950,7 @@ function connect(mapStateToProps, mapDispatchToProps, mergeProps) {
     return (0, _hoistNonReactStatics2["default"])(Connect, WrappedComponent);
   };
 }
-},{"../utils/shallowEqual":128,"../utils/storeShape":129,"../utils/warning":130,"../utils/wrapActionCreators":131,"hoist-non-react-statics":48,"invariant":49,"lodash/isPlainObject":59,"react":325}],127:[function(require,module,exports){
+},{"../utils/shallowEqual":111,"../utils/storeShape":112,"../utils/warning":113,"../utils/wrapActionCreators":114,"hoist-non-react-statics":31,"invariant":32,"lodash/isPlainObject":42,"react":325}],110:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21695,7 +19968,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 exports.Provider = _Provider2["default"];
 exports.connect = _connect2["default"];
-},{"./components/Provider":125,"./components/connect":126}],128:[function(require,module,exports){
+},{"./components/Provider":108,"./components/connect":109}],111:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -21722,7 +19995,7 @@ function shallowEqual(objA, objB) {
 
   return true;
 }
-},{}],129:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21734,7 +20007,7 @@ exports["default"] = _react.PropTypes.shape({
   dispatch: _react.PropTypes.func.isRequired,
   getState: _react.PropTypes.func.isRequired
 });
-},{"react":325}],130:[function(require,module,exports){
+},{"react":325}],113:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21759,7 +20032,7 @@ function warning(message) {
   } catch (e) {}
   /* eslint-enable no-empty */
 }
-},{}],131:[function(require,module,exports){
+},{}],114:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21772,7 +20045,7 @@ function wrapActionCreators(actionCreators) {
     return (0, _redux.bindActionCreators)(actionCreators, dispatch);
   };
 }
-},{"redux":331}],132:[function(require,module,exports){
+},{"redux":331}],115:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -21861,7 +20134,7 @@ function mapAsync(array, work, callback) {
     });
   });
 }
-},{}],133:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21891,7 +20164,7 @@ var History = {
 
 exports.default = History;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./routerWarning":166}],134:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./routerWarning":149}],117:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21920,7 +20193,7 @@ var IndexLink = _react2.default.createClass({
 
 exports.default = IndexLink;
 module.exports = exports['default'];
-},{"./Link":139,"react":325}],135:[function(require,module,exports){
+},{"./Link":122,"react":325}],118:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -21984,7 +20257,7 @@ var IndexRedirect = _react2.default.createClass({
 
 exports.default = IndexRedirect;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./Redirect":142,"./routerWarning":166,"invariant":49,"react":325}],136:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./Redirect":125,"./routerWarning":149,"invariant":32,"react":325}],119:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22045,7 +20318,7 @@ var IndexRoute = _react2.default.createClass({
 
 exports.default = IndexRoute;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./RouteUtils":145,"./routerWarning":166,"invariant":49,"react":325}],137:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./RouteUtils":128,"./routerWarning":149,"invariant":32,"react":325}],120:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22078,7 +20351,7 @@ var component = exports.component = oneOfType([func, string]);
 var components = exports.components = oneOfType([component, object]);
 var route = exports.route = oneOfType([object, element]);
 var routes = exports.routes = oneOfType([route, arrayOf(route)]);
-},{"react":325}],138:[function(require,module,exports){
+},{"react":325}],121:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22147,7 +20420,7 @@ var Lifecycle = {
 
 exports.default = Lifecycle;
 module.exports = exports['default'];
-},{"./routerWarning":166,"invariant":49,"react":325}],139:[function(require,module,exports){
+},{"./routerWarning":149,"invariant":32,"react":325}],122:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22324,7 +20597,7 @@ var Link = _react2.default.createClass({
 
 exports.default = Link;
 module.exports = exports['default'];
-},{"./PropTypes":141,"./routerWarning":166,"invariant":49,"react":325}],140:[function(require,module,exports){
+},{"./PropTypes":124,"./routerWarning":149,"invariant":32,"react":325}],123:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22537,7 +20810,7 @@ function formatPattern(pattern, params) {
 
   return pathname.replace(/\/+/g, '/');
 }
-},{"invariant":49}],141:[function(require,module,exports){
+},{"invariant":32}],124:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22639,7 +20912,7 @@ if ("production" !== 'production') {
 }
 
 exports.default = defaultExport;
-},{"./InternalPropTypes":137,"./deprecateObjectProperties":157,"./routerWarning":166,"react":325}],142:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./deprecateObjectProperties":140,"./routerWarning":149,"react":325}],125:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22742,7 +21015,7 @@ var Redirect = _react2.default.createClass({
 
 exports.default = Redirect;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./PatternUtils":140,"./RouteUtils":145,"invariant":49,"react":325}],143:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./PatternUtils":123,"./RouteUtils":128,"invariant":32,"react":325}],126:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22800,7 +21073,7 @@ var Route = _react2.default.createClass({
 
 exports.default = Route;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./RouteUtils":145,"invariant":49,"react":325}],144:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./RouteUtils":128,"invariant":32,"react":325}],127:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22846,7 +21119,7 @@ var RouteContext = {
 
 exports.default = RouteContext;
 module.exports = exports['default'];
-},{"./routerWarning":166,"react":325}],145:[function(require,module,exports){
+},{"./routerWarning":149,"react":325}],128:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -22940,7 +21213,7 @@ function createRoutes(routes) {
 
   return routes;
 }
-},{"react":325}],146:[function(require,module,exports){
+},{"react":325}],129:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23165,7 +21438,7 @@ var Router = _react2.default.createClass({
 
 exports.default = Router;
 module.exports = exports['default'];
-},{"./InternalPropTypes":137,"./RouteUtils":145,"./RouterContext":147,"./RouterUtils":148,"./createTransitionManager":156,"./routerWarning":166,"history/lib/createHashHistory":39,"history/lib/useQueries":46,"invariant":49,"react":325}],147:[function(require,module,exports){
+},{"./InternalPropTypes":120,"./RouteUtils":128,"./RouterContext":130,"./RouterUtils":131,"./createTransitionManager":139,"./routerWarning":149,"history/lib/createHashHistory":161,"history/lib/useQueries":168,"invariant":32,"react":325}],130:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23322,7 +21595,7 @@ var RouterContext = _react2.default.createClass({
 
 exports.default = RouterContext;
 module.exports = exports['default'];
-},{"./RouteUtils":145,"./deprecateObjectProperties":157,"./getRouteParams":159,"./routerWarning":166,"invariant":49,"react":325}],148:[function(require,module,exports){
+},{"./RouteUtils":128,"./deprecateObjectProperties":140,"./getRouteParams":142,"./routerWarning":149,"invariant":32,"react":325}],131:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23355,7 +21628,7 @@ function createRoutingHistory(history, transitionManager) {
 
   return history;
 }
-},{"./deprecateObjectProperties":157}],149:[function(require,module,exports){
+},{"./deprecateObjectProperties":140}],132:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23386,7 +21659,7 @@ var RoutingContext = _react2.default.createClass({
 
 exports.default = RoutingContext;
 module.exports = exports['default'];
-},{"./RouterContext":147,"./routerWarning":166,"react":325}],150:[function(require,module,exports){
+},{"./RouterContext":130,"./routerWarning":149,"react":325}],133:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23509,7 +21782,7 @@ function runLeaveHooks(routes, prevState) {
     if (routes[i].onLeave) routes[i].onLeave.call(routes[i], prevState);
   }
 }
-},{"./AsyncUtils":132,"./routerWarning":166}],151:[function(require,module,exports){
+},{"./AsyncUtils":115,"./routerWarning":149}],134:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23567,7 +21840,7 @@ exports.default = function () {
 };
 
 module.exports = exports['default'];
-},{"./RouterContext":147,"./routerWarning":166,"react":325}],152:[function(require,module,exports){
+},{"./RouterContext":130,"./routerWarning":149,"react":325}],135:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23584,7 +21857,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createRouterHistory2.default)(_createBrowserHistory2.default);
 module.exports = exports['default'];
-},{"./createRouterHistory":155,"history/lib/createBrowserHistory":37}],153:[function(require,module,exports){
+},{"./createRouterHistory":138,"history/lib/createBrowserHistory":159}],136:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23662,7 +21935,7 @@ function computeChangedRoutes(prevState, nextState) {
 
 exports.default = computeChangedRoutes;
 module.exports = exports['default'];
-},{"./PatternUtils":140}],154:[function(require,module,exports){
+},{"./PatternUtils":123}],137:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23695,7 +21968,7 @@ function createMemoryHistory(options) {
   return history;
 }
 module.exports = exports['default'];
-},{"history/lib/createMemoryHistory":42,"history/lib/useBasename":45,"history/lib/useQueries":46}],155:[function(require,module,exports){
+},{"history/lib/createMemoryHistory":164,"history/lib/useBasename":167,"history/lib/useQueries":168}],138:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -23715,7 +21988,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
 
 module.exports = exports['default'];
-},{"./useRouterHistory":167}],156:[function(require,module,exports){
+},{"./useRouterHistory":150}],139:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24018,7 +22291,7 @@ function createTransitionManager(history, routes) {
 //export default useRoutes
 
 module.exports = exports['default'];
-},{"./TransitionUtils":150,"./computeChangedRoutes":153,"./getComponents":158,"./isActive":162,"./matchRoutes":165,"./routerWarning":166}],157:[function(require,module,exports){
+},{"./TransitionUtils":133,"./computeChangedRoutes":136,"./getComponents":141,"./isActive":145,"./matchRoutes":148,"./routerWarning":149}],140:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24094,7 +22367,7 @@ if ("production" !== 'production') {
 }
 
 exports.default = deprecateObjectProperties;
-},{"./routerWarning":166}],158:[function(require,module,exports){
+},{"./routerWarning":149}],141:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24141,7 +22414,7 @@ function getComponents(nextState, callback) {
 
 exports.default = getComponents;
 module.exports = exports['default'];
-},{"./AsyncUtils":132,"./makeStateWithLocation":163}],159:[function(require,module,exports){
+},{"./AsyncUtils":115,"./makeStateWithLocation":146}],142:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24168,7 +22441,7 @@ function getRouteParams(route, params) {
 
 exports.default = getRouteParams;
 module.exports = exports['default'];
-},{"./PatternUtils":140}],160:[function(require,module,exports){
+},{"./PatternUtils":123}],143:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24185,7 +22458,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = (0, _createRouterHistory2.default)(_createHashHistory2.default);
 module.exports = exports['default'];
-},{"./createRouterHistory":155,"history/lib/createHashHistory":39}],161:[function(require,module,exports){
+},{"./createRouterHistory":138,"history/lib/createHashHistory":161}],144:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24342,7 +22615,7 @@ exports.applyRouterMiddleware = _applyRouterMiddleware3.default;
 exports.browserHistory = _browserHistory3.default;
 exports.hashHistory = _hashHistory3.default;
 exports.createMemoryHistory = _createMemoryHistory3.default;
-},{"./History":133,"./IndexLink":134,"./IndexRedirect":135,"./IndexRoute":136,"./Lifecycle":138,"./Link":139,"./PatternUtils":140,"./PropTypes":141,"./Redirect":142,"./Route":143,"./RouteContext":144,"./RouteUtils":145,"./Router":146,"./RouterContext":147,"./RoutingContext":149,"./applyRouterMiddleware":151,"./browserHistory":152,"./createMemoryHistory":154,"./hashHistory":160,"./match":164,"./useRouterHistory":167,"./useRoutes":168,"./withRouter":169}],162:[function(require,module,exports){
+},{"./History":116,"./IndexLink":117,"./IndexRedirect":118,"./IndexRoute":119,"./Lifecycle":121,"./Link":122,"./PatternUtils":123,"./PropTypes":124,"./Redirect":125,"./Route":126,"./RouteContext":127,"./RouteUtils":128,"./Router":129,"./RouterContext":130,"./RoutingContext":132,"./applyRouterMiddleware":134,"./browserHistory":135,"./createMemoryHistory":137,"./hashHistory":143,"./match":147,"./useRouterHistory":150,"./useRoutes":151,"./withRouter":152}],145:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24495,7 +22768,7 @@ function isActive(_ref, indexOnly, currentLocation, routes, params) {
   return queryIsActive(query, currentLocation.query);
 }
 module.exports = exports['default'];
-},{"./PatternUtils":140}],163:[function(require,module,exports){
+},{"./PatternUtils":123}],146:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24545,7 +22818,7 @@ function makeStateWithLocation(state, location) {
   return _extends({}, state, location);
 }
 module.exports = exports['default'];
-},{"./deprecateObjectProperties":157,"./routerWarning":166}],164:[function(require,module,exports){
+},{"./deprecateObjectProperties":140,"./routerWarning":149}],147:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24629,7 +22902,7 @@ function match(_ref, callback) {
 
 exports.default = match;
 module.exports = exports['default'];
-},{"./RouteUtils":145,"./RouterUtils":148,"./createMemoryHistory":154,"./createTransitionManager":156,"history/lib/Actions":31,"invariant":49}],165:[function(require,module,exports){
+},{"./RouteUtils":128,"./RouterUtils":131,"./createMemoryHistory":137,"./createTransitionManager":139,"history/lib/Actions":153,"invariant":32}],148:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24881,7 +23154,7 @@ function matchRoutes(routes, location, callback, remainingPathname) {
   }, callback);
 }
 module.exports = exports['default'];
-},{"./AsyncUtils":132,"./PatternUtils":140,"./RouteUtils":145,"./makeStateWithLocation":163,"./routerWarning":166}],166:[function(require,module,exports){
+},{"./AsyncUtils":115,"./PatternUtils":123,"./RouteUtils":128,"./makeStateWithLocation":146,"./routerWarning":149}],149:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24918,7 +23191,7 @@ function routerWarning(falseToWarn, message) {
 function _resetWarned() {
   warned = {};
 }
-},{"warning":345}],167:[function(require,module,exports){
+},{"warning":345}],150:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24942,7 +23215,7 @@ function useRouterHistory(createHistory) {
   };
 }
 module.exports = exports['default'];
-},{"history/lib/useBasename":45,"history/lib/useQueries":46}],168:[function(require,module,exports){
+},{"history/lib/useBasename":167,"history/lib/useQueries":168}],151:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -24994,7 +23267,7 @@ function useRoutes(createHistory) {
 
 exports.default = useRoutes;
 module.exports = exports['default'];
-},{"./createTransitionManager":156,"./routerWarning":166,"history/lib/useQueries":46}],169:[function(require,module,exports){
+},{"./createTransitionManager":139,"./routerWarning":149,"history/lib/useQueries":168}],152:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25059,7 +23332,1734 @@ function withRouter(WrappedComponent, options) {
   return (0, _hoistNonReactStatics2.default)(WithRouter, WrappedComponent);
 }
 module.exports = exports['default'];
-},{"./PropTypes":141,"hoist-non-react-statics":48,"invariant":49,"react":325}],170:[function(require,module,exports){
+},{"./PropTypes":124,"hoist-non-react-statics":31,"invariant":32,"react":325}],153:[function(require,module,exports){
+/**
+ * Indicates that navigation was caused by a call to history.push.
+ */
+'use strict';
+
+exports.__esModule = true;
+var PUSH = 'PUSH';
+
+exports.PUSH = PUSH;
+/**
+ * Indicates that navigation was caused by a call to history.replace.
+ */
+var REPLACE = 'REPLACE';
+
+exports.REPLACE = REPLACE;
+/**
+ * Indicates that navigation was caused by some other action such
+ * as using a browser's back/forward buttons and/or manually manipulating
+ * the URL in a browser's location bar. This is the default.
+ *
+ * See https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onpopstate
+ * for more information.
+ */
+var POP = 'POP';
+
+exports.POP = POP;
+exports['default'] = {
+  PUSH: PUSH,
+  REPLACE: REPLACE,
+  POP: POP
+};
+},{}],154:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+var _slice = Array.prototype.slice;
+exports.loopAsync = loopAsync;
+
+function loopAsync(turns, work, callback) {
+  var currentTurn = 0,
+      isDone = false;
+  var sync = false,
+      hasNext = false,
+      doneArgs = undefined;
+
+  function done() {
+    isDone = true;
+    if (sync) {
+      // Iterate instead of recursing if possible.
+      doneArgs = [].concat(_slice.call(arguments));
+      return;
+    }
+
+    callback.apply(this, arguments);
+  }
+
+  function next() {
+    if (isDone) {
+      return;
+    }
+
+    hasNext = true;
+    if (sync) {
+      // Iterate instead of recursing if possible.
+      return;
+    }
+
+    sync = true;
+
+    while (!isDone && currentTurn < turns && hasNext) {
+      hasNext = false;
+      work.call(this, currentTurn++, next, done);
+    }
+
+    sync = false;
+
+    if (isDone) {
+      // This means the loop finished synchronously.
+      callback.apply(this, doneArgs);
+      return;
+    }
+
+    if (currentTurn >= turns && hasNext) {
+      isDone = true;
+      callback();
+    }
+  }
+
+  next();
+}
+},{}],155:[function(require,module,exports){
+(function (process){
+/*eslint-disable no-empty */
+'use strict';
+
+exports.__esModule = true;
+exports.saveState = saveState;
+exports.readState = readState;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var KeyPrefix = '@@History/';
+var QuotaExceededErrors = ['QuotaExceededError', 'QUOTA_EXCEEDED_ERR'];
+
+var SecurityError = 'SecurityError';
+
+function createKey(key) {
+  return KeyPrefix + key;
+}
+
+function saveState(key, state) {
+  try {
+    if (state == null) {
+      window.sessionStorage.removeItem(createKey(key));
+    } else {
+      window.sessionStorage.setItem(createKey(key), JSON.stringify(state));
+    }
+  } catch (error) {
+    if (error.name === SecurityError) {
+      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
+      // attempt to access window.sessionStorage.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available due to security settings') : undefined;
+
+      return;
+    }
+
+    if (QuotaExceededErrors.indexOf(error.name) >= 0 && window.sessionStorage.length === 0) {
+      // Safari "private mode" throws QuotaExceededError.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to save state; sessionStorage is not available in Safari private mode') : undefined;
+
+      return;
+    }
+
+    throw error;
+  }
+}
+
+function readState(key) {
+  var json = undefined;
+  try {
+    json = window.sessionStorage.getItem(createKey(key));
+  } catch (error) {
+    if (error.name === SecurityError) {
+      // Blocking cookies in Chrome/Firefox/Safari throws SecurityError on any
+      // attempt to access window.sessionStorage.
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] Unable to read state; sessionStorage is not available due to security settings') : undefined;
+
+      return null;
+    }
+  }
+
+  if (json) {
+    try {
+      return JSON.parse(json);
+    } catch (error) {
+      // Ignore invalid JSON.
+    }
+  }
+
+  return null;
+}
+}).call(this,require('_process'))
+},{"_process":45,"warning":169}],156:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+exports.addEventListener = addEventListener;
+exports.removeEventListener = removeEventListener;
+exports.getHashPath = getHashPath;
+exports.replaceHashPath = replaceHashPath;
+exports.getWindowPath = getWindowPath;
+exports.go = go;
+exports.getUserConfirmation = getUserConfirmation;
+exports.supportsHistory = supportsHistory;
+exports.supportsGoWithoutReloadUsingHash = supportsGoWithoutReloadUsingHash;
+
+function addEventListener(node, event, listener) {
+  if (node.addEventListener) {
+    node.addEventListener(event, listener, false);
+  } else {
+    node.attachEvent('on' + event, listener);
+  }
+}
+
+function removeEventListener(node, event, listener) {
+  if (node.removeEventListener) {
+    node.removeEventListener(event, listener, false);
+  } else {
+    node.detachEvent('on' + event, listener);
+  }
+}
+
+function getHashPath() {
+  // We can't use window.location.hash here because it's not
+  // consistent across browsers - Firefox will pre-decode it!
+  return window.location.href.split('#')[1] || '';
+}
+
+function replaceHashPath(path) {
+  window.location.replace(window.location.pathname + window.location.search + '#' + path);
+}
+
+function getWindowPath() {
+  return window.location.pathname + window.location.search + window.location.hash;
+}
+
+function go(n) {
+  if (n) window.history.go(n);
+}
+
+function getUserConfirmation(message, callback) {
+  callback(window.confirm(message));
+}
+
+/**
+ * Returns true if the HTML5 history API is supported. Taken from Modernizr.
+ *
+ * https://github.com/Modernizr/Modernizr/blob/master/LICENSE
+ * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/history.js
+ * changed to avoid false negatives for Windows Phones: https://github.com/rackt/react-router/issues/586
+ */
+
+function supportsHistory() {
+  var ua = navigator.userAgent;
+  if ((ua.indexOf('Android 2.') !== -1 || ua.indexOf('Android 4.0') !== -1) && ua.indexOf('Mobile Safari') !== -1 && ua.indexOf('Chrome') === -1 && ua.indexOf('Windows Phone') === -1) {
+    return false;
+  }
+  return window.history && 'pushState' in window.history;
+}
+
+/**
+ * Returns false if using go(n) with hash history causes a full page reload.
+ */
+
+function supportsGoWithoutReloadUsingHash() {
+  var ua = navigator.userAgent;
+  return ua.indexOf('Firefox') === -1;
+}
+},{}],157:[function(require,module,exports){
+'use strict';
+
+exports.__esModule = true;
+var canUseDOM = !!(typeof window !== 'undefined' && window.document && window.document.createElement);
+exports.canUseDOM = canUseDOM;
+},{}],158:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+exports.extractPath = extractPath;
+exports.parsePath = parsePath;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function extractPath(string) {
+  var match = string.match(/^https?:\/\/[^\/]*/);
+
+  if (match == null) return string;
+
+  return string.substring(match[0].length);
+}
+
+function parsePath(path) {
+  var pathname = extractPath(path);
+  var search = '';
+  var hash = '';
+
+  process.env.NODE_ENV !== 'production' ? _warning2['default'](path === pathname, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', path) : undefined;
+
+  var hashIndex = pathname.indexOf('#');
+  if (hashIndex !== -1) {
+    hash = pathname.substring(hashIndex);
+    pathname = pathname.substring(0, hashIndex);
+  }
+
+  var searchIndex = pathname.indexOf('?');
+  if (searchIndex !== -1) {
+    search = pathname.substring(searchIndex);
+    pathname = pathname.substring(0, searchIndex);
+  }
+
+  if (pathname === '') pathname = '/';
+
+  return {
+    pathname: pathname,
+    search: search,
+    hash: hash
+  };
+}
+}).call(this,require('_process'))
+},{"_process":45,"warning":169}],159:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _Actions = require('./Actions');
+
+var _PathUtils = require('./PathUtils');
+
+var _ExecutionEnvironment = require('./ExecutionEnvironment');
+
+var _DOMUtils = require('./DOMUtils');
+
+var _DOMStateStorage = require('./DOMStateStorage');
+
+var _createDOMHistory = require('./createDOMHistory');
+
+var _createDOMHistory2 = _interopRequireDefault(_createDOMHistory);
+
+/**
+ * Creates and returns a history object that uses HTML5's history API
+ * (pushState, replaceState, and the popstate event) to manage history.
+ * This is the recommended method of managing history in browsers because
+ * it provides the cleanest URLs.
+ *
+ * Note: In browsers that do not support the HTML5 history API full
+ * page reloads will be used to preserve URLs.
+ */
+function createBrowserHistory() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Browser history needs a DOM') : _invariant2['default'](false) : undefined;
+
+  var forceRefresh = options.forceRefresh;
+
+  var isSupported = _DOMUtils.supportsHistory();
+  var useRefresh = !isSupported || forceRefresh;
+
+  function getCurrentLocation(historyState) {
+    try {
+      historyState = historyState || window.history.state || {};
+    } catch (e) {
+      historyState = {};
+    }
+
+    var path = _DOMUtils.getWindowPath();
+    var _historyState = historyState;
+    var key = _historyState.key;
+
+    var state = undefined;
+    if (key) {
+      state = _DOMStateStorage.readState(key);
+    } else {
+      state = null;
+      key = history.createKey();
+
+      if (isSupported) window.history.replaceState(_extends({}, historyState, { key: key }), null);
+    }
+
+    var location = _PathUtils.parsePath(path);
+
+    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
+  }
+
+  function startPopStateListener(_ref) {
+    var transitionTo = _ref.transitionTo;
+
+    function popStateListener(event) {
+      if (event.state === undefined) return; // Ignore extraneous popstate events in WebKit.
+
+      transitionTo(getCurrentLocation(event.state));
+    }
+
+    _DOMUtils.addEventListener(window, 'popstate', popStateListener);
+
+    return function () {
+      _DOMUtils.removeEventListener(window, 'popstate', popStateListener);
+    };
+  }
+
+  function finishTransition(location) {
+    var basename = location.basename;
+    var pathname = location.pathname;
+    var search = location.search;
+    var hash = location.hash;
+    var state = location.state;
+    var action = location.action;
+    var key = location.key;
+
+    if (action === _Actions.POP) return; // Nothing to do.
+
+    _DOMStateStorage.saveState(key, state);
+
+    var path = (basename || '') + pathname + search + hash;
+    var historyState = {
+      key: key
+    };
+
+    if (action === _Actions.PUSH) {
+      if (useRefresh) {
+        window.location.href = path;
+        return false; // Prevent location update.
+      } else {
+          window.history.pushState(historyState, null, path);
+        }
+    } else {
+      // REPLACE
+      if (useRefresh) {
+        window.location.replace(path);
+        return false; // Prevent location update.
+      } else {
+          window.history.replaceState(historyState, null, path);
+        }
+    }
+  }
+
+  var history = _createDOMHistory2['default'](_extends({}, options, {
+    getCurrentLocation: getCurrentLocation,
+    finishTransition: finishTransition,
+    saveState: _DOMStateStorage.saveState
+  }));
+
+  var listenerCount = 0,
+      stopPopStateListener = undefined;
+
+  function listenBefore(listener) {
+    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
+
+    var unlisten = history.listenBefore(listener);
+
+    return function () {
+      unlisten();
+
+      if (--listenerCount === 0) stopPopStateListener();
+    };
+  }
+
+  function listen(listener) {
+    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
+
+    var unlisten = history.listen(listener);
+
+    return function () {
+      unlisten();
+
+      if (--listenerCount === 0) stopPopStateListener();
+    };
+  }
+
+  // deprecated
+  function registerTransitionHook(hook) {
+    if (++listenerCount === 1) stopPopStateListener = startPopStateListener(history);
+
+    history.registerTransitionHook(hook);
+  }
+
+  // deprecated
+  function unregisterTransitionHook(hook) {
+    history.unregisterTransitionHook(hook);
+
+    if (--listenerCount === 0) stopPopStateListener();
+  }
+
+  return _extends({}, history, {
+    listenBefore: listenBefore,
+    listen: listen,
+    registerTransitionHook: registerTransitionHook,
+    unregisterTransitionHook: unregisterTransitionHook
+  });
+}
+
+exports['default'] = createBrowserHistory;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./Actions":153,"./DOMStateStorage":155,"./DOMUtils":156,"./ExecutionEnvironment":157,"./PathUtils":158,"./createDOMHistory":160,"_process":45,"invariant":32}],160:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _ExecutionEnvironment = require('./ExecutionEnvironment');
+
+var _DOMUtils = require('./DOMUtils');
+
+var _createHistory = require('./createHistory');
+
+var _createHistory2 = _interopRequireDefault(_createHistory);
+
+function createDOMHistory(options) {
+  var history = _createHistory2['default'](_extends({
+    getUserConfirmation: _DOMUtils.getUserConfirmation
+  }, options, {
+    go: _DOMUtils.go
+  }));
+
+  function listen(listener) {
+    !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'DOM history needs a DOM') : _invariant2['default'](false) : undefined;
+
+    return history.listen(listener);
+  }
+
+  return _extends({}, history, {
+    listen: listen
+  });
+}
+
+exports['default'] = createDOMHistory;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./DOMUtils":156,"./ExecutionEnvironment":157,"./createHistory":162,"_process":45,"invariant":32}],161:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _Actions = require('./Actions');
+
+var _PathUtils = require('./PathUtils');
+
+var _ExecutionEnvironment = require('./ExecutionEnvironment');
+
+var _DOMUtils = require('./DOMUtils');
+
+var _DOMStateStorage = require('./DOMStateStorage');
+
+var _createDOMHistory = require('./createDOMHistory');
+
+var _createDOMHistory2 = _interopRequireDefault(_createDOMHistory);
+
+function isAbsolutePath(path) {
+  return typeof path === 'string' && path.charAt(0) === '/';
+}
+
+function ensureSlash() {
+  var path = _DOMUtils.getHashPath();
+
+  if (isAbsolutePath(path)) return true;
+
+  _DOMUtils.replaceHashPath('/' + path);
+
+  return false;
+}
+
+function addQueryStringValueToPath(path, key, value) {
+  return path + (path.indexOf('?') === -1 ? '?' : '&') + (key + '=' + value);
+}
+
+function stripQueryStringValueFromPath(path, key) {
+  return path.replace(new RegExp('[?&]?' + key + '=[a-zA-Z0-9]+'), '');
+}
+
+function getQueryStringValueFromPath(path, key) {
+  var match = path.match(new RegExp('\\?.*?\\b' + key + '=(.+?)\\b'));
+  return match && match[1];
+}
+
+var DefaultQueryKey = '_k';
+
+function createHashHistory() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  !_ExecutionEnvironment.canUseDOM ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Hash history needs a DOM') : _invariant2['default'](false) : undefined;
+
+  var queryKey = options.queryKey;
+
+  if (queryKey === undefined || !!queryKey) queryKey = typeof queryKey === 'string' ? queryKey : DefaultQueryKey;
+
+  function getCurrentLocation() {
+    var path = _DOMUtils.getHashPath();
+
+    var key = undefined,
+        state = undefined;
+    if (queryKey) {
+      key = getQueryStringValueFromPath(path, queryKey);
+      path = stripQueryStringValueFromPath(path, queryKey);
+
+      if (key) {
+        state = _DOMStateStorage.readState(key);
+      } else {
+        state = null;
+        key = history.createKey();
+        _DOMUtils.replaceHashPath(addQueryStringValueToPath(path, queryKey, key));
+      }
+    } else {
+      key = state = null;
+    }
+
+    var location = _PathUtils.parsePath(path);
+
+    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
+  }
+
+  function startHashChangeListener(_ref) {
+    var transitionTo = _ref.transitionTo;
+
+    function hashChangeListener() {
+      if (!ensureSlash()) return; // Always make sure hashes are preceeded with a /.
+
+      transitionTo(getCurrentLocation());
+    }
+
+    ensureSlash();
+    _DOMUtils.addEventListener(window, 'hashchange', hashChangeListener);
+
+    return function () {
+      _DOMUtils.removeEventListener(window, 'hashchange', hashChangeListener);
+    };
+  }
+
+  function finishTransition(location) {
+    var basename = location.basename;
+    var pathname = location.pathname;
+    var search = location.search;
+    var state = location.state;
+    var action = location.action;
+    var key = location.key;
+
+    if (action === _Actions.POP) return; // Nothing to do.
+
+    var path = (basename || '') + pathname + search;
+
+    if (queryKey) {
+      path = addQueryStringValueToPath(path, queryKey, key);
+      _DOMStateStorage.saveState(key, state);
+    } else {
+      // Drop key and state.
+      location.key = location.state = null;
+    }
+
+    var currentHash = _DOMUtils.getHashPath();
+
+    if (action === _Actions.PUSH) {
+      if (currentHash !== path) {
+        window.location.hash = path;
+      } else {
+        process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'You cannot PUSH the same path using hash history') : undefined;
+      }
+    } else if (currentHash !== path) {
+      // REPLACE
+      _DOMUtils.replaceHashPath(path);
+    }
+  }
+
+  var history = _createDOMHistory2['default'](_extends({}, options, {
+    getCurrentLocation: getCurrentLocation,
+    finishTransition: finishTransition,
+    saveState: _DOMStateStorage.saveState
+  }));
+
+  var listenerCount = 0,
+      stopHashChangeListener = undefined;
+
+  function listenBefore(listener) {
+    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
+
+    var unlisten = history.listenBefore(listener);
+
+    return function () {
+      unlisten();
+
+      if (--listenerCount === 0) stopHashChangeListener();
+    };
+  }
+
+  function listen(listener) {
+    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
+
+    var unlisten = history.listen(listener);
+
+    return function () {
+      unlisten();
+
+      if (--listenerCount === 0) stopHashChangeListener();
+    };
+  }
+
+  function push(location) {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || location.state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
+
+    history.push(location);
+  }
+
+  function replace(location) {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || location.state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
+
+    history.replace(location);
+  }
+
+  var goIsSupportedWithoutReload = _DOMUtils.supportsGoWithoutReloadUsingHash();
+
+  function go(n) {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](goIsSupportedWithoutReload, 'Hash history go(n) causes a full page reload in this browser') : undefined;
+
+    history.go(n);
+  }
+
+  function createHref(path) {
+    return '#' + history.createHref(path);
+  }
+
+  // deprecated
+  function registerTransitionHook(hook) {
+    if (++listenerCount === 1) stopHashChangeListener = startHashChangeListener(history);
+
+    history.registerTransitionHook(hook);
+  }
+
+  // deprecated
+  function unregisterTransitionHook(hook) {
+    history.unregisterTransitionHook(hook);
+
+    if (--listenerCount === 0) stopHashChangeListener();
+  }
+
+  // deprecated
+  function pushState(state, path) {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
+
+    history.pushState(state, path);
+  }
+
+  // deprecated
+  function replaceState(state, path) {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](queryKey || state == null, 'You cannot use state without a queryKey it will be dropped') : undefined;
+
+    history.replaceState(state, path);
+  }
+
+  return _extends({}, history, {
+    listenBefore: listenBefore,
+    listen: listen,
+    push: push,
+    replace: replace,
+    go: go,
+    createHref: createHref,
+
+    registerTransitionHook: registerTransitionHook, // deprecated - warning is in createHistory
+    unregisterTransitionHook: unregisterTransitionHook, // deprecated - warning is in createHistory
+    pushState: pushState, // deprecated - warning is in createHistory
+    replaceState: replaceState // deprecated - warning is in createHistory
+  });
+}
+
+exports['default'] = createHashHistory;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./Actions":153,"./DOMStateStorage":155,"./DOMUtils":156,"./ExecutionEnvironment":157,"./PathUtils":158,"./createDOMHistory":160,"_process":45,"invariant":32,"warning":169}],162:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _deepEqual = require('deep-equal');
+
+var _deepEqual2 = _interopRequireDefault(_deepEqual);
+
+var _PathUtils = require('./PathUtils');
+
+var _AsyncUtils = require('./AsyncUtils');
+
+var _Actions = require('./Actions');
+
+var _createLocation2 = require('./createLocation');
+
+var _createLocation3 = _interopRequireDefault(_createLocation2);
+
+var _runTransitionHook = require('./runTransitionHook');
+
+var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
+
+var _deprecate = require('./deprecate');
+
+var _deprecate2 = _interopRequireDefault(_deprecate);
+
+function createRandomKey(length) {
+  return Math.random().toString(36).substr(2, length);
+}
+
+function locationsAreEqual(a, b) {
+  return a.pathname === b.pathname && a.search === b.search &&
+  //a.action === b.action && // Different action !== location change.
+  a.key === b.key && _deepEqual2['default'](a.state, b.state);
+}
+
+var DefaultKeyLength = 6;
+
+function createHistory() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+  var getCurrentLocation = options.getCurrentLocation;
+  var finishTransition = options.finishTransition;
+  var saveState = options.saveState;
+  var go = options.go;
+  var getUserConfirmation = options.getUserConfirmation;
+  var keyLength = options.keyLength;
+
+  if (typeof keyLength !== 'number') keyLength = DefaultKeyLength;
+
+  var transitionHooks = [];
+
+  function listenBefore(hook) {
+    transitionHooks.push(hook);
+
+    return function () {
+      transitionHooks = transitionHooks.filter(function (item) {
+        return item !== hook;
+      });
+    };
+  }
+
+  var allKeys = [];
+  var changeListeners = [];
+  var location = undefined;
+
+  function getCurrent() {
+    if (pendingLocation && pendingLocation.action === _Actions.POP) {
+      return allKeys.indexOf(pendingLocation.key);
+    } else if (location) {
+      return allKeys.indexOf(location.key);
+    } else {
+      return -1;
+    }
+  }
+
+  function updateLocation(newLocation) {
+    var current = getCurrent();
+
+    location = newLocation;
+
+    if (location.action === _Actions.PUSH) {
+      allKeys = [].concat(allKeys.slice(0, current + 1), [location.key]);
+    } else if (location.action === _Actions.REPLACE) {
+      allKeys[current] = location.key;
+    }
+
+    changeListeners.forEach(function (listener) {
+      listener(location);
+    });
+  }
+
+  function listen(listener) {
+    changeListeners.push(listener);
+
+    if (location) {
+      listener(location);
+    } else {
+      var _location = getCurrentLocation();
+      allKeys = [_location.key];
+      updateLocation(_location);
+    }
+
+    return function () {
+      changeListeners = changeListeners.filter(function (item) {
+        return item !== listener;
+      });
+    };
+  }
+
+  function confirmTransitionTo(location, callback) {
+    _AsyncUtils.loopAsync(transitionHooks.length, function (index, next, done) {
+      _runTransitionHook2['default'](transitionHooks[index], location, function (result) {
+        if (result != null) {
+          done(result);
+        } else {
+          next();
+        }
+      });
+    }, function (message) {
+      if (getUserConfirmation && typeof message === 'string') {
+        getUserConfirmation(message, function (ok) {
+          callback(ok !== false);
+        });
+      } else {
+        callback(message !== false);
+      }
+    });
+  }
+
+  var pendingLocation = undefined;
+
+  function transitionTo(nextLocation) {
+    if (location && locationsAreEqual(location, nextLocation)) return; // Nothing to do.
+
+    pendingLocation = nextLocation;
+
+    confirmTransitionTo(nextLocation, function (ok) {
+      if (pendingLocation !== nextLocation) return; // Transition was interrupted.
+
+      if (ok) {
+        // treat PUSH to current path like REPLACE to be consistent with browsers
+        if (nextLocation.action === _Actions.PUSH) {
+          var prevPath = createPath(location);
+          var nextPath = createPath(nextLocation);
+
+          if (nextPath === prevPath && _deepEqual2['default'](location.state, nextLocation.state)) nextLocation.action = _Actions.REPLACE;
+        }
+
+        if (finishTransition(nextLocation) !== false) updateLocation(nextLocation);
+      } else if (location && nextLocation.action === _Actions.POP) {
+        var prevIndex = allKeys.indexOf(location.key);
+        var nextIndex = allKeys.indexOf(nextLocation.key);
+
+        if (prevIndex !== -1 && nextIndex !== -1) go(prevIndex - nextIndex); // Restore the URL.
+      }
+    });
+  }
+
+  function push(location) {
+    transitionTo(createLocation(location, _Actions.PUSH, createKey()));
+  }
+
+  function replace(location) {
+    transitionTo(createLocation(location, _Actions.REPLACE, createKey()));
+  }
+
+  function goBack() {
+    go(-1);
+  }
+
+  function goForward() {
+    go(1);
+  }
+
+  function createKey() {
+    return createRandomKey(keyLength);
+  }
+
+  function createPath(location) {
+    if (location == null || typeof location === 'string') return location;
+
+    var pathname = location.pathname;
+    var search = location.search;
+    var hash = location.hash;
+
+    var result = pathname;
+
+    if (search) result += search;
+
+    if (hash) result += hash;
+
+    return result;
+  }
+
+  function createHref(location) {
+    return createPath(location);
+  }
+
+  function createLocation(location, action) {
+    var key = arguments.length <= 2 || arguments[2] === undefined ? createKey() : arguments[2];
+
+    if (typeof action === 'object') {
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'The state (2nd) argument to history.createLocation is deprecated; use a ' + 'location descriptor instead') : undefined;
+
+      if (typeof location === 'string') location = _PathUtils.parsePath(location);
+
+      location = _extends({}, location, { state: action });
+
+      action = key;
+      key = arguments[3] || createKey();
+    }
+
+    return _createLocation3['default'](location, action, key);
+  }
+
+  // deprecated
+  function setState(state) {
+    if (location) {
+      updateLocationState(location, state);
+      updateLocation(location);
+    } else {
+      updateLocationState(getCurrentLocation(), state);
+    }
+  }
+
+  function updateLocationState(location, state) {
+    location.state = _extends({}, location.state, state);
+    saveState(location.key, location.state);
+  }
+
+  // deprecated
+  function registerTransitionHook(hook) {
+    if (transitionHooks.indexOf(hook) === -1) transitionHooks.push(hook);
+  }
+
+  // deprecated
+  function unregisterTransitionHook(hook) {
+    transitionHooks = transitionHooks.filter(function (item) {
+      return item !== hook;
+    });
+  }
+
+  // deprecated
+  function pushState(state, path) {
+    if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+    push(_extends({ state: state }, path));
+  }
+
+  // deprecated
+  function replaceState(state, path) {
+    if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+    replace(_extends({ state: state }, path));
+  }
+
+  return {
+    listenBefore: listenBefore,
+    listen: listen,
+    transitionTo: transitionTo,
+    push: push,
+    replace: replace,
+    go: go,
+    goBack: goBack,
+    goForward: goForward,
+    createKey: createKey,
+    createPath: createPath,
+    createHref: createHref,
+    createLocation: createLocation,
+
+    setState: _deprecate2['default'](setState, 'setState is deprecated; use location.key to save state instead'),
+    registerTransitionHook: _deprecate2['default'](registerTransitionHook, 'registerTransitionHook is deprecated; use listenBefore instead'),
+    unregisterTransitionHook: _deprecate2['default'](unregisterTransitionHook, 'unregisterTransitionHook is deprecated; use the callback returned from listenBefore instead'),
+    pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
+    replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
+  };
+}
+
+exports['default'] = createHistory;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./Actions":153,"./AsyncUtils":154,"./PathUtils":158,"./createLocation":163,"./deprecate":165,"./runTransitionHook":166,"_process":45,"deep-equal":2,"warning":169}],163:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _Actions = require('./Actions');
+
+var _PathUtils = require('./PathUtils');
+
+function createLocation() {
+  var location = arguments.length <= 0 || arguments[0] === undefined ? '/' : arguments[0];
+  var action = arguments.length <= 1 || arguments[1] === undefined ? _Actions.POP : arguments[1];
+  var key = arguments.length <= 2 || arguments[2] === undefined ? null : arguments[2];
+
+  var _fourthArg = arguments.length <= 3 || arguments[3] === undefined ? null : arguments[3];
+
+  if (typeof location === 'string') location = _PathUtils.parsePath(location);
+
+  if (typeof action === 'object') {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'The state (2nd) argument to createLocation is deprecated; use a ' + 'location descriptor instead') : undefined;
+
+    location = _extends({}, location, { state: action });
+
+    action = key || _Actions.POP;
+    key = _fourthArg;
+  }
+
+  var pathname = location.pathname || '/';
+  var search = location.search || '';
+  var hash = location.hash || '';
+  var state = location.state || null;
+
+  return {
+    pathname: pathname,
+    search: search,
+    hash: hash,
+    state: state,
+    action: action,
+    key: key
+  };
+}
+
+exports['default'] = createLocation;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./Actions":153,"./PathUtils":158,"_process":45,"warning":169}],164:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _invariant = require('invariant');
+
+var _invariant2 = _interopRequireDefault(_invariant);
+
+var _PathUtils = require('./PathUtils');
+
+var _Actions = require('./Actions');
+
+var _createHistory = require('./createHistory');
+
+var _createHistory2 = _interopRequireDefault(_createHistory);
+
+function createStateStorage(entries) {
+  return entries.filter(function (entry) {
+    return entry.state;
+  }).reduce(function (memo, entry) {
+    memo[entry.key] = entry.state;
+    return memo;
+  }, {});
+}
+
+function createMemoryHistory() {
+  var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  if (Array.isArray(options)) {
+    options = { entries: options };
+  } else if (typeof options === 'string') {
+    options = { entries: [options] };
+  }
+
+  var history = _createHistory2['default'](_extends({}, options, {
+    getCurrentLocation: getCurrentLocation,
+    finishTransition: finishTransition,
+    saveState: saveState,
+    go: go
+  }));
+
+  var _options = options;
+  var entries = _options.entries;
+  var current = _options.current;
+
+  if (typeof entries === 'string') {
+    entries = [entries];
+  } else if (!Array.isArray(entries)) {
+    entries = ['/'];
+  }
+
+  entries = entries.map(function (entry) {
+    var key = history.createKey();
+
+    if (typeof entry === 'string') return { pathname: entry, key: key };
+
+    if (typeof entry === 'object' && entry) return _extends({}, entry, { key: key });
+
+    !false ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Unable to create history entry from %s', entry) : _invariant2['default'](false) : undefined;
+  });
+
+  if (current == null) {
+    current = entries.length - 1;
+  } else {
+    !(current >= 0 && current < entries.length) ? process.env.NODE_ENV !== 'production' ? _invariant2['default'](false, 'Current index must be >= 0 and < %s, was %s', entries.length, current) : _invariant2['default'](false) : undefined;
+  }
+
+  var storage = createStateStorage(entries);
+
+  function saveState(key, state) {
+    storage[key] = state;
+  }
+
+  function readState(key) {
+    return storage[key];
+  }
+
+  function getCurrentLocation() {
+    var entry = entries[current];
+    var basename = entry.basename;
+    var pathname = entry.pathname;
+    var search = entry.search;
+
+    var path = (basename || '') + pathname + (search || '');
+
+    var key = undefined,
+        state = undefined;
+    if (entry.key) {
+      key = entry.key;
+      state = readState(key);
+    } else {
+      key = history.createKey();
+      state = null;
+      entry.key = key;
+    }
+
+    var location = _PathUtils.parsePath(path);
+
+    return history.createLocation(_extends({}, location, { state: state }), undefined, key);
+  }
+
+  function canGo(n) {
+    var index = current + n;
+    return index >= 0 && index < entries.length;
+  }
+
+  function go(n) {
+    if (n) {
+      if (!canGo(n)) {
+        process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'Cannot go(%s) there is not enough history', n) : undefined;
+        return;
+      }
+
+      current += n;
+
+      var currentLocation = getCurrentLocation();
+
+      // change action to POP
+      history.transitionTo(_extends({}, currentLocation, { action: _Actions.POP }));
+    }
+  }
+
+  function finishTransition(location) {
+    switch (location.action) {
+      case _Actions.PUSH:
+        current += 1;
+
+        // if we are not on the top of stack
+        // remove rest and push new
+        if (current < entries.length) entries.splice(current);
+
+        entries.push(location);
+        saveState(location.key, location.state);
+        break;
+      case _Actions.REPLACE:
+        entries[current] = location;
+        saveState(location.key, location.state);
+        break;
+    }
+  }
+
+  return history;
+}
+
+exports['default'] = createMemoryHistory;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./Actions":153,"./PathUtils":158,"./createHistory":162,"_process":45,"invariant":32,"warning":169}],165:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function deprecate(fn, message) {
+  return function () {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](false, '[history] ' + message) : undefined;
+    return fn.apply(this, arguments);
+  };
+}
+
+exports['default'] = deprecate;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"_process":45,"warning":169}],166:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+function runTransitionHook(hook, location, callback) {
+  var result = hook(location, callback);
+
+  if (hook.length < 2) {
+    // Assume the hook runs synchronously and automatically
+    // call the callback with the return value.
+    callback(result);
+  } else {
+    process.env.NODE_ENV !== 'production' ? _warning2['default'](result === undefined, 'You should not "return" in a transition hook with a callback argument; call the callback instead') : undefined;
+  }
+}
+
+exports['default'] = runTransitionHook;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"_process":45,"warning":169}],167:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _ExecutionEnvironment = require('./ExecutionEnvironment');
+
+var _PathUtils = require('./PathUtils');
+
+var _runTransitionHook = require('./runTransitionHook');
+
+var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
+
+var _deprecate = require('./deprecate');
+
+var _deprecate2 = _interopRequireDefault(_deprecate);
+
+function useBasename(createHistory) {
+  return function () {
+    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var history = createHistory(options);
+
+    var basename = options.basename;
+
+    var checkedBaseHref = false;
+
+    function checkBaseHref() {
+      if (checkedBaseHref) {
+        return;
+      }
+
+      // Automatically use the value of <base href> in HTML
+      // documents as basename if it's not explicitly given.
+      if (basename == null && _ExecutionEnvironment.canUseDOM) {
+        var base = document.getElementsByTagName('base')[0];
+        var baseHref = base && base.getAttribute('href');
+
+        if (baseHref != null) {
+          basename = baseHref;
+
+          process.env.NODE_ENV !== 'production' ? _warning2['default'](false, 'Automatically setting basename using <base href> is deprecated and will ' + 'be removed in the next major release. The semantics of <base href> are ' + 'subtly different from basename. Please pass the basename explicitly in ' + 'the options to createHistory') : undefined;
+        }
+      }
+
+      checkedBaseHref = true;
+    }
+
+    function addBasename(location) {
+      checkBaseHref();
+
+      if (basename && location.basename == null) {
+        if (location.pathname.indexOf(basename) === 0) {
+          location.pathname = location.pathname.substring(basename.length);
+          location.basename = basename;
+
+          if (location.pathname === '') location.pathname = '/';
+        } else {
+          location.basename = '';
+        }
+      }
+
+      return location;
+    }
+
+    function prependBasename(location) {
+      checkBaseHref();
+
+      if (!basename) return location;
+
+      if (typeof location === 'string') location = _PathUtils.parsePath(location);
+
+      var pname = location.pathname;
+      var normalizedBasename = basename.slice(-1) === '/' ? basename : basename + '/';
+      var normalizedPathname = pname.charAt(0) === '/' ? pname.slice(1) : pname;
+      var pathname = normalizedBasename + normalizedPathname;
+
+      return _extends({}, location, {
+        pathname: pathname
+      });
+    }
+
+    // Override all read methods with basename-aware versions.
+    function listenBefore(hook) {
+      return history.listenBefore(function (location, callback) {
+        _runTransitionHook2['default'](hook, addBasename(location), callback);
+      });
+    }
+
+    function listen(listener) {
+      return history.listen(function (location) {
+        listener(addBasename(location));
+      });
+    }
+
+    // Override all write methods with basename-aware versions.
+    function push(location) {
+      history.push(prependBasename(location));
+    }
+
+    function replace(location) {
+      history.replace(prependBasename(location));
+    }
+
+    function createPath(location) {
+      return history.createPath(prependBasename(location));
+    }
+
+    function createHref(location) {
+      return history.createHref(prependBasename(location));
+    }
+
+    function createLocation(location) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      return addBasename(history.createLocation.apply(history, [prependBasename(location)].concat(args)));
+    }
+
+    // deprecated
+    function pushState(state, path) {
+      if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+      push(_extends({ state: state }, path));
+    }
+
+    // deprecated
+    function replaceState(state, path) {
+      if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+      replace(_extends({ state: state }, path));
+    }
+
+    return _extends({}, history, {
+      listenBefore: listenBefore,
+      listen: listen,
+      push: push,
+      replace: replace,
+      createPath: createPath,
+      createHref: createHref,
+      createLocation: createLocation,
+
+      pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
+      replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
+    });
+  };
+}
+
+exports['default'] = useBasename;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./ExecutionEnvironment":157,"./PathUtils":158,"./deprecate":165,"./runTransitionHook":166,"_process":45,"warning":169}],168:[function(require,module,exports){
+(function (process){
+'use strict';
+
+exports.__esModule = true;
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _warning = require('warning');
+
+var _warning2 = _interopRequireDefault(_warning);
+
+var _queryString = require('query-string');
+
+var _runTransitionHook = require('./runTransitionHook');
+
+var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
+
+var _PathUtils = require('./PathUtils');
+
+var _deprecate = require('./deprecate');
+
+var _deprecate2 = _interopRequireDefault(_deprecate);
+
+var SEARCH_BASE_KEY = '$searchBase';
+
+function defaultStringifyQuery(query) {
+  return _queryString.stringify(query).replace(/%20/g, '+');
+}
+
+var defaultParseQueryString = _queryString.parse;
+
+function isNestedObject(object) {
+  for (var p in object) {
+    if (Object.prototype.hasOwnProperty.call(object, p) && typeof object[p] === 'object' && !Array.isArray(object[p]) && object[p] !== null) return true;
+  }return false;
+}
+
+/**
+ * Returns a new createHistory function that may be used to create
+ * history objects that know how to handle URL queries.
+ */
+function useQueries(createHistory) {
+  return function () {
+    var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+    var history = createHistory(options);
+
+    var stringifyQuery = options.stringifyQuery;
+    var parseQueryString = options.parseQueryString;
+
+    if (typeof stringifyQuery !== 'function') stringifyQuery = defaultStringifyQuery;
+
+    if (typeof parseQueryString !== 'function') parseQueryString = defaultParseQueryString;
+
+    function addQuery(location) {
+      if (location.query == null) {
+        var search = location.search;
+
+        location.query = parseQueryString(search.substring(1));
+        location[SEARCH_BASE_KEY] = { search: search, searchBase: '' };
+      }
+
+      // TODO: Instead of all the book-keeping here, this should just strip the
+      // stringified query from the search.
+
+      return location;
+    }
+
+    function appendQuery(location, query) {
+      var _extends2;
+
+      var searchBaseSpec = location[SEARCH_BASE_KEY];
+      var queryString = query ? stringifyQuery(query) : '';
+      if (!searchBaseSpec && !queryString) {
+        return location;
+      }
+
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](stringifyQuery !== defaultStringifyQuery || !isNestedObject(query), 'useQueries does not stringify nested query objects by default; ' + 'use a custom stringifyQuery function') : undefined;
+
+      if (typeof location === 'string') location = _PathUtils.parsePath(location);
+
+      var searchBase = undefined;
+      if (searchBaseSpec && location.search === searchBaseSpec.search) {
+        searchBase = searchBaseSpec.searchBase;
+      } else {
+        searchBase = location.search || '';
+      }
+
+      var search = searchBase;
+      if (queryString) {
+        search += (search ? '&' : '?') + queryString;
+      }
+
+      return _extends({}, location, (_extends2 = {
+        search: search
+      }, _extends2[SEARCH_BASE_KEY] = { search: search, searchBase: searchBase }, _extends2));
+    }
+
+    // Override all read methods with query-aware versions.
+    function listenBefore(hook) {
+      return history.listenBefore(function (location, callback) {
+        _runTransitionHook2['default'](hook, addQuery(location), callback);
+      });
+    }
+
+    function listen(listener) {
+      return history.listen(function (location) {
+        listener(addQuery(location));
+      });
+    }
+
+    // Override all write methods with query-aware versions.
+    function push(location) {
+      history.push(appendQuery(location, location.query));
+    }
+
+    function replace(location) {
+      history.replace(appendQuery(location, location.query));
+    }
+
+    function createPath(location, query) {
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](!query, 'the query argument to createPath is deprecated; use a location descriptor instead') : undefined;
+
+      return history.createPath(appendQuery(location, query || location.query));
+    }
+
+    function createHref(location, query) {
+      process.env.NODE_ENV !== 'production' ? _warning2['default'](!query, 'the query argument to createHref is deprecated; use a location descriptor instead') : undefined;
+
+      return history.createHref(appendQuery(location, query || location.query));
+    }
+
+    function createLocation(location) {
+      for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+
+      var fullLocation = history.createLocation.apply(history, [appendQuery(location, location.query)].concat(args));
+      if (location.query) {
+        fullLocation.query = location.query;
+      }
+      return addQuery(fullLocation);
+    }
+
+    // deprecated
+    function pushState(state, path, query) {
+      if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+      push(_extends({ state: state }, path, { query: query }));
+    }
+
+    // deprecated
+    function replaceState(state, path, query) {
+      if (typeof path === 'string') path = _PathUtils.parsePath(path);
+
+      replace(_extends({ state: state }, path, { query: query }));
+    }
+
+    return _extends({}, history, {
+      listenBefore: listenBefore,
+      listen: listen,
+      push: push,
+      replace: replace,
+      createPath: createPath,
+      createHref: createHref,
+      createLocation: createLocation,
+
+      pushState: _deprecate2['default'](pushState, 'pushState is deprecated; use push instead'),
+      replaceState: _deprecate2['default'](replaceState, 'replaceState is deprecated; use replace instead')
+    });
+  };
+}
+
+exports['default'] = useQueries;
+module.exports = exports['default'];
+}).call(this,require('_process'))
+},{"./PathUtils":158,"./deprecate":165,"./runTransitionHook":166,"_process":45,"query-string":46,"warning":169}],169:[function(require,module,exports){
+/**
+ * Copyright 2014-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+'use strict';
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning = function() {};
+
+if ("production" !== 'production') {
+  warning = function(condition, format, args) {
+    var len = arguments.length;
+    args = new Array(len > 2 ? len - 2 : 0);
+    for (var key = 2; key < len; key++) {
+      args[key - 2] = arguments[key];
+    }
+    if (format === undefined) {
+      throw new Error(
+        '`warning(condition, format, ...args)` requires a warning ' +
+        'message argument'
+      );
+    }
+
+    if (format.length < 10 || (/^[s\W]*$/).test(format)) {
+      throw new Error(
+        'The warning format should be able to uniquely identify this ' +
+        'warning. Please, use a more descriptive format than: ' + format
+      );
+    }
+
+    if (!condition) {
+      var argIndex = 0;
+      var message = 'Warning: ' +
+        format.replace(/%s/g, function() {
+          return args[argIndex++];
+        });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch(x) {}
+    }
+  };
+}
+
+module.exports = warning;
+
+},{}],170:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -25239,7 +25239,7 @@ function validationMixin(strategy) {
     return Validation;
   };
 }
-},{"../utils":174,"../validationFactory":176,"invariant":49,"lodash.result":53,"react":325,"react-display-name":123}],171:[function(require,module,exports){
+},{"../utils":174,"../validationFactory":176,"invariant":32,"lodash.result":36,"react":325,"react-display-name":106}],171:[function(require,module,exports){
 'use strict';
 
 var _validationMixin = require('./components/validationMixin');
@@ -25301,7 +25301,7 @@ function flattenErrorsObject(obj) {
     return value;
   }));
 }
-},{"lodash.flatten":50,"lodash.values":54}],174:[function(require,module,exports){
+},{"lodash.flatten":33,"lodash.values":37}],174:[function(require,module,exports){
 'use strict';
 
 var _defined = require('./defined');
@@ -25388,7 +25388,7 @@ function validationFactory(strategy) {
     }
   }, _strategy);
 }
-},{"./utils":174,"invariant":49,"lodash.get":51,"lodash.isempty":52}],177:[function(require,module,exports){
+},{"./utils":174,"invariant":32,"lodash.get":34,"lodash.isempty":35}],177:[function(require,module,exports){
 /**
  * Validate using the validatorjs library as a strategy for react-validation-mixin
  *
@@ -26413,7 +26413,7 @@ _assign(CallbackQueue.prototype, {
 PooledClass.addPoolingTo(CallbackQueue);
 
 module.exports = CallbackQueue;
-},{"./PooledClass":202,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":61}],183:[function(require,module,exports){
+},{"./PooledClass":202,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":44}],183:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -28799,7 +28799,7 @@ _assign(FallbackCompositionState.prototype, {
 PooledClass.addPoolingTo(FallbackCompositionState);
 
 module.exports = FallbackCompositionState;
-},{"./PooledClass":202,"./getTextContentAccessor":311,"object-assign":61}],199:[function(require,module,exports){
+},{"./PooledClass":202,"./getTextContentAccessor":311,"object-assign":44}],199:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -29418,7 +29418,7 @@ var React = {
 };
 
 module.exports = React;
-},{"./ReactChildren":208,"./ReactClass":210,"./ReactComponent":211,"./ReactDOMFactories":224,"./ReactElement":239,"./ReactElementValidator":240,"./ReactPropTypes":262,"./ReactPureComponent":264,"./ReactVersion":275,"./onlyChild":316,"fbjs/lib/warning":30,"object-assign":61}],204:[function(require,module,exports){
+},{"./ReactChildren":208,"./ReactClass":210,"./ReactComponent":211,"./ReactDOMFactories":224,"./ReactElement":239,"./ReactElementValidator":240,"./ReactPropTypes":262,"./ReactPureComponent":264,"./ReactVersion":275,"./onlyChild":316,"fbjs/lib/warning":30,"object-assign":44}],204:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -29736,7 +29736,7 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 });
 
 module.exports = ReactBrowserEventEmitter;
-},{"./EventConstants":193,"./EventPluginRegistry":195,"./ReactEventEmitterMixin":243,"./ViewportMetrics":293,"./getVendorPrefixedEventName":312,"./isEventSupported":314,"object-assign":61}],205:[function(require,module,exports){
+},{"./EventConstants":193,"./EventPluginRegistry":195,"./ReactEventEmitterMixin":243,"./ViewportMetrics":293,"./getVendorPrefixedEventName":312,"./isEventSupported":314,"object-assign":44}],205:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -29824,7 +29824,7 @@ var ReactCSSTransitionGroup = React.createClass({
 });
 
 module.exports = ReactCSSTransitionGroup;
-},{"./React":203,"./ReactCSSTransitionGroupChild":206,"./ReactTransitionGroup":272,"object-assign":61}],206:[function(require,module,exports){
+},{"./React":203,"./ReactCSSTransitionGroupChild":206,"./ReactTransitionGroup":272,"object-assign":44}],206:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -30149,7 +30149,7 @@ var ReactChildReconciler = {
 
 module.exports = ReactChildReconciler;
 }).call(this,require('_process'))
-},{"./KeyEscapeUtils":200,"./ReactComponentTreeHook":214,"./ReactReconciler":266,"./instantiateReactComponent":313,"./shouldUpdateReactComponent":322,"./traverseAllChildren":323,"_process":62,"fbjs/lib/warning":30}],208:[function(require,module,exports){
+},{"./KeyEscapeUtils":200,"./ReactComponentTreeHook":214,"./ReactReconciler":266,"./instantiateReactComponent":313,"./shouldUpdateReactComponent":322,"./traverseAllChildren":323,"_process":45,"fbjs/lib/warning":30}],208:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -31129,7 +31129,7 @@ var ReactClass = {
 };
 
 module.exports = ReactClass;
-},{"./ReactComponent":211,"./ReactElement":239,"./ReactNoopUpdateQueue":258,"./ReactPropTypeLocationNames":260,"./ReactPropTypeLocations":261,"./reactProdInvariant":318,"fbjs/lib/emptyObject":14,"fbjs/lib/invariant":21,"fbjs/lib/keyMirror":24,"fbjs/lib/keyOf":25,"fbjs/lib/warning":30,"object-assign":61}],211:[function(require,module,exports){
+},{"./ReactComponent":211,"./ReactElement":239,"./ReactNoopUpdateQueue":258,"./ReactPropTypeLocationNames":260,"./ReactPropTypeLocations":261,"./reactProdInvariant":318,"fbjs/lib/emptyObject":14,"fbjs/lib/invariant":21,"fbjs/lib/keyMirror":24,"fbjs/lib/keyOf":25,"fbjs/lib/warning":30,"object-assign":44}],211:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -32589,7 +32589,7 @@ var ReactCompositeComponent = {
 };
 
 module.exports = ReactCompositeComponent;
-},{"./ReactComponentEnvironment":213,"./ReactCurrentOwner":216,"./ReactElement":239,"./ReactErrorUtils":242,"./ReactInstanceMap":250,"./ReactInstrumentation":251,"./ReactNodeTypes":257,"./ReactPropTypeLocations":261,"./ReactReconciler":266,"./checkReactTypeSpec":297,"./reactProdInvariant":318,"./shouldUpdateReactComponent":322,"fbjs/lib/emptyObject":14,"fbjs/lib/invariant":21,"fbjs/lib/shallowEqual":29,"fbjs/lib/warning":30,"object-assign":61}],216:[function(require,module,exports){
+},{"./ReactComponentEnvironment":213,"./ReactCurrentOwner":216,"./ReactElement":239,"./ReactErrorUtils":242,"./ReactInstanceMap":250,"./ReactInstrumentation":251,"./ReactNodeTypes":257,"./ReactPropTypeLocations":261,"./ReactReconciler":266,"./checkReactTypeSpec":297,"./reactProdInvariant":318,"./shouldUpdateReactComponent":322,"fbjs/lib/emptyObject":14,"fbjs/lib/invariant":21,"fbjs/lib/shallowEqual":29,"fbjs/lib/warning":30,"object-assign":44}],216:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -33763,7 +33763,7 @@ ReactDOMComponent.Mixin = {
 _assign(ReactDOMComponent.prototype, ReactDOMComponent.Mixin, ReactMultiChild.Mixin);
 
 module.exports = ReactDOMComponent;
-},{"./AutoFocusUtils":178,"./CSSPropertyOperations":181,"./DOMLazyTree":185,"./DOMNamespaces":186,"./DOMProperty":187,"./DOMPropertyOperations":188,"./EventConstants":193,"./EventPluginHub":194,"./EventPluginRegistry":195,"./ReactBrowserEventEmitter":204,"./ReactDOMButton":218,"./ReactDOMComponentFlags":220,"./ReactDOMComponentTree":221,"./ReactDOMInput":227,"./ReactDOMOption":229,"./ReactDOMSelect":230,"./ReactDOMTextarea":233,"./ReactInstrumentation":251,"./ReactMultiChild":255,"./ReactServerRenderingTransaction":268,"./escapeTextContentForBrowser":300,"./isEventSupported":314,"./reactProdInvariant":318,"./validateDOMNesting":324,"fbjs/lib/emptyFunction":13,"fbjs/lib/invariant":21,"fbjs/lib/keyOf":25,"fbjs/lib/shallowEqual":29,"fbjs/lib/warning":30,"object-assign":61}],220:[function(require,module,exports){
+},{"./AutoFocusUtils":178,"./CSSPropertyOperations":181,"./DOMLazyTree":185,"./DOMNamespaces":186,"./DOMProperty":187,"./DOMPropertyOperations":188,"./EventConstants":193,"./EventPluginHub":194,"./EventPluginRegistry":195,"./ReactBrowserEventEmitter":204,"./ReactDOMButton":218,"./ReactDOMComponentFlags":220,"./ReactDOMComponentTree":221,"./ReactDOMInput":227,"./ReactDOMOption":229,"./ReactDOMSelect":230,"./ReactDOMTextarea":233,"./ReactInstrumentation":251,"./ReactMultiChild":255,"./ReactServerRenderingTransaction":268,"./escapeTextContentForBrowser":300,"./isEventSupported":314,"./reactProdInvariant":318,"./validateDOMNesting":324,"fbjs/lib/emptyFunction":13,"fbjs/lib/invariant":21,"fbjs/lib/keyOf":25,"fbjs/lib/shallowEqual":29,"fbjs/lib/warning":30,"object-assign":44}],220:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -34066,7 +34066,7 @@ _assign(ReactDOMEmptyComponent.prototype, {
 });
 
 module.exports = ReactDOMEmptyComponent;
-},{"./DOMLazyTree":185,"./ReactDOMComponentTree":221,"object-assign":61}],224:[function(require,module,exports){
+},{"./DOMLazyTree":185,"./ReactDOMComponentTree":221,"object-assign":44}],224:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -34561,7 +34561,7 @@ function _handleChange(event) {
 }
 
 module.exports = ReactDOMInput;
-},{"./DOMPropertyOperations":188,"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":61}],228:[function(require,module,exports){
+},{"./DOMPropertyOperations":188,"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":44}],228:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -34729,7 +34729,7 @@ var ReactDOMOption = {
 };
 
 module.exports = ReactDOMOption;
-},{"./ReactChildren":208,"./ReactDOMComponentTree":221,"./ReactDOMSelect":230,"fbjs/lib/warning":30,"object-assign":61}],230:[function(require,module,exports){
+},{"./ReactChildren":208,"./ReactDOMComponentTree":221,"./ReactDOMSelect":230,"fbjs/lib/warning":30,"object-assign":44}],230:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -34931,7 +34931,7 @@ function _handleChange(event) {
 }
 
 module.exports = ReactDOMSelect;
-},{"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"fbjs/lib/warning":30,"object-assign":61}],231:[function(require,module,exports){
+},{"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"fbjs/lib/warning":30,"object-assign":44}],231:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -35309,7 +35309,7 @@ _assign(ReactDOMTextComponent.prototype, {
 });
 
 module.exports = ReactDOMTextComponent;
-},{"./DOMChildrenOperations":184,"./DOMLazyTree":185,"./ReactDOMComponentTree":221,"./escapeTextContentForBrowser":300,"./reactProdInvariant":318,"./validateDOMNesting":324,"fbjs/lib/invariant":21,"object-assign":61}],233:[function(require,module,exports){
+},{"./DOMChildrenOperations":184,"./DOMLazyTree":185,"./ReactDOMComponentTree":221,"./escapeTextContentForBrowser":300,"./reactProdInvariant":318,"./validateDOMNesting":324,"fbjs/lib/invariant":21,"object-assign":44}],233:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -35465,7 +35465,7 @@ function _handleChange(event) {
 }
 
 module.exports = ReactDOMTextarea;
-},{"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":61}],234:[function(require,module,exports){
+},{"./DisabledInputUtils":191,"./LinkedValueUtils":201,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":44}],234:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -36092,7 +36092,7 @@ var ReactDefaultBatchingStrategy = {
 };
 
 module.exports = ReactDefaultBatchingStrategy;
-},{"./ReactUpdates":274,"./Transaction":292,"fbjs/lib/emptyFunction":13,"object-assign":61}],238:[function(require,module,exports){
+},{"./ReactUpdates":274,"./Transaction":292,"fbjs/lib/emptyFunction":13,"object-assign":44}],238:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -36542,7 +36542,7 @@ ReactElement.isValidElement = function (object) {
 ReactElement.REACT_ELEMENT_TYPE = REACT_ELEMENT_TYPE;
 
 module.exports = ReactElement;
-},{"./ReactCurrentOwner":216,"./canDefineProperty":296,"fbjs/lib/warning":30,"object-assign":61}],240:[function(require,module,exports){
+},{"./ReactCurrentOwner":216,"./canDefineProperty":296,"fbjs/lib/warning":30,"object-assign":44}],240:[function(require,module,exports){
 /**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -37071,7 +37071,7 @@ var ReactEventListener = {
 };
 
 module.exports = ReactEventListener;
-},{"./PooledClass":202,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./getEventTarget":307,"fbjs/lib/EventListener":6,"fbjs/lib/ExecutionEnvironment":7,"fbjs/lib/getUnboundedScrollPosition":18,"object-assign":61}],245:[function(require,module,exports){
+},{"./PooledClass":202,"./ReactDOMComponentTree":221,"./ReactUpdates":274,"./getEventTarget":307,"fbjs/lib/EventListener":6,"fbjs/lib/ExecutionEnvironment":7,"fbjs/lib/getUnboundedScrollPosition":18,"object-assign":44}],245:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -37171,7 +37171,7 @@ var ReactHostComponent = {
 };
 
 module.exports = ReactHostComponent;
-},{"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":61}],247:[function(require,module,exports){
+},{"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":44}],247:[function(require,module,exports){
 /**
  * Copyright 2016-present, Facebook, Inc.
  * All rights reserved.
@@ -39323,7 +39323,7 @@ _assign(ReactPureComponent.prototype, ReactComponent.prototype);
 ReactPureComponent.prototype.isPureReactComponent = true;
 
 module.exports = ReactPureComponent;
-},{"./ReactComponent":211,"./ReactNoopUpdateQueue":258,"fbjs/lib/emptyObject":14,"object-assign":61}],265:[function(require,module,exports){
+},{"./ReactComponent":211,"./ReactNoopUpdateQueue":258,"fbjs/lib/emptyObject":14,"object-assign":44}],265:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -39502,7 +39502,7 @@ _assign(ReactReconcileTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactReconcileTransaction);
 
 module.exports = ReactReconcileTransaction;
-},{"./CallbackQueue":182,"./PooledClass":202,"./ReactBrowserEventEmitter":204,"./ReactInputSelection":249,"./ReactInstrumentation":251,"./ReactUpdateQueue":273,"./Transaction":292,"object-assign":61}],266:[function(require,module,exports){
+},{"./CallbackQueue":182,"./PooledClass":202,"./ReactBrowserEventEmitter":204,"./ReactInputSelection":249,"./ReactInstrumentation":251,"./ReactUpdateQueue":273,"./Transaction":292,"object-assign":44}],266:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -39843,7 +39843,7 @@ _assign(ReactServerRenderingTransaction.prototype, Transaction.Mixin, Mixin);
 PooledClass.addPoolingTo(ReactServerRenderingTransaction);
 
 module.exports = ReactServerRenderingTransaction;
-},{"./PooledClass":202,"./ReactInstrumentation":251,"./ReactServerUpdateQueue":269,"./Transaction":292,"object-assign":61}],269:[function(require,module,exports){
+},{"./PooledClass":202,"./ReactInstrumentation":251,"./ReactServerUpdateQueue":269,"./Transaction":292,"object-assign":44}],269:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -40410,7 +40410,7 @@ var ReactTransitionGroup = React.createClass({
 });
 
 module.exports = ReactTransitionGroup;
-},{"./React":203,"./ReactInstanceMap":250,"./ReactTransitionChildMapping":270,"fbjs/lib/emptyFunction":13,"object-assign":61}],273:[function(require,module,exports){
+},{"./React":203,"./ReactInstanceMap":250,"./ReactTransitionChildMapping":270,"fbjs/lib/emptyFunction":13,"object-assign":44}],273:[function(require,module,exports){
 /**
  * Copyright 2015-present, Facebook, Inc.
  * All rights reserved.
@@ -40889,7 +40889,7 @@ var ReactUpdates = {
 };
 
 module.exports = ReactUpdates;
-},{"./CallbackQueue":182,"./PooledClass":202,"./ReactFeatureFlags":245,"./ReactReconciler":266,"./Transaction":292,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":61}],275:[function(require,module,exports){
+},{"./CallbackQueue":182,"./PooledClass":202,"./ReactFeatureFlags":245,"./ReactReconciler":266,"./Transaction":292,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"object-assign":44}],275:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -42461,7 +42461,7 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
     "production" !== 'production' ? warning(warningCondition, 'This synthetic event is reused for performance reasons. If you\'re seeing this, ' + 'you\'re %s `%s` on a released/nullified synthetic event. %s. ' + 'If you must keep the original synthetic event around, use event.persist(). ' + 'See https://fb.me/react-event-pooling for more information.', action, propName, result) : void 0;
   }
 }
-},{"./PooledClass":202,"fbjs/lib/emptyFunction":13,"fbjs/lib/warning":30,"object-assign":61}],284:[function(require,module,exports){
+},{"./PooledClass":202,"fbjs/lib/emptyFunction":13,"fbjs/lib/warning":30,"object-assign":44}],284:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -43376,7 +43376,7 @@ function checkReactTypeSpec(typeSpecs, values, location, componentName, element,
 
 module.exports = checkReactTypeSpec;
 }).call(this,require('_process'))
-},{"./ReactComponentTreeHook":214,"./ReactPropTypeLocationNames":260,"./ReactPropTypesSecret":263,"./reactProdInvariant":318,"_process":62,"fbjs/lib/invariant":21,"fbjs/lib/warning":30}],298:[function(require,module,exports){
+},{"./ReactComponentTreeHook":214,"./ReactPropTypeLocationNames":260,"./ReactPropTypesSecret":263,"./reactProdInvariant":318,"_process":45,"fbjs/lib/invariant":21,"fbjs/lib/warning":30}],298:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -43753,7 +43753,7 @@ function flattenChildren(children, selfDebugID) {
 
 module.exports = flattenChildren;
 }).call(this,require('_process'))
-},{"./KeyEscapeUtils":200,"./ReactComponentTreeHook":214,"./traverseAllChildren":323,"_process":62,"fbjs/lib/warning":30}],303:[function(require,module,exports){
+},{"./KeyEscapeUtils":200,"./ReactComponentTreeHook":214,"./traverseAllChildren":323,"_process":45,"fbjs/lib/warning":30}],303:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -44423,7 +44423,7 @@ function instantiateReactComponent(node, shouldHaveDebugID) {
 }
 
 module.exports = instantiateReactComponent;
-},{"./ReactCompositeComponent":215,"./ReactEmptyComponent":241,"./ReactHostComponent":246,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":61}],314:[function(require,module,exports){
+},{"./ReactCompositeComponent":215,"./ReactEmptyComponent":241,"./ReactHostComponent":246,"./reactProdInvariant":318,"fbjs/lib/invariant":21,"fbjs/lib/warning":30,"object-assign":44}],314:[function(require,module,exports){
 /**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -45388,7 +45388,7 @@ if ("production" !== 'production') {
 }
 
 module.exports = validateDOMNesting;
-},{"fbjs/lib/emptyFunction":13,"fbjs/lib/warning":30,"object-assign":61}],325:[function(require,module,exports){
+},{"fbjs/lib/emptyFunction":13,"fbjs/lib/warning":30,"object-assign":44}],325:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./lib/React');
@@ -45647,7 +45647,7 @@ function combineReducers(reducers) {
     return hasChanged ? nextState : state;
   };
 }
-},{"./createStore":330,"./utils/warning":332,"lodash/isPlainObject":59}],329:[function(require,module,exports){
+},{"./createStore":330,"./utils/warning":332,"lodash/isPlainObject":42}],329:[function(require,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -45948,7 +45948,7 @@ function createStore(reducer, preloadedState, enhancer) {
     replaceReducer: replaceReducer
   }, _ref2[_symbolObservable2['default']] = observable, _ref2;
 }
-},{"lodash/isPlainObject":59,"symbol-observable":334}],331:[function(require,module,exports){
+},{"lodash/isPlainObject":42,"symbol-observable":334}],331:[function(require,module,exports){
 'use strict';
 
 exports.__esModule = true;
@@ -47409,8 +47409,8 @@ Validator.registerAsync = function(name, fn, message) {
 module.exports = Validator;
 
 },{"./async":337,"./attributes":338,"./errors":339,"./lang":340,"./rules":343}],345:[function(require,module,exports){
-arguments[4][47][0].apply(exports,arguments)
-},{"dup":47}],346:[function(require,module,exports){
+arguments[4][169][0].apply(exports,arguments)
+},{"dup":169}],346:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -47968,7 +47968,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
     return state;
 })(App);
 
-},{"../store":369,"./Progress":352,"./SlideBackground":353,"./SlideContainer":354,"react":325,"react-redux":127,"react/lib/ReactCSSTransitionGroup":205}],349:[function(require,module,exports){
+},{"../store":369,"./Progress":352,"./SlideBackground":353,"./SlideContainer":354,"react":325,"react-redux":110,"react/lib/ReactCSSTransitionGroup":205}],349:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48174,7 +48174,7 @@ var Graph = function (_React$Component) {
 
 exports.default = Graph;
 
-},{"d3":1,"rd3":95,"react":325}],351:[function(require,module,exports){
+},{"d3":1,"rd3":78,"react":325}],351:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48369,7 +48369,7 @@ exports.default = (0, _reactRedux.connect)(null, function (dispatch, ownProps) {
     };
 })(SlideContainer);
 
-},{"../actions":347,"react":325,"react-redux":127}],355:[function(require,module,exports){
+},{"../actions":347,"react":325,"react-redux":110}],355:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49070,7 +49070,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Future);
 
-},{"../../data/graph.json":367,"../../utils":370,"../Graph":350,"../forms/Petition":355,"react":325,"react-redux":127}],360:[function(require,module,exports){
+},{"../../data/graph.json":367,"../../utils":370,"../Graph":350,"../forms/Petition":355,"react":325,"react-redux":110}],360:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49180,7 +49180,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(HomeStandard);
 
-},{"../../utils":370,"react":325,"react-redux":127}],361:[function(require,module,exports){
+},{"../../utils":370,"react":325,"react-redux":110}],361:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49259,7 +49259,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(HousePrices);
 
-},{"../../utils":370,"react":325,"react-redux":127}],362:[function(require,module,exports){
+},{"../../utils":370,"react":325,"react-redux":110}],362:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49367,7 +49367,7 @@ exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
     };
 })(InYourArea);
 
-},{"../../actions":347,"../../utils":370,"react":325,"react-redux":127}],363:[function(require,module,exports){
+},{"../../actions":347,"../../utils":370,"react":325,"react-redux":110}],363:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49485,7 +49485,7 @@ exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
     };
 })(Milk);
 
-},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Postcode":357,"react":325,"react-redux":127}],364:[function(require,module,exports){
+},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Postcode":357,"react":325,"react-redux":110}],364:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49616,7 +49616,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Share);
 
-},{"../../utils":370,"../forms/Phone":356,"react":325,"react-redux":127}],365:[function(require,module,exports){
+},{"../../utils":370,"../forms/Phone":356,"react":325,"react-redux":110}],365:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49741,7 +49741,7 @@ exports.default = (0, _reactRedux.connect)(null, function (dispatch) {
     };
 })(Start);
 
-},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Yob":358,"react":325,"react-redux":127}],366:[function(require,module,exports){
+},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Yob":358,"react":325,"react-redux":110}],366:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49870,7 +49870,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Tenure);
 
-},{"../../utils":370,"react":325,"react-redux":127}],367:[function(require,module,exports){
+},{"../../utils":370,"react":325,"react-redux":110}],367:[function(require,module,exports){
 module.exports=[
       {
             "name" : "Total",
@@ -49979,12 +49979,12 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(
         _reactRouter.Router,
         { history: _reactRouter.browserHistory },
-        _react2.default.createElement(_reactRouter.Route, { path: '/', component: _App2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: '/:slug', component: _App2.default })
+        _react2.default.createElement(_reactRouter.Route, { path: 'affordability', component: _App2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: 'affordability/:slug', component: _App2.default })
     )
 ), document.getElementById('affordability-app'));
 
-},{"./components/App":348,"./store":369,"react":325,"react-dom":124,"react-redux":127,"react-router":161}],369:[function(require,module,exports){
+},{"./components/App":348,"./store":369,"react":325,"react-dom":107,"react-redux":110,"react-router":144}],369:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50079,11 +50079,11 @@ exports.default = (0, _redux.createStore)(function () {
         case _actions.actions.GOTO_NEXT:
             {
                 var defaultSlug = action.currentSlug || slides[0].slug;
-                _reactRouter.browserHistory.push(slugs[slugs.indexOf(defaultSlug) + 1]);
+                _reactRouter.browserHistory.push('/affordability/' + slugs[slugs.indexOf(defaultSlug) + 1]);
                 return state;
             }
         case _actions.actions.GOTO_SLIDE:
-            _reactRouter.browserHistory.push(action.nextSlug);
+            _reactRouter.browserHistory.push('/affordability/' + action.nextSlug);
             return state;
         case _actions.actions.UPDATE_TENURE:
             return _extends({}, state, { tenure: action.value });
@@ -50095,7 +50095,7 @@ exports.default = (0, _redux.createStore)(function () {
     }
 });
 
-},{"./actions":347,"./components/slides/Future":359,"./components/slides/HomeStandard":360,"./components/slides/HousePrices":361,"./components/slides/InYourArea":362,"./components/slides/Milk":363,"./components/slides/Share":364,"./components/slides/Start":365,"./components/slides/Tenure":366,"react-router":161,"redux":331}],370:[function(require,module,exports){
+},{"./actions":347,"./components/slides/Future":359,"./components/slides/HomeStandard":360,"./components/slides/HousePrices":361,"./components/slides/InYourArea":362,"./components/slides/Milk":363,"./components/slides/Share":364,"./components/slides/Start":365,"./components/slides/Tenure":366,"react-router":144,"redux":331}],370:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50164,4 +50164,4 @@ var tenures = exports.tenures = {
     TEMPORARY: 'Living in temporary accommodation'
 };
 
-},{"numeral":60,"whatwg-fetch":346}]},{},[368]);
+},{"numeral":43,"whatwg-fetch":346}]},{},[368]);
