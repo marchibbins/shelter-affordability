@@ -48,11 +48,7 @@ const initialState = {
     locationStruggling: 'XXX',
 
     // Tenure
-    tenure: '',
-
-    // Graph data
-    buildsLastYear: 170000,
-    buildsYob: 220000
+    tenure: ''
 };
 
 export default createStore((state = initialState, action) => {

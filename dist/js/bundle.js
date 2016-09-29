@@ -49015,16 +49015,24 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Future = function (_React$Component) {
     _inherits(Future, _React$Component);
 
-    function Future() {
+    function Future(props) {
         _classCallCheck(this, Future);
 
-        return _possibleConstructorReturn(this, (Future.__proto__ || Object.getPrototypeOf(Future)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (Future.__proto__ || Object.getPrototypeOf(Future)).call(this, props));
+
+        _this.buildsLastYear = _graph2.default[0].values.find(function (year) {
+            return year[0] === 2015;
+        })[1];
+        _this.buildsYob = _graph2.default[0].values.find(function (year) {
+            return year[0].toString() === _this.props.yob;
+        })[1];
+        return _this;
     }
 
     _createClass(Future, [{
         key: 'getBuildsDiff',
         value: function getBuildsDiff() {
-            var diff = this.props.buildsYob - this.props.buildsLastYear;
+            var diff = this.buildsYob - this.buildsLastYear;
             return (0, _utils.formatNumber)(Math.abs(diff)) + ' ' + (diff > 0 ? 'more' : 'fewer');
         }
     }, {
@@ -49042,7 +49050,7 @@ var Future = function (_React$Component) {
                     'h3',
                     { className: 'slide__title' },
                     'House-building has been declining for years, which has contributed to prices rocketing. In 2015, we only built ',
-                    (0, _utils.formatNumber)(this.props.buildsLastYear),
+                    (0, _utils.formatNumber)(this.buildsLastYear),
                     ' homes in the UK – ',
                     this.getBuildsDiff(),
                     ' than in the year you were born.'
@@ -49064,7 +49072,7 @@ var Future = function (_React$Component) {
 Future.slug = 'future';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['buildsLastYear', 'buildsYob', 'postcode', 'yob']);
+    return (0, _utils.pick)(state, ['postcode', 'yob']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Future);
@@ -50078,11 +50086,7 @@ var initialState = {
     locationStruggling: 'XXX',
 
     // Tenure
-    tenure: '',
-
-    // Graph data
-    buildsLastYear: 170000,
-    buildsYob: 220000
+    tenure: ''
 };
 
 exports.default = (0, _redux.createStore)(function () {

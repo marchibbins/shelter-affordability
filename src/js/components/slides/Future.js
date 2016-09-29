@@ -10,8 +10,14 @@ import graphData from '../../data/graph.json';
 
 class Future extends React.Component {
 
+    constructor (props) {
+        super(props);
+        this.buildsLastYear = graphData[0].values.find(year => year[0] === 2015)[1];
+        this.buildsYob = graphData[0].values.find(year => year[0].toString() === this.props.yob)[1];
+    }
+
     getBuildsDiff () {
-        let diff = this.props.buildsYob - this.props.buildsLastYear;
+        let diff = this.buildsYob - this.buildsLastYear;
         return formatNumber(Math.abs(diff)) + ' ' + (diff > 0 ? 'more' : 'fewer');
     }
 
@@ -24,7 +30,7 @@ class Future extends React.Component {
             <article>
                 <h3 className="slide__title">House-building has been declining for years,
                     which has contributed to prices rocketing. In 2015, we only
-                    built {formatNumber(this.props.buildsLastYear)} homes in the
+                    built {formatNumber(this.buildsLastYear)} homes in the
                     UK – {this.getBuildsDiff()} than in the year you were born.</h3>
                 <Graph data={graphData} yob={this.props.yob}/>
                 <h4 className="slide__title">Things don’t have to be this way.
@@ -40,6 +46,6 @@ class Future extends React.Component {
 
 Future.slug = 'future';
 
-const stateToProps = state => pick(state, ['buildsLastYear', 'buildsYob', 'postcode', 'yob']);
+const stateToProps = state => pick(state, ['postcode', 'yob']);
 
 export default connect(stateToProps)(Future);
