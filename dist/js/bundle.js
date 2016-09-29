@@ -50116,7 +50116,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var api = exports.api = {
-    URL: '//england.shelter.org.uk/content/api',
+    URL: '//www.shelter.org.uk/content/api',
 
     getJSON: function getJSON(url) {
         return fetch(url).then(function (response) {
