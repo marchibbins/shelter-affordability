@@ -49050,7 +49050,7 @@ var Future = function (_React$Component) {
         key: 'getBuildsDiff',
         value: function getBuildsDiff() {
             var diff = this.buildsYob - this.buildsLastYear;
-            return (0, _utils.formatNumber)(Math.abs(diff)) + ' ' + (diff > 0 ? 'more' : 'fewer');
+            return (0, _utils.formatNumber)(Math.abs(diff)) + ' ' + (diff > 0 ? 'fewer' : 'more');
         }
     }, {
         key: 'handleSubmit',

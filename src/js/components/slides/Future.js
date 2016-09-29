@@ -18,7 +18,7 @@ class Future extends React.Component {
 
     getBuildsDiff () {
         let diff = this.buildsYob - this.buildsLastYear;
-        return formatNumber(Math.abs(diff)) + ' ' + (diff > 0 ? 'more' : 'fewer');
+        return formatNumber(Math.abs(diff)) + ' ' + (diff > 0 ? 'fewer' : 'more');
     }
 
     handleSubmit (event) {
