@@ -49549,7 +49549,7 @@ var Share = function (_React$Component) {
     }, {
         key: 'getContent',
         value: function getContent() {
-            var socialMessage = 'House prices have risen ' + this.props.locationIncrease + ' in my lifetime. ' + 'See how they\'ve changed since you were born.';
+            var socialMessage = 'House prices have risen ' + this.props.locationIncrease + ' since I was born ' + 'Find out how expensive they’ve become in your lifetime';
 
             if (!this.state.shared) {
                 return _react2.default.createElement(
