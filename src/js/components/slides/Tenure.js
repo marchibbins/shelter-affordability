@@ -48,7 +48,7 @@ class Tenure extends React.Component {
 
     render () {
         return (
-            <article>
+            <article className="slide">
                 {this.getStatement()}
                 <button onClick={this.props.gotoNext} className="button button--cta">
                     How many people are struggling in {this.props.locationRegion}?

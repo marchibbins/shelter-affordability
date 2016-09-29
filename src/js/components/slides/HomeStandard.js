@@ -22,7 +22,7 @@ class HomeStandard extends React.Component {
     render () {
         if (this.state.showDescription) {
             return (
-                <article>
+                <article className="slide">
                     <h3 className="slide__title">Living Home Standard</h3>
                     <h4 className="slide__title">The Living Home Standard has been
                         developed by the British public to define what everyone
@@ -36,7 +36,7 @@ class HomeStandard extends React.Component {
             );
         } else {
             return (
-                <article>
+                <article className="slide">
                     <h3 className="slide__title">Today, {this.props.locationStruggling}% of
                         people in {this.props.locationRegion} struggle to pay
                         their rent or mortgage, according to research for

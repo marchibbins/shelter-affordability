@@ -11,7 +11,7 @@ class HousePrices extends React.Component {
             openingStatement = `When you were ${this.props.yobAgeReplacement} years old`;
         }
         return (
-            <article>
+            <article className="slide">
                 <h3 className="slide__title">
                     {openingStatement}, the average cost
                     of a three-bedroom house in the UK

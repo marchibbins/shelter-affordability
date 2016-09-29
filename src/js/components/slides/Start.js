@@ -53,7 +53,7 @@ class Start extends React.Component {
 
     render () {
         return (
-            <article>
+            <article className="slide">
                 <h3 className="slide__title">Just how expensive have house
                     prices become in your lifetime?</h3>
                 <Yob onSubmit={this.handleSubmit.bind(this)}/>

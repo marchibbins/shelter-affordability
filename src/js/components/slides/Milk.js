@@ -43,7 +43,7 @@ class Milk extends React.Component {
 
     render () {
         return (
-            <article>
+            <article className="slide">
                 <h3 className="slide__title">
                     If a pint of milk had risen in line with house prices, it would
                     cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h3>

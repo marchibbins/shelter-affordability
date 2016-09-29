@@ -24,21 +24,7 @@ a:hover, a:active, a:focus {
     font-family: $fontFamily;
 
     @include tablet {
-        padding: 20px 40px;
-    }
-
-    main {
-        min-height: 400px;
-        margin-bottom: 20px;
-        padding: 20px 10px;
-        background: rgba(0, 0, 0, 0.8);
-
-        @include tablet {
-            min-height: 312px;
-            margin: 20px auto;
-            padding: 30px 38px;
-            max-width: 500px;
-        }
+        padding: 20px;
     }
 
     .message {

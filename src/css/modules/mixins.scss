@@ -1,7 +1,22 @@
 $tablet-width: 768px;
+$desktop-width: 1080px;
+
+@mixin clearfix {
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
 
 @mixin tablet {
     @media (min-width: #{$tablet-width}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$desktop-width}) {
         @content;
     }
 }

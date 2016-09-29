@@ -48474,21 +48474,43 @@ var Petition = function (_React$Component) {
                 'form',
                 { onSubmit: this.handleSubmit.bind(this), className: 'form', noValidate: true },
                 _react2.default.createElement(
-                    'div',
-                    { className: 'field-container' },
+                    'ul',
+                    { className: 'unbulleted' },
                     _react2.default.createElement(
-                        'label',
-                        { htmlFor: 'firstname' },
-                        'First name'
+                        'li',
+                        { className: 'col--2up' },
+                        _react2.default.createElement(
+                            'label',
+                            { className: 'hide', htmlFor: 'firstname' },
+                            'First name'
+                        ),
+                        _react2.default.createElement('input', { type: 'text', id: 'firstname', value: this.state.firstname,
+                            onChange: this.handleChange.bind(this, 'firstname'),
+                            className: this.getFieldClass('firstname'),
+                            required: true, 'aria-required': 'true', placeholder: 'First name' }),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'help-block' },
+                            this.props.getValidationMessages('firstname')[0]
+                        )
                     ),
-                    _react2.default.createElement('input', { type: 'text', id: 'firstname', value: this.state.firstname,
-                        onChange: this.handleChange.bind(this, 'firstname'),
-                        className: this.getFieldClass('firstname'),
-                        required: true, 'aria-required': 'true' }),
                     _react2.default.createElement(
-                        'div',
-                        { className: 'help-block' },
-                        this.props.getValidationMessages('firstname')[0]
+                        'li',
+                        { className: 'col--2up' },
+                        _react2.default.createElement(
+                            'label',
+                            { className: 'hide', htmlFor: 'lastname' },
+                            'Last name'
+                        ),
+                        _react2.default.createElement('input', { type: 'text', id: 'lastname', value: this.state.lastname,
+                            onChange: this.handleChange.bind(this, 'lastname'),
+                            className: this.getFieldClass('lastname'),
+                            required: true, 'aria-required': 'true', placeholder: 'Last name' }),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'help-block' },
+                            this.props.getValidationMessages('lastname')[0]
+                        )
                     )
                 ),
                 _react2.default.createElement(
@@ -48496,31 +48518,13 @@ var Petition = function (_React$Component) {
                     { className: 'field-container' },
                     _react2.default.createElement(
                         'label',
-                        { htmlFor: 'lastname' },
-                        'Last name'
-                    ),
-                    _react2.default.createElement('input', { type: 'text', id: 'lastname', value: this.state.lastname,
-                        onChange: this.handleChange.bind(this, 'lastname'),
-                        className: this.getFieldClass('lastname'),
-                        required: true, 'aria-required': 'true' }),
-                    _react2.default.createElement(
-                        'div',
-                        { className: 'help-block' },
-                        this.props.getValidationMessages('lastname')[0]
-                    )
-                ),
-                _react2.default.createElement(
-                    'div',
-                    { className: 'field-container' },
-                    _react2.default.createElement(
-                        'label',
-                        { htmlFor: 'email' },
+                        { className: 'hide', htmlFor: 'email' },
                         'Email'
                     ),
                     _react2.default.createElement('input', { type: 'email', id: 'email', value: this.state.email,
                         onChange: this.handleChange.bind(this, 'email'),
                         className: this.getFieldClass('email'),
-                        required: true, 'aria-required': 'true' }),
+                        required: true, 'aria-required': 'true', placeholder: 'Email' }),
                     _react2.default.createElement(
                         'div',
                         { className: 'help-block' },
@@ -48536,18 +48540,27 @@ var Petition = function (_React$Component) {
                         _react2.default.createElement('input', { type: 'checkbox', id: 'optin', checked: this.state.optin,
                             onChange: this.handleChange.bind(this, 'optin'),
                             required: true, 'aria-required': 'true' }),
-                        'Keep my informed by email ',
-                        _react2.default.createElement('br', null),
+                        'Keep my informed by email',
                         _react2.default.createElement(
-                            'small',
-                            null,
-                            'By giving your details you agree that we may use them to send you information about our work, campaigning and fundraising activities. We will never share your personal details. ',
+                            'span',
+                            { className: 'small' },
+                            'By giving your details you agree that we may use them to send you information about our work, campaigning and fundraising activities.'
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            { className: 'small' },
+                            'We will never share your personal details. ',
                             _react2.default.createElement(
                                 'a',
                                 { href: '#' },
                                 'Privacy policy'
                             ),
-                            '. If you prefer not to hear from us, please contact our supporter helpdesk on 0300 330 1234 or e-mail ',
+                            '.'
+                        ),
+                        _react2.default.createElement(
+                            'span',
+                            { className: 'small' },
+                            'If you prefer not to hear from us, please contact our supporter helpdesk on 0300 330 1234 or e-mail ',
                             _react2.default.createElement(
                                 'a',
                                 { href: 'mailto:campaign@shelter.org.uk' },
@@ -49048,24 +49061,32 @@ var Future = function (_React$Component) {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                'article',
-                null,
+                'div',
+                { className: 'slide-wrapper' },
                 _react2.default.createElement(
-                    'h3',
-                    { className: 'slide__title' },
-                    'House-building has been declining for years, which has contributed to prices rocketing. In 2015, we only built ',
-                    (0, _utils.formatNumber)(this.buildsLastYear),
-                    ' homes in the UK – ',
-                    this.getBuildsDiff(),
-                    ' than in the year you were born.'
+                    'article',
+                    { className: 'slide' },
+                    _react2.default.createElement(
+                        'h3',
+                        { className: 'slide__title' },
+                        'House-building has been declining for years, which has contributed to prices rocketing. In 2015, we only built ',
+                        (0, _utils.formatNumber)(this.buildsLastYear),
+                        ' homes in the UK – ',
+                        this.getBuildsDiff(),
+                        ' than in the year you were born.'
+                    ),
+                    _react2.default.createElement(_Graph2.default, { data: _graph2.default, yob: this.props.yob })
                 ),
-                _react2.default.createElement(_Graph2.default, { data: _graph2.default, yob: this.props.yob }),
                 _react2.default.createElement(
-                    'h4',
-                    { className: 'slide__title' },
-                    'Things don’t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we so desperately need – and making this a key priority for her new government.'
-                ),
-                _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode } })
+                    'article',
+                    { className: 'slide' },
+                    _react2.default.createElement(
+                        'h4',
+                        { className: 'slide__title' },
+                        'Things don’t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we so desperately need – and making this a key priority for her new government.'
+                    ),
+                    _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode } })
+                )
             );
         }
     }]);
@@ -49134,7 +49155,7 @@ var HomeStandard = function (_React$Component) {
             if (this.state.showDescription) {
                 return _react2.default.createElement(
                     'article',
-                    null,
+                    { className: 'slide' },
                     _react2.default.createElement(
                         'h3',
                         { className: 'slide__title' },
@@ -49154,7 +49175,7 @@ var HomeStandard = function (_React$Component) {
             } else {
                 return _react2.default.createElement(
                     'article',
-                    null,
+                    { className: 'slide' },
                     _react2.default.createElement(
                         'h3',
                         { className: 'slide__title' },
@@ -49234,7 +49255,7 @@ var HousePrices = function (_React$Component) {
             }
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49324,7 +49345,7 @@ var InYourArea = function (_React$Component) {
 
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49464,7 +49485,7 @@ var Milk = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49628,7 +49649,7 @@ var Share = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49748,7 +49769,7 @@ var Start = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49879,7 +49900,7 @@ var Tenure = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                null,
+                { className: 'slide' },
                 this.getStatement(),
                 _react2.default.createElement(
                     'button',

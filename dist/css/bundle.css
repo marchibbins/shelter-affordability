@@ -5834,18 +5834,7 @@ a:hover, a:active, a:focus {
   font-family: "helvetica neue", helvetica, arial, sans-serif; }
   @media (min-width: 768px) {
     #affordability-app {
-      padding: 20px 40px; } }
-  #affordability-app main {
-    min-height: 400px;
-    margin-bottom: 20px;
-    padding: 20px 10px;
-    background: rgba(0, 0, 0, 0.8); }
-    @media (min-width: 768px) {
-      #affordability-app main {
-        min-height: 312px;
-        margin: 20px auto;
-        padding: 30px 38px;
-        max-width: 500px; } }
+      padding: 20px; } }
   #affordability-app .message {
     color: white; }
 
@@ -5895,8 +5884,39 @@ a:hover, a:active, a:focus {
       .header .header__image {
         background-position: center right 80px; } }
 
+.slide-wrapper .slide:first-child {
+  margin-bottom: 0; }
+
+.slide-wrapper .slide:last-child {
+  margin-top: 0;
+  padding-top: 0; }
+
+@media (min-width: 1080px) {
+  .slide-wrapper {
+    margin: 0 auto;
+    width: 1040px; }
+    .slide-wrapper:after {
+      content: "";
+      display: table;
+      clear: both; }
+    .slide-wrapper .slide {
+      float: left;
+      margin: 0 10px 20px; } }
+
+.slide {
+  min-height: 400px;
+  margin-bottom: 20px;
+  padding: 20px 10px;
+  background: rgba(0, 0, 0, 0.8); }
+  @media (min-width: 768px) {
+    .slide {
+      min-height: 312px;
+      margin: 20px auto;
+      padding: 30px 38px;
+      max-width: 500px; } }
+
 .slide__title {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 28px;
   margin-bottom: 50px; }
   .slide__title + .slide__title {
@@ -5924,7 +5944,7 @@ a:hover, a:active, a:focus {
 
 .form label {
   display: block;
-  font-size: 18px;
+  font-size: 16px;
   margin-bottom: 10px; }
 
 .form .help-block {
@@ -5936,9 +5956,14 @@ a:hover, a:active, a:focus {
   margin-right: 12px;
   margin-bottom: 12px; }
 
+.form .small {
+  display: block;
+  font-size: 12px;
+  line-height: 14px; }
+
 .graph-wrapper {
   position: relative;
-  margin-bottom: 20px;
+  margin-top: -25px;
   overflow: hidden; }
   .graph-wrapper .graph-wrapper__labels {
     position: absolute;

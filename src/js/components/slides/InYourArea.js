@@ -17,7 +17,7 @@ class InYourArea extends React.Component {
 
     render () {
         return (
-            <article>
+            <article className="slide">
                 <h3 className="slide__title">In {this.props.location}, house prices have
                     risen {this.props.locationIncrease} fold since you were born.
                     It’s only getting harder and harder to buy or rent.</h3>
