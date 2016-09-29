@@ -48004,8 +48004,7 @@ var ErrorMessage = function (_React$Component) {
             return _react2.default.createElement(
                 "em",
                 { className: "message" },
-                "ErrorMessage ",
-                this.props.message
+                this.props.error.message
             );
         }
     }]);
@@ -49463,7 +49462,7 @@ var Milk = function (_React$Component) {
                 ),
                 _react2.default.createElement(_Postcode2.default, { onSubmit: this.handleSubmit.bind(this) }),
                 this.state.pending && _react2.default.createElement(_Pending2.default, null),
-                this.state.error && _react2.default.createElement(_ErrorMessage2.default, { message: this.state.error.message })
+                this.state.error && _react2.default.createElement(_ErrorMessage2.default, { error: this.state.error })
             );
         }
     }]);
@@ -49723,7 +49722,7 @@ var Start = function (_React$Component) {
                 ),
                 _react2.default.createElement(_Yob2.default, { onSubmit: this.handleSubmit.bind(this) }),
                 this.state.pending && _react2.default.createElement(_Pending2.default, null),
-                this.state.error && _react2.default.createElement(_ErrorMessage2.default, { message: this.state.error.message })
+                this.state.error && _react2.default.createElement(_ErrorMessage2.default, { error: this.state.error })
             );
         }
     }]);

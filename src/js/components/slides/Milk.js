@@ -49,7 +49,7 @@ class Milk extends React.Component {
                     cost {formatCurrency(this.props.estimatedMilkPrice, '0,0.00')} today.</h3>
                 <Postcode onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
-                {this.state.error && <ErrorMessage message={this.state.error.message}/>}
+                {this.state.error && <ErrorMessage error={this.state.error}/>}
             </article>
         );
     }

@@ -58,7 +58,7 @@ class Start extends React.Component {
                     prices become in your lifetime?</h3>
                 <Yob onSubmit={this.handleSubmit.bind(this)}/>
                 {this.state.pending && <Pending/>}
-                {this.state.error && <ErrorMessage message={this.state.error.message}/>}
+                {this.state.error && <ErrorMessage error={this.state.error}/>}
             </article>
         );
     }
