@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Phone from '../forms/Phone';
+import { URLS } from '../../config';
 import { pick } from '../../utils';
 
 class Share extends React.Component {
@@ -20,7 +21,7 @@ class Share extends React.Component {
     }
 
     getContent () {
-        const socialMessage = `House prices have risen ${this.props.locationIncrease} since I was born `
+        const socialMessage = `House prices have risen ${this.props.locationIncrease} since I was born. `
             + 'Find out how expensive they’ve become in your lifetime';
 
         if (!this.state.shared) {
@@ -32,6 +33,8 @@ class Share extends React.Component {
                         please can you share the below with your friends and followers?</h4>
 
                     <p>{socialMessage}</p>
+
+                    <p><a href={URLS.lhs}>Explore the Living Home Standard</a></p>
 
                     <ul className="unbulleted">
                         <li>

@@ -49515,6 +49515,8 @@ var _Phone = require('../forms/Phone');
 
 var _Phone2 = _interopRequireDefault(_Phone);
 
+var _config = require('../../config');
+
 var _utils = require('../../utils');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -49549,7 +49551,7 @@ var Share = function (_React$Component) {
     }, {
         key: 'getContent',
         value: function getContent() {
-            var socialMessage = 'House prices have risen ' + this.props.locationIncrease + ' since I was born ' + 'Find out how expensive they’ve become in your lifetime';
+            var socialMessage = 'House prices have risen ' + this.props.locationIncrease + ' since I was born. ' + 'Find out how expensive they’ve become in your lifetime';
 
             if (!this.state.shared) {
                 return _react2.default.createElement(
@@ -49569,6 +49571,15 @@ var Share = function (_React$Component) {
                         'p',
                         null,
                         socialMessage
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { href: _config.URLS.lhs },
+                            'Explore the Living Home Standard'
+                        )
                     ),
                     _react2.default.createElement(
                         'ul',
@@ -49638,7 +49649,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Share);
 
-},{"../../utils":371,"../forms/Phone":356,"react":325,"react-redux":110}],365:[function(require,module,exports){
+},{"../../config":367,"../../utils":371,"../forms/Phone":356,"react":325,"react-redux":110}],365:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49900,7 +49911,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 var URLS = exports.URLS = {
     api: '//www.shelter.org.uk/content/api',
-    baseUrl: '/affordability'
+    baseUrl: '/affordability',
+    lhs: '#',
+    privacy: '#'
 };
 
 },{}],368:[function(require,module,exports){
