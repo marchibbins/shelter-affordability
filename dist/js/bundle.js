@@ -49594,6 +49594,17 @@ var Share = function (_React$Component) {
                                     onClick: this.handleClick.bind(this), target: '_blank' },
                                 'Share on Facebook'
                             )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { href: 'mailto:?body=' + socialMessage,
+                                    className: 'button button--cta button--social',
+                                    onClick: this.handleClick.bind(this) },
+                                'Share via email'
+                            )
                         )
                     )
                 );

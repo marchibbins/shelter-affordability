@@ -49,6 +49,13 @@ class Share extends React.Component {
                                 Share on Facebook
                             </a>
                         </li>
+                        <li>
+                            <a href={`mailto:?body=${socialMessage}`}
+                                className="button button--cta button--social"
+                                onClick={this.handleClick.bind(this)}>
+                                Share via email
+                            </a>
+                        </li>
                     </ul>
                 </div>
             );
