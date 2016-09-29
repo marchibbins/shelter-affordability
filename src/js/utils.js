@@ -2,11 +2,11 @@ import numeral from 'numeral';
 
 import 'whatwg-fetch';
 
-export const api = {
-    URL: '//www.shelter.org.uk/content/api',
+import { URLS } from './config';
 
-    getJSON: url => {
-        return fetch(url)
+export const api = {
+    getJSON: path => {
+        return fetch(URLS.api + path)
         .then(response => {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
@@ -18,8 +18,8 @@ export const api = {
         });
     },
 
-    postJSON: (url, body) => {
-        return fetch(url, {
+    postJSON: (path, body) => {
+        return fetch(URLS.api + path, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

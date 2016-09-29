@@ -11,6 +11,7 @@ import Future from './components/slides/Future';
 import Share from './components/slides/Share';
 
 import { actions } from './actions';
+import { URLS } from './config';
 
 const slides = [
     Start,
@@ -58,11 +59,11 @@ export default createStore((state = initialState, action) => {
     switch (action.type) {
         case (actions.GOTO_NEXT): {
             let defaultSlug = action.currentSlug || slides[0].slug;
-            browserHistory.push('/affordability/' + slugs[slugs.indexOf(defaultSlug) + 1]);
+            browserHistory.push(URLS.baseUrl + '/' + slugs[slugs.indexOf(defaultSlug) + 1]);
             return state;
         }
         case (actions.GOTO_SLIDE):
-            browserHistory.push('/affordability/' + action.nextSlug);
+            browserHistory.push(URLS.baseUrl + '/' + action.nextSlug);
             return state;
         case (actions.UPDATE_TENURE):
             return {...state, tenure: action.value};

@@ -47968,7 +47968,7 @@ exports.default = (0, _reactRedux.connect)(function (state) {
     return state;
 })(App);
 
-},{"../store":369,"./Progress":352,"./SlideBackground":353,"./SlideContainer":354,"react":325,"react-redux":110,"react/lib/ReactCSSTransitionGroup":205}],349:[function(require,module,exports){
+},{"../store":370,"./Progress":352,"./SlideBackground":353,"./SlideContainer":354,"react":325,"react-redux":110,"react/lib/ReactCSSTransitionGroup":205}],349:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -48566,7 +48566,7 @@ var Petition = function (_React$Component) {
 
 exports.default = (0, _reactValidationMixin2.default)(_reactValidatorjsStrategy2.default)(Petition);
 
-},{"../../utils":370,"react":325,"react-validation-mixin":171,"react-validatorjs-strategy":177}],356:[function(require,module,exports){
+},{"../../utils":371,"react":325,"react-validation-mixin":171,"react-validatorjs-strategy":177}],356:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -48709,7 +48709,7 @@ var Phone = function (_React$Component) {
 
 exports.default = (0, _reactValidationMixin2.default)(_reactValidatorjsStrategy2.default)(Phone);
 
-},{"../../utils":370,"react":325,"react-validation-mixin":171,"react-validatorjs-strategy":177}],357:[function(require,module,exports){
+},{"../../utils":371,"react":325,"react-validation-mixin":171,"react-validatorjs-strategy":177}],357:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49070,7 +49070,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Future);
 
-},{"../../data/graph.json":367,"../../utils":370,"../Graph":350,"../forms/Petition":355,"react":325,"react-redux":110}],360:[function(require,module,exports){
+},{"../../data/graph.json":368,"../../utils":371,"../Graph":350,"../forms/Petition":355,"react":325,"react-redux":110}],360:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49180,7 +49180,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(HomeStandard);
 
-},{"../../utils":370,"react":325,"react-redux":110}],361:[function(require,module,exports){
+},{"../../utils":371,"react":325,"react-redux":110}],361:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49259,7 +49259,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(HousePrices);
 
-},{"../../utils":370,"react":325,"react-redux":110}],362:[function(require,module,exports){
+},{"../../utils":371,"react":325,"react-redux":110}],362:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49367,7 +49367,7 @@ exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
     };
 })(InYourArea);
 
-},{"../../actions":347,"../../utils":370,"react":325,"react-redux":110}],363:[function(require,module,exports){
+},{"../../actions":347,"../../utils":371,"react":325,"react-redux":110}],363:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49431,7 +49431,7 @@ var Milk = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON(_utils.api.URL + '/HouseData/' + formData.postcode).then(function (data) {
+            _utils.api.getJSON('/HouseData/' + formData.postcode).then(function (data) {
                 _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, data));
                 _this2.props.gotoNext();
             }).catch(function (error) {
@@ -49485,7 +49485,7 @@ exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
     };
 })(Milk);
 
-},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Postcode":357,"react":325,"react-redux":110}],364:[function(require,module,exports){
+},{"../../actions":347,"../../utils":371,"../ErrorMessage":349,"../Pending":351,"../forms/Postcode":357,"react":325,"react-redux":110}],364:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49616,7 +49616,7 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Share);
 
-},{"../../utils":370,"../forms/Phone":356,"react":325,"react-redux":110}],365:[function(require,module,exports){
+},{"../../utils":371,"../forms/Phone":356,"react":325,"react-redux":110}],365:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49692,7 +49692,7 @@ var Start = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON(_utils.api.URL + '/YoBData/' + formData.yob).then(function (data) {
+            _utils.api.getJSON('/YoBData/' + formData.yob).then(function (data) {
                 _this2.handleMissingYears(formData.yob, data);
                 _this2.props.updateYobData(_extends({ yob: formData.yob }, data));
                 _this2.props.gotoNext();
@@ -49741,7 +49741,7 @@ exports.default = (0, _reactRedux.connect)(null, function (dispatch) {
     };
 })(Start);
 
-},{"../../actions":347,"../../utils":370,"../ErrorMessage":349,"../Pending":351,"../forms/Yob":358,"react":325,"react-redux":110}],366:[function(require,module,exports){
+},{"../../actions":347,"../../utils":371,"../ErrorMessage":349,"../Pending":351,"../forms/Yob":358,"react":325,"react-redux":110}],366:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -49870,7 +49870,18 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Tenure);
 
-},{"../../utils":370,"react":325,"react-redux":110}],367:[function(require,module,exports){
+},{"../../utils":371,"react":325,"react-redux":110}],367:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var URLS = exports.URLS = {
+    api: '//www.shelter.org.uk/content/api',
+    baseUrl: '/affordability'
+};
+
+},{}],368:[function(require,module,exports){
 module.exports=[
       {
             "name" : "Total",
@@ -49948,7 +49959,7 @@ module.exports=[
       }
 ]
 
-},{}],368:[function(require,module,exports){
+},{}],369:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -49971,6 +49982,8 @@ var _store = require('./store');
 
 var _store2 = _interopRequireDefault(_store);
 
+var _config = require('./config');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(
@@ -49979,12 +49992,12 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(
         _reactRouter.Router,
         { history: _reactRouter.browserHistory },
-        _react2.default.createElement(_reactRouter.Route, { path: 'affordability', component: _App2.default }),
-        _react2.default.createElement(_reactRouter.Route, { path: 'affordability/:slug', component: _App2.default })
+        _react2.default.createElement(_reactRouter.Route, { path: _config.URLS.baseUrl, component: _App2.default }),
+        _react2.default.createElement(_reactRouter.Route, { path: _config.URLS.baseUrl + '/:slug', component: _App2.default })
     )
 ), document.getElementById('affordability-app'));
 
-},{"./components/App":348,"./store":369,"react":325,"react-dom":107,"react-redux":110,"react-router":144}],369:[function(require,module,exports){
+},{"./components/App":348,"./config":367,"./store":370,"react":325,"react-dom":107,"react-redux":110,"react-router":144}],370:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50031,6 +50044,8 @@ var _Share = require('./components/slides/Share');
 var _Share2 = _interopRequireDefault(_Share);
 
 var _actions = require('./actions');
+
+var _config = require('./config');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -50079,11 +50094,11 @@ exports.default = (0, _redux.createStore)(function () {
         case _actions.actions.GOTO_NEXT:
             {
                 var defaultSlug = action.currentSlug || slides[0].slug;
-                _reactRouter.browserHistory.push('/affordability/' + slugs[slugs.indexOf(defaultSlug) + 1]);
+                _reactRouter.browserHistory.push(_config.URLS.baseUrl + '/' + slugs[slugs.indexOf(defaultSlug) + 1]);
                 return state;
             }
         case _actions.actions.GOTO_SLIDE:
-            _reactRouter.browserHistory.push('/affordability/' + action.nextSlug);
+            _reactRouter.browserHistory.push(_config.URLS.baseUrl + '/' + action.nextSlug);
             return state;
         case _actions.actions.UPDATE_TENURE:
             return _extends({}, state, { tenure: action.value });
@@ -50095,7 +50110,7 @@ exports.default = (0, _redux.createStore)(function () {
     }
 });
 
-},{"./actions":347,"./components/slides/Future":359,"./components/slides/HomeStandard":360,"./components/slides/HousePrices":361,"./components/slides/InYourArea":362,"./components/slides/Milk":363,"./components/slides/Share":364,"./components/slides/Start":365,"./components/slides/Tenure":366,"react-router":144,"redux":331}],370:[function(require,module,exports){
+},{"./actions":347,"./components/slides/Future":359,"./components/slides/HomeStandard":360,"./components/slides/HousePrices":361,"./components/slides/InYourArea":362,"./components/slides/Milk":363,"./components/slides/Share":364,"./components/slides/Start":365,"./components/slides/Tenure":366,"./config":367,"react-router":144,"redux":331}],371:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50109,6 +50124,8 @@ var _numeral2 = _interopRequireDefault(_numeral);
 
 require('whatwg-fetch');
 
+var _config = require('./config');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -50116,10 +50133,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var api = exports.api = {
-    URL: '//www.shelter.org.uk/content/api',
-
-    getJSON: function getJSON(url) {
-        return fetch(url).then(function (response) {
+    getJSON: function getJSON(path) {
+        return fetch(_config.URLS.api + path).then(function (response) {
             if (response.status >= 200 && response.status < 300) {
                 return response.json();
             } else {
@@ -50130,8 +50145,8 @@ var api = exports.api = {
         });
     },
 
-    postJSON: function postJSON(url, body) {
-        return fetch(url, {
+    postJSON: function postJSON(path, body) {
+        return fetch(_config.URLS.api + path, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -50164,4 +50179,4 @@ var tenures = exports.tenures = {
     TEMPORARY: 'Living in temporary accommodation'
 };
 
-},{"numeral":43,"whatwg-fetch":346}]},{},[368]);
+},{"./config":367,"numeral":43,"whatwg-fetch":346}]},{},[369]);

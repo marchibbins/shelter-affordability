@@ -31,7 +31,7 @@ class Start extends React.Component {
             error: false,
             pending: true
         });
-        api.getJSON(`${api.URL}/YoBData/${formData.yob}`)
+        api.getJSON(`/YoBData/${formData.yob}`)
             .then(data => {
                 this.handleMissingYears(formData.yob, data);
                 this.props.updateYobData({yob: formData.yob, ...data});
