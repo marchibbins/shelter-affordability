@@ -48055,16 +48055,18 @@ var Graph = function (_React$Component) {
             yobClass: ''
         };
 
-        var series = _this.props.data[0].values,
-            values = series.map(function (t) {
-            return t[1];
-        });
+        var series = _this.props.data[0].values;
 
-        _this.start = new Date(series[0][0], 0).getTime(), _this.end = new Date(series[series.length - 1][0], 0).getTime(), _this.peakYear = series.map(function (t) {
-            return t[0];
-        })[values.indexOf(values.reduce(function (a, b) {
-            return Math.max(a, b);
-        }))];
+        _this.start = new Date(series[0][0], 0).getTime();
+        _this.end = new Date(series[series.length - 1][0], 0).getTime();
+
+        _this.peakYear = series.find(function (year) {
+            return year[1] === series.map(function (t) {
+                return t[1];
+            }).reduce(function (a, b) {
+                return Math.max(a, b);
+            });
+        })[0];
 
         _this.peakPosition = (new Date(_this.peakYear, 0).getTime() - _this.start) / (_this.end - _this.start);
         _this.yobPosition = (new Date(_this.props.yob, 0).getTime() - _this.start) / (_this.end - _this.start);
@@ -48088,7 +48090,7 @@ var Graph = function (_React$Component) {
 
 
             this.setState({
-                yobClass: yLeft > pLeft && pLeft + pWidth > yLeft ? 'offset' : '',
+                yobClass: yLeft >= pLeft && pLeft + pWidth > yLeft ? 'offset' : '',
                 peakClass: pLeft > yLeft && yLeft + yWidth > pLeft ? 'offset' : ''
             });
         }
@@ -48885,8 +48887,10 @@ var Yob = function (_React$Component) {
             yob: '',
             submitted: false
         };
-        _this.earliestYear = 1900;
-        _this.latestYear = new Date().getFullYear() - 18;
+
+        _this.earliestYear = 1947;
+        _this.latestYear = 2015;
+
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
             yob: 'required|numeric|min:' + _this.earliestYear + '|max:' + _this.latestYear
         }, {

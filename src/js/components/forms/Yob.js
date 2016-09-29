@@ -11,8 +11,10 @@ class Yob extends React.Component {
             yob: '',
             submitted: false
         };
-        this.earliestYear = 1900;
-        this.latestYear = new Date().getFullYear() - 18;
+
+        this.earliestYear = 1947;
+        this.latestYear = 2015;
+
         this.validatorTypes = strategy.createSchema({
             yob: `required|numeric|min:${this.earliestYear}|max:${this.latestYear}`
         }, {

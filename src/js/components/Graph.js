@@ -12,13 +12,14 @@ export default class Graph extends React.Component {
             yobClass: ''
         };
 
-        let series = this.props.data[0].values,
-            values = series.map(t => t[1]);
+        let series = this.props.data[0].values;
 
-        this.start = new Date(series[0][0], 0).getTime(),
-        this.end = new Date(series[series.length - 1][0], 0).getTime(),
+        this.start = new Date(series[0][0], 0).getTime();
+        this.end = new Date(series[series.length - 1][0], 0).getTime();
 
-        this.peakYear = series.map(t => t[0])[values.indexOf(values.reduce((a, b) => Math.max(a, b)))];
+        this.peakYear = series.find(year => {
+            return year[1] === series.map(t => t[1]).reduce((a, b) => Math.max(a, b));
+        })[0];
 
         this.peakPosition = (new Date(this.peakYear, 0).getTime() - this.start) / (this.end - this.start);
         this.yobPosition = (new Date(this.props.yob, 0).getTime() - this.start) / (this.end - this.start);
@@ -34,7 +35,7 @@ export default class Graph extends React.Component {
             { offsetLeft: pLeft, offsetWidth: pWidth } = this.refs.peakMarker;
 
         this.setState({
-            yobClass: (yLeft > pLeft) && ((pLeft + pWidth) > yLeft) ? 'offset' : '',
+            yobClass: (yLeft >= pLeft) && ((pLeft + pWidth) > yLeft) ? 'offset' : '',
             peakClass: (pLeft > yLeft) && ((yLeft + yWidth) > pLeft) ? 'offset' : ''
         });
     }
