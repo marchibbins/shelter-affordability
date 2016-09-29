@@ -12,6 +12,7 @@ import path from 'path';
 import sass from 'gulp-sass';
 import sequence from 'run-sequence';
 import source from 'vinyl-source-stream';
+import del from 'del';
 import uglify from 'gulp-uglify';
 
 const dir = {
@@ -77,6 +78,7 @@ gulp.task('bundle', () => {
 gulp.task('build', (callback) => {
     let tasks = ['assets', 'js', 'css'];
     if (gutil.env.production) {
+        tasks.unshift('clean');
         tasks.push('uglifyJs', 'minifyCss');
     }
     sequence(...tasks, callback);
@@ -88,6 +90,10 @@ gulp.task('css', () => {
         .pipe(sass().on('error', sass.logError))
         .pipe(rename(filenames.css.bundle))
         .pipe(gulp.dest(paths.css.buildDir));
+});
+
+gulp.task('clean', () => {
+    del.sync(dir.build);
 });
 
 gulp.task('js', ['lint', 'bundle']);
