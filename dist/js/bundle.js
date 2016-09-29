@@ -48902,7 +48902,7 @@ var Yob = function (_React$Component) {
         };
 
         _this.earliestYear = 1947;
-        _this.latestYear = 2015;
+        _this.latestYear = 2016 - 18;
 
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
             yob: 'required|numeric|min:' + _this.earliestYear + '|max:' + _this.latestYear
