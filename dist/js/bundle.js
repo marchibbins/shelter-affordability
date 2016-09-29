@@ -49162,7 +49162,7 @@ var HomeStandard = function (_React$Component) {
                         this.props.locationStruggling,
                         '% of people in ',
                         this.props.locationRegion,
-                        ' struggle to pay their rent or mortgage, according to research for ',
+                        ' struggle to pay their rent or mortgage, according to research for the ',
                         _react2.default.createElement(
                             'a',
                             { href: '#', onClick: this.toggleDescription.bind(this) },

@@ -39,8 +39,8 @@ class HomeStandard extends React.Component {
                 <article>
                     <h3 className="slide__title">Today, {this.props.locationStruggling}% of
                         people in {this.props.locationRegion} struggle to pay
-                        their rent or mortgage, according to research
-                        for <a href="#" onClick={this.toggleDescription.bind(this)}>
+                        their rent or mortgage, according to research for
+                        the <a href="#" onClick={this.toggleDescription.bind(this)}>
                             Living Home Standard</a>.
                     </h3>
                     <button onClick={this.props.gotoNext} className="button button--cta">
