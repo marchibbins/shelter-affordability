@@ -48260,7 +48260,7 @@ var Progress = function (_React$Component) {
 
             return _react2.default.createElement(
                 'ol',
-                { className: 'unbulleted slide-progress' },
+                { className: 'unbulleted slide-progress ' + (this.props.index === this.props.slides.length - 1 ? 'hide' : '') },
                 [].concat(_toConsumableArray(Array(this.props.slides.length).keys())).map(function (i) {
                     return _react2.default.createElement('li', { key: i, className: 'slide-progress__dot ' + (i <= _this2.props.index ? 'active' : '') });
                 })
@@ -49649,7 +49649,7 @@ var Share = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                { className: 'slide' },
+                { className: 'slide slide--right' },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },

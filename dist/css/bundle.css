@@ -5917,6 +5917,11 @@ a:hover, a:active, a:focus {
       padding: 30px 38px;
       max-width: 500px; } }
 
+@media (min-width: 768px) {
+  .slide--right {
+    margin: -20px;
+    float: right; } }
+
 .slide__title {
   font-size: 22px;
   line-height: 28px;

@@ -38,6 +38,13 @@
     }
 }
 
+.slide--right {
+    @include tablet {
+        margin: -20px;
+        float: right;
+    }
+}
+
 .slide__title {
     font-size: 22px;
     line-height: 28px;
@@ -83,4 +90,4 @@
       opacity: 0.01;
       transition: opacity 300ms ease-in-out;
     }
-}   
+}
