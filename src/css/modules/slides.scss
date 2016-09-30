@@ -91,3 +91,9 @@
       transition: opacity 300ms ease-in-out;
     }
 }
+
+body {
+    background: url(/dist/img/bg1.jpg),
+        url(/dist/img/bg2.jpg),
+        url(/dist/img/bg3.jpg);
+}
