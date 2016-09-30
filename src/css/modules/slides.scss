@@ -16,6 +16,10 @@
         .slide {
             float: left;
             margin: 0 10px 20px;
+
+            &:last-child {
+                padding-top: 30px;
+            }
         }
     }
 }

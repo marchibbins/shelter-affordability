@@ -5901,7 +5901,9 @@ a:hover, a:active, a:focus {
       clear: both; }
     .slide-wrapper .slide {
       float: left;
-      margin: 0 10px 20px; } }
+      margin: 0 10px 20px; }
+      .slide-wrapper .slide:last-child {
+        padding-top: 30px; } }
 
 .slide {
   min-height: 400px;
