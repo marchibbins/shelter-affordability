@@ -53,9 +53,7 @@ class Postcode extends React.Component {
     render () {
         return (
             <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
-                <label htmlFor="postcode">
-                    What's happened to house prices in your area?
-                    <span className="hide">Enter your postcode to find out.</span></label>
+                <label htmlFor="postcode">Enter your postcode to find out.</label>
                 <ul className="unbulleted">
                     <li className="col--2up">
                         <input type="text" id="postcode" value={this.state.postcode}

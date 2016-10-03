@@ -5912,7 +5912,7 @@ a:hover, a:active, a:focus {
   background: rgba(0, 0, 0, 0.8); }
   @media (min-width: 768px) {
     .slide {
-      min-height: 312px;
+      min-height: 360px;
       margin: 20px auto;
       padding: 30px 38px;
       max-width: 500px; } }

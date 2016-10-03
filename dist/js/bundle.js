@@ -48821,12 +48821,7 @@ var Postcode = function (_React$Component) {
                 _react2.default.createElement(
                     'label',
                     { htmlFor: 'postcode' },
-                    'What\'s happened to house prices in your area?',
-                    _react2.default.createElement(
-                        'span',
-                        { className: 'hide' },
-                        'Enter your postcode to find out.'
-                    )
+                    'Enter your postcode to find out.'
                 ),
                 _react2.default.createElement(
                     'ul',
@@ -49492,6 +49487,11 @@ var Milk = function (_React$Component) {
                     'If a pint of milk had risen in line with house prices, it would cost ',
                     (0, _utils.formatCurrency)(this.props.estimatedMilkPrice, '0,0.00'),
                     ' today.'
+                ),
+                _react2.default.createElement(
+                    'h3',
+                    { className: 'slide__title' },
+                    'What\'s happened to house prices in your area?'
                 ),
                 _react2.default.createElement(_Postcode2.default, { onSubmit: this.handleSubmit.bind(this) }),
                 this.state.pending && _react2.default.createElement(_Pending2.default, null),
