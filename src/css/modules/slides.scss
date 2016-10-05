@@ -63,37 +63,57 @@
     right: 0;
     z-index: -1;
     background-size: cover;
+    background-position: center center;
 
-    &.start,
-    &.milk,
+    &.start {
+        background-image: url(/dist/img/bg1.jpg);
+    }
+
+    &.house-prices {
+        background-image: url(/dist/img/bg2.jpg);
+    }
+
+    &.milk {
+        background-image: url(/dist/img/bg3.jpg);
+    }
+
+    &.in-your-area {
+        background-image: url(/dist/img/bg4.jpg);
+    }
+
+    &.tenure {
+        background-image: url(/dist/img/bg5.jpg);
+    }
+
     &.home-standard {
-        background: url(/dist/img/bg1.jpg) center center no-repeat;
+        background-image: url(/dist/img/bg6.jpg);
     }
 
-    &.house-prices,
-    &.in-your-area,
     &.future {
-        background: url(/dist/img/bg2.jpg) center center no-repeat;
+        background-image: url(/dist/img/bg7.jpg);
     }
 
-    &.milk,
-    &.tenure,
     &.share {
-        background: url(/dist/img/bg3.jpg) center center no-repeat;
+        background-image: url(/dist/img/bg8.jpg);
     }
 
     &.transition-leave {
-      opacity: 1;
+        opacity: 1;
     }
 
     &.transition-leave.transition-leave-active {
-      opacity: 0.01;
-      transition: opacity 300ms ease-in-out;
+        opacity: 0.01;
+        transition: opacity 300ms ease-in-out;
     }
 }
 
 body {
     background: url(/dist/img/bg1.jpg),
         url(/dist/img/bg2.jpg),
-        url(/dist/img/bg3.jpg);
+        url(/dist/img/bg3.jpg),
+        url(/dist/img/bg4.jpg),
+        url(/dist/img/bg5.jpg),
+        url(/dist/img/bg6.jpg),
+        url(/dist/img/bg7.jpg),
+        url(/dist/img/bg8.jpg);
 }
