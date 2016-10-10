@@ -69,7 +69,7 @@ class Share extends React.Component {
 
     render () {
         return (
-            <article className="slide slide--right">
+            <article className={`slide ` + (!this.state.shared ? 'slide--right' : '')}>
                 <h3 className="slide__title">Thank you.</h3>
                 {this.getContent()}
             </article>
