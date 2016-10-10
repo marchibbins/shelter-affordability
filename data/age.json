@@ -1,5 +1,9 @@
 {
-    "yobAverageHousePrice": 24000,
+    "yobAverageHousePrice": {
+        "house_price": 24000,
+        "inflation": 1000,
+        "multiple": 10
+    },
     "todayAverageHousePrice": 280000,
     "estimatedMilkPrice": 10.50
 }

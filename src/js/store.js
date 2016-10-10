@@ -32,7 +32,11 @@ const initialState = {
     // Yob data
     yob: '',
     yobAgeReplacement: '',
-    yobAverageHousePrice: '',
+    yobAverageHousePrice: {
+        house_price: '',
+        inflation: '',
+        multiple: ''
+    },
     todayAverageHousePrice: '',
     estimatedMilkPrice: '',
 
@@ -41,7 +45,6 @@ const initialState = {
     location: '',
     locationRegion: '',
     locationLivingParents: '',
-    locationIncrease: 'XXX',
     locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',

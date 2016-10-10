@@ -49256,7 +49256,7 @@ var HousePrices = function (_React$Component) {
                     { className: 'slide__title' },
                     openingStatement,
                     ', the average cost of a three-bedroom house in the UK was ',
-                    (0, _utils.formatCurrency)(this.props.yobAverageHousePrice, '0,0'),
+                    (0, _utils.formatCurrency)(this.props.yobAverageHousePrice.house_price, '0,0'),
                     '.'
                 ),
                 _react2.default.createElement(
@@ -49347,7 +49347,7 @@ var InYourArea = function (_React$Component) {
                     'In ',
                     this.props.location,
                     ', house prices have risen ',
-                    this.props.locationIncrease,
+                    this.props.yobAverageHousePrice.multiple,
                     ' fold since you were born. It’s only getting harder and harder to buy or rent.'
                 ),
                 _react2.default.createElement(
@@ -49383,7 +49383,7 @@ var InYourArea = function (_React$Component) {
 InYourArea.slug = 'in-your-area';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['location', 'locationIncrease']);
+    return (0, _utils.pick)(state, ['location', 'yobAverageHousePrice']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
@@ -49572,7 +49572,7 @@ var Share = function (_React$Component) {
     }, {
         key: 'getContent',
         value: function getContent() {
-            var socialMessage = 'House prices have risen ' + this.props.locationIncrease + ' since I was born. ' + 'Find out how expensive they’ve become in your lifetime';
+            var socialMessage = 'House prices have risen ' + this.props.yobAverageHousePrice.multiple + ' fold since I was born. ' + 'Find out how expensive they’ve become in your lifetime';
 
             if (!this.state.shared) {
                 return _react2.default.createElement(
@@ -49649,7 +49649,7 @@ var Share = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'article',
-                { className: 'slide slide--right' },
+                { className: 'slide ' + (!this.state.shared ? 'slide--right' : '') },
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
@@ -49665,7 +49665,7 @@ var Share = function (_React$Component) {
 
 Share.slug = 'share';
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['locationIncrease']);
+    return (0, _utils.pick)(state, ['yobAverageHousePrice']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Share);
@@ -50119,7 +50119,11 @@ var initialState = {
     // Yob data
     yob: '',
     yobAgeReplacement: '',
-    yobAverageHousePrice: '',
+    yobAverageHousePrice: {
+        house_price: '',
+        inflation: '',
+        multiple: ''
+    },
     todayAverageHousePrice: '',
     estimatedMilkPrice: '',
 
@@ -50128,7 +50132,6 @@ var initialState = {
     location: '',
     locationRegion: '',
     locationLivingParents: '',
-    locationIncrease: 'XXX',
     locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',

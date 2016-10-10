@@ -21,7 +21,7 @@ class Share extends React.Component {
     }
 
     getContent () {
-        const socialMessage = `House prices have risen ${this.props.locationIncrease} since I was born. `
+        const socialMessage = `House prices have risen ${this.props.yobAverageHousePrice.multiple} fold since I was born. `
             + 'Find out how expensive they’ve become in your lifetime';
 
         if (!this.state.shared) {
@@ -69,7 +69,7 @@ class Share extends React.Component {
 
     render () {
         return (
-            <article className={`slide ` + (!this.state.shared ? 'slide--right' : '')}>
+            <article className={'slide ' + (!this.state.shared ? 'slide--right' : '')}>
                 <h3 className="slide__title">Thank you.</h3>
                 {this.getContent()}
             </article>
@@ -79,7 +79,7 @@ class Share extends React.Component {
 }
 
 Share.slug = 'share';
-const stateToProps = state => pick(state, ['locationIncrease']);
+const stateToProps = state => pick(state, ['yobAverageHousePrice']);
 
 export default connect(stateToProps)(Share);
 

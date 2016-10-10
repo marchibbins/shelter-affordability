@@ -19,7 +19,7 @@ class InYourArea extends React.Component {
         return (
             <article className="slide">
                 <h3 className="slide__title">In {this.props.location}, house prices have
-                    risen {this.props.locationIncrease} fold since you were born.
+                    risen {this.props.yobAverageHousePrice.multiple} fold since you were born.
                     It’s only getting harder and harder to buy or rent.</h3>
                 <form className="form" onSubmit={this.handleSubmit.bind(this)}>
                     <label>What's your housing situation in {this.props.location}?</label>
@@ -41,7 +41,7 @@ class InYourArea extends React.Component {
 
 InYourArea.slug = 'in-your-area';
 
-const stateToProps = state => pick(state, ['location', 'locationIncrease']);
+const stateToProps = state => pick(state, ['location', 'yobAverageHousePrice']);
 
 export default connect(stateToProps, dispatch => {
     return {
