@@ -50509,11 +50509,11 @@ var InYourArea = function (_React$Component) {
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
-                    'In ',
+                    'Since 1995 house prices in ',
                     this.props.location,
-                    ', house prices have risen ',
-                    this.props.yobAverageHousePrice.multiple,
-                    ' fold since you were born. It’s only getting harder and harder to buy or rent.'
+                    ' have risen ',
+                    this.props.locationInflation,
+                    '%. It’s only getting harder and harder to buy or rent.'
                 ),
                 _react2.default.createElement(
                     'form',
@@ -50548,7 +50548,7 @@ var InYourArea = function (_React$Component) {
 InYourArea.slug = 'in-your-area';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['location', 'yobAverageHousePrice']);
+    return (0, _utils.pick)(state, ['location', 'locationInflation']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
@@ -50623,9 +50623,17 @@ var Milk = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON('/HouseData/' + formData.postcode).then(function (data) {
-                _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, data));
-                _this2.props.gotoNext();
+            _utils.api.getJSON('/HouseData/' + formData.postcode).then(function (houseData) {
+                _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, houseData));
+                _utils.api.getJSON('/HouseInflation/' + formData.postcode).then(function (inflationData) {
+                    _this2.props.updateLocationData({ locationInflation: inflationData.inflation });
+                    _this2.props.gotoNext();
+                }).catch(function (error) {
+                    _this2.setState({
+                        error: error,
+                        pending: false
+                    });
+                });
             }).catch(function (error) {
                 _this2.setState({
                     error: error,
@@ -51301,6 +51309,9 @@ var initialState = {
     locationSocialHomes: '',
     locationTempHouseholds: '',
     locationStruggling: 'XXX',
+
+    // Inflation data
+    locationInflation: '',
 
     // Tenure
     tenure: ''

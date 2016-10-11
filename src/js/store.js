@@ -50,6 +50,9 @@ const initialState = {
     locationTempHouseholds: '',
     locationStruggling: 'XXX',
 
+    // Inflation data
+    locationInflation: '',
+
     // Tenure
     tenure: ''
 };
