@@ -20,7 +20,7 @@ class InYourArea extends React.Component {
             <article className="slide">
                 <h3 className="slide__title">Since 1995 house prices
                 in {this.props.location} have risen {this.props.locationInflation}%.
-                    It’s only getting harder and harder to buy or rent.</h3>
+                    It's only getting harder and harder to rent or buy.</h3>
                 <form className="form" onSubmit={this.handleSubmit.bind(this)}>
                     <label>What's your housing situation in {this.props.location}?</label>
                     <div className="form__button-list">

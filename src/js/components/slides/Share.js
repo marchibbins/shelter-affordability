@@ -34,8 +34,6 @@ class Share extends React.Component {
 
                     <p>{socialMessage}</p>
 
-                    <p><a href={URLS.lhs}>Explore the Living Home Standard</a></p>
-
                     <ul className="unbulleted">
                         <li>
                             <a href={`https://twitter.com/intent/tweet?text=${encodeURI(socialMessage)}&`
@@ -60,6 +58,8 @@ class Share extends React.Component {
                             </a>
                         </li>
                     </ul>
+
+                    <p><a href={URLS.lhs}>Explore the Living Home Standard</a></p>
                 </div>
             );
         } else {

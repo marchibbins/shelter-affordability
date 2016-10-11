@@ -49704,7 +49704,7 @@ var Petition = function (_React$Component) {
                         _react2.default.createElement('input', { type: 'checkbox', id: 'optin', checked: this.state.optin,
                             onChange: this.handleChange.bind(this, 'optin'),
                             required: true, 'aria-required': 'true' }),
-                        'Keep my informed by email',
+                        'Keep me informed by email',
                         _react2.default.createElement(
                             'span',
                             { className: 'small' },
@@ -49842,7 +49842,7 @@ var Phone = function (_React$Component) {
                     _react2.default.createElement(
                         'h2',
                         { className: 'slide__title' },
-                        'Want to find out how else you can help? If you’d like to chat to us about other ways you can get involved, please enter your phone number below.'
+                        'Want to find out how else you can help? If you\'d like to chat to us about other ways you can get involved, please enter your phone number below.'
                     ),
                     _react2.default.createElement(
                         'form',
@@ -50243,7 +50243,7 @@ var Future = function (_React$Component) {
                     _react2.default.createElement(
                         'h4',
                         { className: 'slide__title' },
-                        'Things don’t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we so desperately need – and making this a key priority for her new government.'
+                        'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government'
                     ),
                     _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode } })
                 )
@@ -50513,7 +50513,7 @@ var InYourArea = function (_React$Component) {
                     this.props.location,
                     ' have risen ',
                     this.props.locationInflation,
-                    '%. It’s only getting harder and harder to buy or rent.'
+                    '%. It\'s only getting harder and harder to rent or buy.'
                 ),
                 _react2.default.createElement(
                     'form',
@@ -50664,7 +50664,7 @@ var Milk = function (_React$Component) {
                 _react2.default.createElement(
                     'h3',
                     { className: 'slide__title' },
-                    'What\'s happened to house prices in your area?'
+                    'What about house prices in your area?'
                 ),
                 _react2.default.createElement(_Postcode2.default, { onSubmit: this.handleSubmit.bind(this) }),
                 this.state.pending && _react2.default.createElement(_Pending2.default, null),
@@ -50767,15 +50767,6 @@ var Share = function (_React$Component) {
                         socialMessage
                     ),
                     _react2.default.createElement(
-                        'p',
-                        null,
-                        _react2.default.createElement(
-                            'a',
-                            { href: _config.URLS.lhs },
-                            'Explore the Living Home Standard'
-                        )
-                    ),
-                    _react2.default.createElement(
                         'ul',
                         { className: 'unbulleted' },
                         _react2.default.createElement(
@@ -50810,6 +50801,15 @@ var Share = function (_React$Component) {
                                     onClick: this.handleClick.bind(this) },
                                 'Share via email'
                             )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { href: _config.URLS.lhs },
+                            'Explore the Living Home Standard'
                         )
                     )
                 );
@@ -51013,7 +51013,7 @@ var Tenure = function (_React$Component) {
                         _react2.default.createElement(
                             'h3',
                             { className: 'slide__title' },
-                            'Home ownership is getting harder for the next generation because of high rent and house prices.'
+                            'Home ownership is getting out of reach for the next generation because of high rent and house prices.'
                         ),
                         _react2.default.createElement(
                             'h3',
@@ -51047,7 +51047,7 @@ var Tenure = function (_React$Component) {
                         _react2.default.createElement(
                             'h3',
                             { className: 'slide__title' },
-                            'You’re not alone – this is a growing trend.'
+                            'You\'re not alone – this is a growing trend.'
                         ),
                         _react2.default.createElement(
                             'h3',
@@ -51078,7 +51078,7 @@ var Tenure = function (_React$Component) {
                 _react2.default.createElement(
                     'button',
                     { onClick: this.props.gotoNext, className: 'button button--cta' },
-                    'How many people are struggling in ',
+                    'How many people are struggling in the rest of ',
                     this.props.locationRegion,
                     '?'
                 )

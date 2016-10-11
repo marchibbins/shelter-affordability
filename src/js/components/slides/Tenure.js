@@ -10,7 +10,7 @@ class Tenure extends React.Component {
             case tenures.HOMEOWNER:
                 return (
                     <div>
-                        <h3 className="slide__title">Home ownership is getting harder for
+                        <h3 className="slide__title">Home ownership is getting out of reach for
                             the next generation because of high rent and house prices.</h3>
                         <h3 className="slide__title">{this.props.locationLivingParents}% of working adults
                             aged 20-34 in {this.props.location} are living at home with their parents.</h3>
@@ -31,7 +31,7 @@ class Tenure extends React.Component {
             case tenures.PARENTS:
                 return (
                     <div>
-                        <h3 className="slide__title">You’re not alone – this is a growing trend.</h3>
+                        <h3 className="slide__title">You're not alone – this is a growing trend.</h3>
                         <h3 className="slide__title">{this.props.locationLivingParents}% of working adults aged 20-34
                             in {this.props.location} are living at home with their parents
                             because of high rent and house prices.</h3>
@@ -51,7 +51,7 @@ class Tenure extends React.Component {
             <article className="slide">
                 {this.getStatement()}
                 <button onClick={this.props.gotoNext} className="button button--cta">
-                    How many people are struggling in {this.props.locationRegion}?
+                    How many people are struggling in the rest of {this.props.locationRegion}?
                 </button>
             </article>
         );

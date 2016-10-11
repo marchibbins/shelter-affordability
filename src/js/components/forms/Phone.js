@@ -55,7 +55,7 @@ class Phone extends React.Component {
         if (this.state.showForm) {
             return (
                 <div>
-                    <h2 className="slide__title">Want to find out how else you can help? If you’d like to chat to us
+                    <h2 className="slide__title">Want to find out how else you can help? If you'd like to chat to us
                         about other ways you can get involved, please enter your phone number below.</h2>
                     <form onSubmit={this.handleSubmit.bind(this)} className="form" noValidate>
                         <label htmlFor="phone">Phone number</label>
