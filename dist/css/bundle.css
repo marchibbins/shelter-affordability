@@ -5960,7 +5960,7 @@ a:hover, a:active, a:focus {
     opacity: 0.01;
     transition: opacity 300ms ease-in-out; }
 
-body {
+body :before {
   background: url(/dist/img/bg1.jpg), url(/dist/img/bg2.jpg), url(/dist/img/bg3.jpg), url(/dist/img/bg4.jpg), url(/dist/img/bg5.jpg), url(/dist/img/bg6.jpg), url(/dist/img/bg7.jpg), url(/dist/img/bg8.jpg); }
 
 .form label {
