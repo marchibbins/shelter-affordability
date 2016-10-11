@@ -1,3 +1,4 @@
+import ES6Promise from 'es6-promise';
 import React from 'react';
 import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react/lib/ReactCSSTransitionGroup';
@@ -7,6 +8,8 @@ import SlideContainer from './SlideContainer';
 import Progress from './Progress';
 
 import { slugs } from '../store';
+
+ES6Promise.polyfill();
 
 class App extends React.Component {
 
