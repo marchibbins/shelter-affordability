@@ -22,7 +22,7 @@ class Share extends React.Component {
 
     getContent () {
         const socialMessage = `House prices have risen ${this.props.yobAverageHousePrice.multiple} fold since I was born. `
-            + 'Find out how expensive they’ve become in your lifetime';
+            + 'Find out how expensive they\'ve become in your lifetime';
 
         if (!this.state.shared) {
             return (
@@ -38,7 +38,7 @@ class Share extends React.Component {
 
                     <ul className="unbulleted">
                         <li>
-                            <a href={`https://twitter.com/intent/tweet?text=${socialMessage}&`
+                            <a href={`https://twitter.com/intent/tweet?text=${encodeURI(socialMessage)}&`
                                  + 'url=http://shelter.org.uk/morehomes&via=shelter&related=shelter'}
                                 className="button button--cta button--social button--twitter"
                                 onClick={this.handleClick.bind(this)} target="_blank">
@@ -53,7 +53,7 @@ class Share extends React.Component {
                             </a>
                         </li>
                         <li>
-                            <a href={`mailto:?body=${socialMessage}`}
+                            <a href={`mailto:?body=${encodeURI(socialMessage)}`}
                                 className="button button--cta button--social"
                                 onClick={this.handleClick.bind(this)}>
                                 Share via email

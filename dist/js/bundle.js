@@ -50745,7 +50745,7 @@ var Share = function (_React$Component) {
     }, {
         key: 'getContent',
         value: function getContent() {
-            var socialMessage = 'House prices have risen ' + this.props.yobAverageHousePrice.multiple + ' fold since I was born. ' + 'Find out how expensive they’ve become in your lifetime';
+            var socialMessage = 'House prices have risen ' + this.props.yobAverageHousePrice.multiple + ' fold since I was born. ' + 'Find out how expensive they\'ve become in your lifetime';
 
             if (!this.state.shared) {
                 return _react2.default.createElement(
@@ -50783,7 +50783,7 @@ var Share = function (_React$Component) {
                             null,
                             _react2.default.createElement(
                                 'a',
-                                { href: 'https://twitter.com/intent/tweet?text=' + socialMessage + '&' + 'url=http://shelter.org.uk/morehomes&via=shelter&related=shelter',
+                                { href: 'https://twitter.com/intent/tweet?text=' + encodeURI(socialMessage) + '&' + 'url=http://shelter.org.uk/morehomes&via=shelter&related=shelter',
                                     className: 'button button--cta button--social button--twitter',
                                     onClick: this.handleClick.bind(this), target: '_blank' },
                                 'Share on Twitter'
@@ -50805,7 +50805,7 @@ var Share = function (_React$Component) {
                             null,
                             _react2.default.createElement(
                                 'a',
-                                { href: 'mailto:?body=' + socialMessage,
+                                { href: 'mailto:?body=' + encodeURI(socialMessage),
                                     className: 'button button--cta button--social',
                                     onClick: this.handleClick.bind(this) },
                                 'Share via email'
