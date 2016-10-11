@@ -51106,7 +51106,7 @@ Object.defineProperty(exports, "__esModule", {
 var URLS = exports.URLS = {
     api: '//www.shelter.org.uk/content/api',
     baseUrl: '/affordability',
-    lhs: '#',
+    lhs: 'http://www.shelter.org.uk/livinghomestandard',
     privacy: '#'
 };
 
