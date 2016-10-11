@@ -66,35 +66,35 @@
     background-position: center center;
 
     &.start {
-        background-image: url(/dist/img/bg1.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg1.jpg);
     }
 
     &.house-prices {
-        background-image: url(/dist/img/bg2.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg2.jpg);
     }
 
     &.milk {
-        background-image: url(/dist/img/bg3.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg3.jpg);
     }
 
     &.in-your-area {
-        background-image: url(/dist/img/bg4.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg4.jpg);
     }
 
     &.tenure {
-        background-image: url(/dist/img/bg5.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg5.jpg);
     }
 
     &.home-standard {
-        background-image: url(/dist/img/bg6.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg6.jpg);
     }
 
     &.future {
-        background-image: url(/dist/img/bg7.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg7.jpg);
     }
 
     &.share {
-        background-image: url(/dist/img/bg8.jpg);
+        background-image: url(/content/remote_content/affordability/img/bg8.jpg);
     }
 
     &.transition-leave {
@@ -109,13 +109,13 @@
 
 body {
     :before{
-        background: url(/dist/img/bg1.jpg),
-            url(/dist/img/bg2.jpg),
-            url(/dist/img/bg3.jpg),
-            url(/dist/img/bg4.jpg),
-            url(/dist/img/bg5.jpg),
-            url(/dist/img/bg6.jpg),
-            url(/dist/img/bg7.jpg),
-            url(/dist/img/bg8.jpg);
+        background: url(/content/remote_content/affordability/img/bg1.jpg),
+            url(/content/remote_content/affordability/img/bg2.jpg),
+            url(/content/remote_content/affordability/img/bg3.jpg),
+            url(/content/remote_content/affordability/img/bg4.jpg),
+            url(/content/remote_content/affordability/img/bg5.jpg),
+            url(/content/remote_content/affordability/img/bg6.jpg),
+            url(/content/remote_content/affordability/img/bg7.jpg),
+            url(/content/remote_content/affordability/img/bg8.jpg);
     }
 }

@@ -23,7 +23,7 @@
     .header__logo {
         float: left;
         max-width: 310px;
-        background: $red url(/dist/img/header-logo.png) center center no-repeat;
+        background: $red url(/content/remote_content/affordability/img/header-logo.png) center center no-repeat;
         background-size: 125px;
 
         @include tablet {
@@ -33,7 +33,7 @@
 
     .header__image {
         float: right;
-        background: white url(/dist/img/header-image.png) center center no-repeat;
+        background: white url(/content/remote_content/affordability/img/header-image.png) center center no-repeat;
         background-size: 125px;
 
         @include tablet {
