@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Graph from '../Graph';
 import Petition from '../forms/Petition';
 
-import { formatNumber, pick } from '../../utils';
+import { arrayFind, formatNumber, pick } from '../../utils';
 
 import graphData from '../../data/graph.json';
 
@@ -12,6 +12,7 @@ class Future extends React.Component {
 
     constructor (props) {
         super(props);
+        arrayFind();
         this.buildsLastYear = graphData[0].values.find(year => year[0] === 2015)[1];
         this.buildsYob = graphData[0].values.find(year => year[0].toString() === this.props.yob)[1];
     }

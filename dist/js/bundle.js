@@ -50196,6 +50196,7 @@ var Future = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Future.__proto__ || Object.getPrototypeOf(Future)).call(this, props));
 
+        (0, _utils.arrayFind)();
         _this.buildsLastYear = _graph2.default[0].values.find(function (year) {
             return year[0] === 2015;
         })[1];
@@ -51335,7 +51336,7 @@ exports.default = (0, _redux.createStore)(function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.tenures = exports.pick = exports.formatNumber = exports.formatCurrency = exports.api = undefined;
+exports.arrayFind = exports.tenures = exports.pick = exports.formatNumber = exports.formatCurrency = exports.api = undefined;
 
 var _numeral = require('numeral');
 
@@ -51347,9 +51348,7 @@ var _config = require('./config');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 var api = exports.api = {
     getJSON: function getJSON(path) {
@@ -51385,9 +51384,9 @@ var formatNumber = exports.formatNumber = function formatNumber(value) {
 };
 
 var pick = exports.pick = function pick(obj, props) {
-    return Object.assign.apply(Object, [{}].concat(_toConsumableArray(props.map(function (prop) {
-        return _defineProperty({}, prop, obj[prop]);
-    }))));
+    var _obj;
+
+    return _obj = obj, props = _objectWithoutProperties(_obj, []), _obj;
 };
 
 var tenures = exports.tenures = {
@@ -51396,6 +51395,36 @@ var tenures = exports.tenures = {
     SOCIAL_RENTER: 'Social renter',
     PARENTS: 'Living with parents',
     TEMPORARY: 'Living in temporary accommodation'
+};
+
+var arrayFind = exports.arrayFind = function arrayFind() {
+    if (!Array.prototype.find) {
+        Array.prototype.find = function (predicate) {
+            'use strict';
+
+            if (this == null) {
+                throw new TypeError('Array.prototype.find called on null or undefined');
+            }
+
+            if (typeof predicate !== 'function') {
+                throw new TypeError('predicate must be a function');
+            }
+
+            var list = Object(this);
+            var length = list.length >>> 0;
+            var thisArg = arguments[1];
+            var value;
+
+            for (var i = 0; i < length; i++) {
+                value = list[i];
+                if (predicate.call(thisArg, value, i, list)) {
+                    return value;
+                }
+            }
+
+            return undefined;
+        };
+    }
 };
 
 },{"./config":368,"numeral":44,"whatwg-fetch":347}]},{},[370]);
