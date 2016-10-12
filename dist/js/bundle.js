@@ -50764,6 +50764,11 @@ var Share = function (_React$Component) {
                     _react2.default.createElement(
                         'p',
                         null,
+                        _react2.default.createElement('img', { src: '/content/remote_content/affordability/img/mosaic.jpg' })
+                    ),
+                    _react2.default.createElement(
+                        'p',
+                        null,
                         socialMessage
                     ),
                     _react2.default.createElement(

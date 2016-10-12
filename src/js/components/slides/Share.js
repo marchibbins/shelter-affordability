@@ -32,6 +32,7 @@ class Share extends React.Component {
                     <h4 className="slide__title">To help us spread the word about our campaign,
                         please can you share the below with your friends and followers?</h4>
 
+                    <p><img src="/content/remote_content/affordability/img/mosaic.jpg"/></p>
                     <p>{socialMessage}</p>
 
                     <ul className="unbulleted">
