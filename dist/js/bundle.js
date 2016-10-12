@@ -50790,7 +50790,7 @@ var Share = function (_React$Component) {
                             null,
                             _react2.default.createElement(
                                 'a',
-                                { href: 'https://www.facebook.com/sharer/sharer.php?u=',
+                                { href: 'https://www.facebook.com/sharer/sharer.php?u=http://www.shelter.org.uk' + _config.URLS.baseUrl,
                                     className: 'button button--cta button--social button--facebook',
                                     onClick: this.handleClick.bind(this), target: '_blank' },
                                 'Share on Facebook'

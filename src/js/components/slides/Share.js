@@ -45,7 +45,7 @@ class Share extends React.Component {
                             </a>
                         </li>
                         <li>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u="
+                            <a href={`https://www.facebook.com/sharer/sharer.php?u=http://www.shelter.org.uk${URLS.baseUrl}`}
                                 className="button button--cta button--social button--facebook"
                                 onClick={this.handleClick.bind(this)} target="_blank">
                                 Share on Facebook
