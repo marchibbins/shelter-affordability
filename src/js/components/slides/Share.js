@@ -22,7 +22,7 @@ class Share extends React.Component {
 
     getContent () {
         const socialMessage = `House prices have risen ${this.props.yobAverageHousePrice.multiple} fold since I was born. `
-            + 'Find out how expensive they\'ve become in your lifetime';
+            + 'See how expensive they\'ve become in your lifetime';
 
         if (!this.state.shared) {
             return (

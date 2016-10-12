@@ -40,7 +40,7 @@ class Future extends React.Component {
                     <h4 className="slide__title">Things don't have to be this way.
                         Join us and call on Theresa May to commit to building more
                         affordable homes that we desperately need – and make this
-                        a key priority for her new government</h4>
+                        a key priority for her new government.</h4>
                     <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode}}/>
                 </article>
             </div>

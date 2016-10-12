@@ -50243,7 +50243,7 @@ var Future = function (_React$Component) {
                     _react2.default.createElement(
                         'h4',
                         { className: 'slide__title' },
-                        'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government'
+                        'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government.'
                     ),
                     _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode } })
                 )
@@ -50745,7 +50745,7 @@ var Share = function (_React$Component) {
     }, {
         key: 'getContent',
         value: function getContent() {
-            var socialMessage = 'House prices have risen ' + this.props.yobAverageHousePrice.multiple + ' fold since I was born. ' + 'Find out how expensive they\'ve become in your lifetime';
+            var socialMessage = 'House prices have risen ' + this.props.yobAverageHousePrice.multiple + ' fold since I was born. ' + 'See how expensive they\'ve become in your lifetime';
 
             if (!this.state.shared) {
                 return _react2.default.createElement(
