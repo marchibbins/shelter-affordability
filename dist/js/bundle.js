@@ -50619,7 +50619,15 @@ var Milk = function (_React$Component) {
                 _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, houseData));
                 _utils.api.getJSON('/HouseInflation/' + formData.postcode).then(function (inflationData) {
                     _this2.props.updateLocationData({ locationInflation: inflationData.inflation });
-                    _this2.props.gotoNext();
+                    _utils.api.getJSON('/Struggling/' + formData.postcode).then(function (strugglingData) {
+                        _this2.props.updateLocationData({ locationStruggling: strugglingData.struggling });
+                        _this2.props.gotoNext();
+                    }).catch(function (error) {
+                        _this2.setState({
+                            error: error,
+                            pending: false
+                        });
+                    });
                 }).catch(function (error) {
                     _this2.setState({
                         error: error,
@@ -51305,7 +51313,7 @@ var initialState = {
     locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',
-    locationStruggling: 'XXX',
+    locationStruggling: '',
 
     // Inflation data
     locationInflation: '',

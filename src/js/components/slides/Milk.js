@@ -28,7 +28,17 @@ class Milk extends React.Component {
                 api.getJSON(`/HouseInflation/${formData.postcode}`)
                     .then(inflationData => {
                         this.props.updateLocationData({locationInflation: inflationData.inflation});
-                        this.props.gotoNext();
+                        api.getJSON(`/Struggling/${formData.postcode}`)
+                            .then(strugglingData => {
+                                this.props.updateLocationData({locationStruggling: strugglingData.struggling});
+                                this.props.gotoNext();
+                            })
+                            .catch(error => {
+                                this.setState({
+                                    error: error,
+                                    pending: false
+                                });
+                            });
                     })
                     .catch(error => {
                         this.setState({

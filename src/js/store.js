@@ -48,7 +48,7 @@ const initialState = {
     locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',
-    locationStruggling: 'XXX',
+    locationStruggling: '',
 
     // Inflation data
     locationInflation: '',
