@@ -49571,7 +49571,7 @@ var Petition = function (_React$Component) {
             firstname: '',
             lastname: '',
             email: '',
-            optin: false,
+            opt_in: 'N',
             submitted: false
         };
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
@@ -49605,7 +49605,7 @@ var Petition = function (_React$Component) {
         key: 'handleChange',
         value: function handleChange(name, event) {
             var state = this.state;
-            state[name] = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+            state[name] = event.target.type === 'checkbox' ? event.target.checked ? 'Y' : 'N' : event.target.value;
             this.setState(state);
         }
     }, {
@@ -49617,11 +49617,21 @@ var Petition = function (_React$Component) {
             this.setState({ submitted: true });
             var onValidate = function onValidate(error) {
                 if (!error) {
-                    _utils.api.postJSON('/survey', JSON.stringify(_extends({}, _this2.props.submitData, _this2.getValidatorData())));
+                    _utils.api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(_this2.getPayload()), JSON.stringify(_this2.getPayload()));
                     _this2.props.onSuccess();
                 }
             };
             this.props.validate(onValidate);
+        }
+    }, {
+        key: 'getPayload',
+        value: function getPayload() {
+            return _extends({}, this.getValidatorData(), {
+                appeal_code: '20161017-ACT-CA-01',
+                postcode: this.props.submitData.postcode,
+                year_of_birth: this.props.submitData.yob,
+                housing_tenure: this.props.submitData.tenure
+            });
         }
     }, {
         key: 'render',
@@ -49692,9 +49702,9 @@ var Petition = function (_React$Component) {
                     { className: 'field-container' },
                     _react2.default.createElement(
                         'label',
-                        { htmlFor: 'optin' },
-                        _react2.default.createElement('input', { type: 'checkbox', id: 'optin', checked: this.state.optin,
-                            onChange: this.handleChange.bind(this, 'optin'),
+                        { htmlFor: 'opt_in' },
+                        _react2.default.createElement('input', { type: 'checkbox', id: 'opt_in', checked: this.state.opt_in === 'Y',
+                            onChange: this.handleChange.bind(this, 'opt_in'),
                             required: true, 'aria-required': 'true' }),
                         'Email me updates',
                         _react2.default.createElement(
@@ -50237,7 +50247,7 @@ var Future = function (_React$Component) {
                         { className: 'slide__title' },
                         'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government.'
                     ),
-                    _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode } })
+                    _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure } })
                 )
             );
         }
@@ -50249,7 +50259,7 @@ var Future = function (_React$Component) {
 Future.slug = 'future';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['postcode', 'yob']);
+    return (0, _utils.pick)(state, ['postcode', 'yob', 'tenure']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Future);
@@ -50615,11 +50625,11 @@ var Milk = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON('/HouseData/' + formData.postcode).then(function (houseData) {
+            _utils.api.getJSON('/api/HouseData/' + formData.postcode).then(function (houseData) {
                 _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, houseData));
-                _utils.api.getJSON('/HouseInflation/' + formData.postcode).then(function (inflationData) {
+                _utils.api.getJSON('/api/HouseInflation/' + formData.postcode).then(function (inflationData) {
                     _this2.props.updateLocationData({ locationInflation: inflationData.inflation });
-                    _utils.api.getJSON('/Struggling/' + formData.postcode).then(function (strugglingData) {
+                    _utils.api.getJSON('/api/Struggling/' + formData.postcode).then(function (strugglingData) {
                         _this2.props.updateLocationData({ locationStruggling: strugglingData.struggling });
                         _this2.props.gotoNext();
                     }).catch(function (error) {
@@ -50924,7 +50934,7 @@ var Start = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON('/YoBData/' + formData.yob).then(function (data) {
+            _utils.api.getJSON('/api/YoBData/' + formData.yob).then(function (data) {
                 _this2.handleMissingYears(formData.yob, data);
                 _this2.props.updateYobData(_extends({ yob: formData.yob }, data));
                 _this2.props.gotoNext();
@@ -51109,7 +51119,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var URLS = exports.URLS = {
-    api: '//www.shelter.org.uk/content/api',
+    api: '//www.shelter.org.uk/content',
     baseUrl: window.baseUrl || '/affordability',
     lhs: 'http://www.shelter.org.uk/livinghomestandard',
     privacy: '#'

@@ -13,7 +13,7 @@ class Petition extends React.Component {
             firstname: '',
             lastname: '',
             email: '',
-            optin: false,
+            opt_in: 'N',
             submitted: false
         };
         this.validatorTypes = strategy.createSchema({
@@ -42,7 +42,7 @@ class Petition extends React.Component {
 
     handleChange (name, event) {
         let state = this.state;
-        state[name] = event.target.type === 'checkbox' ? event.target.checked: event.target.value;
+        state[name] = event.target.type === 'checkbox' ? (event.target.checked ? 'Y' : 'N') : event.target.value;
         this.setState(state);
     }
 
@@ -51,13 +51,21 @@ class Petition extends React.Component {
         this.setState({submitted: true});
         const onValidate = error => {
             if (!error) {
-                api.postJSON('/survey', JSON.stringify({
-                    ...this.props.submitData, ...this.getValidatorData()
-                }));
+                api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(this.getPayload()), JSON.stringify(this.getPayload()));
                 this.props.onSuccess();
             }
         };
         this.props.validate(onValidate);
+    }
+
+    getPayload () {
+        return {
+            ...this.getValidatorData(),
+            appeal_code: '20161017-ACT-CA-01',
+            postcode: this.props.submitData.postcode,
+            year_of_birth: this.props.submitData.yob,
+            housing_tenure: this.props.submitData.tenure
+        };
     }
 
     render () {
@@ -96,9 +104,9 @@ class Petition extends React.Component {
                     </div>
                 </div>
                 <div className="field-container">
-                    <label htmlFor="optin">
-                        <input type="checkbox" id="optin" checked={this.state.optin}
-                            onChange={this.handleChange.bind(this, 'optin')}
+                    <label htmlFor="opt_in">
+                        <input type="checkbox" id="opt_in" checked={this.state.opt_in === 'Y'}
+                            onChange={this.handleChange.bind(this, 'opt_in')}
                             required aria-required="true"/>
                         Email me updates
                         <span className="small">By giving your details you agree

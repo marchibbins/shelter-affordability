@@ -22,13 +22,13 @@ class Milk extends React.Component {
             error: false,
             pending: true
         });
-        api.getJSON(`/HouseData/${formData.postcode}`)
+        api.getJSON(`/api/HouseData/${formData.postcode}`)
             .then(houseData => {
                 this.props.updateLocationData({postcode: formData.postcode, ...houseData});
-                api.getJSON(`/HouseInflation/${formData.postcode}`)
+                api.getJSON(`/api/HouseInflation/${formData.postcode}`)
                     .then(inflationData => {
                         this.props.updateLocationData({locationInflation: inflationData.inflation});
-                        api.getJSON(`/Struggling/${formData.postcode}`)
+                        api.getJSON(`/api/Struggling/${formData.postcode}`)
                             .then(strugglingData => {
                                 this.props.updateLocationData({locationStruggling: strugglingData.struggling});
                                 this.props.gotoNext();

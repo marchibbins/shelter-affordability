@@ -41,7 +41,7 @@ class Future extends React.Component {
                         Join us and call on Theresa May to commit to building more
                         affordable homes that we desperately need – and make this
                         a key priority for her new government.</h4>
-                    <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode}}/>
+                    <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure}}/>
                 </article>
             </div>
         );
@@ -51,6 +51,6 @@ class Future extends React.Component {
 
 Future.slug = 'future';
 
-const stateToProps = state => pick(state, ['postcode', 'yob']);
+const stateToProps = state => pick(state, ['postcode', 'yob', 'tenure']);
 
 export default connect(stateToProps)(Future);
