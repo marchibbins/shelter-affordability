@@ -49167,11 +49167,7 @@ var ErrorMessage = function (_React$Component) {
     _createClass(ErrorMessage, [{
         key: "render",
         value: function render() {
-            return _react2.default.createElement(
-                "em",
-                { className: "message" },
-                this.props.error.message
-            );
+            return _react2.default.createElement("em", { className: "message" });
         }
     }]);
 
@@ -49374,11 +49370,7 @@ var Pending = function (_React$Component) {
     _createClass(Pending, [{
         key: "render",
         value: function render() {
-            return _react2.default.createElement(
-                "em",
-                { className: "message" },
-                "Pending"
-            );
+            return _react2.default.createElement("em", { className: "message" });
         }
     }]);
 
@@ -49704,7 +49696,7 @@ var Petition = function (_React$Component) {
                         _react2.default.createElement('input', { type: 'checkbox', id: 'optin', checked: this.state.optin,
                             onChange: this.handleChange.bind(this, 'optin'),
                             required: true, 'aria-required': 'true' }),
-                        'Keep me informed by email',
+                        'Email me updates',
                         _react2.default.createElement(
                             'span',
                             { className: 'small' },
@@ -50229,7 +50221,7 @@ var Future = function (_React$Component) {
                     _react2.default.createElement(
                         'h3',
                         { className: 'slide__title' },
-                        'House-building has been declining for years, which has contributed to prices rocketing. In 2015, we only built ',
+                        'Home-building has been declining for years, which has contributed to prices rocketing. In 2015, we only built ',
                         (0, _utils.formatNumber)(this.buildsLastYear),
                         ' homes in the UK – ',
                         this.getBuildsDiff(),
@@ -50512,8 +50504,8 @@ var InYourArea = function (_React$Component) {
                     'Since 1995 house prices in ',
                     this.props.location,
                     ' have risen ',
-                    this.props.locationInflation,
-                    '%. It\'s only getting harder and harder to rent or buy.'
+                    Math.round(this.props.locationInflation / 100),
+                    ' fold. It\'s only getting harder and harder to rent or buy.'
                 ),
                 _react2.default.createElement(
                     'form',
@@ -50801,7 +50793,7 @@ var Share = function (_React$Component) {
                             null,
                             _react2.default.createElement(
                                 'a',
-                                { href: 'mailto:?body=' + encodeURI(socialMessage),
+                                { href: 'mailto:?body=' + encodeURI(socialMessage) + ' http://www.shelter.org.uk' + _config.URLS.baseUrl,
                                     className: 'button button--cta button--social',
                                     onClick: this.handleClick.bind(this) },
                                 'Share via email'

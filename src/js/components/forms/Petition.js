@@ -100,7 +100,7 @@ class Petition extends React.Component {
                         <input type="checkbox" id="optin" checked={this.state.optin}
                             onChange={this.handleChange.bind(this, 'optin')}
                             required aria-required="true"/>
-                        Keep me informed by email
+                        Email me updates
                         <span className="small">By giving your details you agree
                             that we may use them to send you information about
                             our work, campaigning and fundraising activities.

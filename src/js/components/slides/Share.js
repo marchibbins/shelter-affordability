@@ -52,7 +52,7 @@ class Share extends React.Component {
                             </a>
                         </li>
                         <li>
-                            <a href={`mailto:?body=${encodeURI(socialMessage)}`}
+                            <a href={`mailto:?body=${encodeURI(socialMessage)} http://www.shelter.org.uk${URLS.baseUrl}`}
                                 className="button button--cta button--social"
                                 onClick={this.handleClick.bind(this)}>
                                 Share via email

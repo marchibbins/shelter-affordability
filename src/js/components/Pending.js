@@ -4,7 +4,7 @@ export default class Pending extends React.Component {
 
     render () {
         return (
-            <em className="message">Pending</em>
+            <em className="message"></em>
         );
     }
 

@@ -5996,7 +5996,7 @@ body :before {
     position: absolute;
     top: 55px;
     height: 100%;
-    border-left: 1px dotted #666;
+    border-left: 1px dotted #999;
     padding-left: 5px;
     color: #fff;
     font-size: 15px;
@@ -6007,10 +6007,10 @@ body :before {
     transform: translate(1px, 0); }
   .graph-wrapper .rd3-areachart-xaxis .domain,
   .graph-wrapper .rd3-areachart-yaxis .domain {
-    stroke: #666; }
+    stroke: #999; }
   .graph-wrapper .rd3-areachart-xaxis .tick line,
   .graph-wrapper .rd3-areachart-yaxis .tick line {
-    stroke: #666 !important; }
+    stroke: #999 !important; }
   .graph-wrapper .rd3-areachart-xaxis .tick text,
   .graph-wrapper .rd3-areachart-yaxis .tick text {
     fill: #fff !important;

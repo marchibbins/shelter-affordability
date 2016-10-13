@@ -30,7 +30,7 @@ class Future extends React.Component {
         return (
             <div className="slide-wrapper">
                 <article className="slide">
-                    <h3 className="slide__title">House-building has been declining for years,
+                    <h3 className="slide__title">Home-building has been declining for years,
                         which has contributed to prices rocketing. In 2015, we only
                         built {formatNumber(this.buildsLastYear)} homes in the
                         UK – {this.getBuildsDiff()} than in the year you were born.</h3>
