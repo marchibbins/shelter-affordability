@@ -50369,10 +50369,8 @@ var HomeStandard = function (_React$Component) {
                         'h3',
                         { className: 'slide__title' },
                         'Today, ',
-                        this.props.locationStruggling,
-                        '% of people in ',
-                        this.props.locationRegion,
-                        ' struggle to pay their rent or mortgage, according to research for the ',
+                        this.props.struggling,
+                        ', according to research for the ',
                         _react2.default.createElement(
                             'a',
                             { href: '#', onClick: this.toggleDescription.bind(this) },
@@ -50396,7 +50394,7 @@ var HomeStandard = function (_React$Component) {
 HomeStandard.slug = 'home-standard';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['locationStruggling', 'locationRegion']);
+    return (0, _utils.pick)(state, ['struggling', 'locationRegion']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(HomeStandard);
@@ -50657,7 +50655,9 @@ var Milk = function (_React$Component) {
                 _utils.api.getJSON('/api/HouseInflation/' + formData.postcode).then(function (inflationData) {
                     _this2.props.updateLocationData({ locationInflation: inflationData.inflation });
                     _utils.api.getJSON('/api/Struggling/' + formData.postcode).then(function (strugglingData) {
-                        _this2.props.updateLocationData({ locationStruggling: strugglingData.struggling });
+                        _this2.props.updateLocationData({
+                            struggling: strugglingData.struggling
+                        });
                         _this2.props.gotoNext();
                     }).catch(function (error) {
                         _this2.setState({
@@ -51350,7 +51350,7 @@ var initialState = {
     locationSocialHomes: '',
     locationTempHouseholds: '',
     locationTempHouseholdsRegional: '',
-    locationStruggling: '',
+    Struggling: '',
 
     // Inflation data
     locationInflation: '',

@@ -49,7 +49,7 @@ const initialState = {
     locationSocialHomes: '',
     locationTempHouseholds: '',
     locationTempHouseholdsRegional: '',
-    locationStruggling: '',
+    Struggling: '',
 
     // Inflation data
     locationInflation: '',
