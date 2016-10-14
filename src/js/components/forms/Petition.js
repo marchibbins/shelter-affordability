@@ -51,8 +51,9 @@ class Petition extends React.Component {
         this.setState({submitted: true});
         const onValidate = error => {
             if (!error) {
-                api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(this.getPayload()), JSON.stringify(this.getPayload()));
-                this.props.onSuccess();
+                let payload = this.getPayload();
+                api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(payload));
+                this.props.onSuccess(payload.email);
             }
         };
         this.props.validate(onValidate);

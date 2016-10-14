@@ -49014,6 +49014,7 @@ Object.defineProperty(exports, "__esModule", {
 var actions = exports.actions = {
     GOTO_NEXT: 'GOTO_NEXT',
     GOTO_SLIDE: 'GOTO_SLIDE',
+    UPDATE_EMAIL: 'UPDATE_EMAIL',
     UPDATE_TENURE: 'UPDATE_TENURE',
     UPDATE_LOCATION_DATA: 'UPDATE_LOCATION_DATA',
     UPDATE_YOB_DATA: 'UPDATE_YOB_DATA'
@@ -49025,6 +49026,10 @@ var gotoNext = exports.gotoNext = function gotoNext(currentSlug) {
 
 var gotoSlide = exports.gotoSlide = function gotoSlide(nextSlug) {
     return { type: actions.GOTO_SLIDE, nextSlug: nextSlug };
+};
+
+var updateEmail = exports.updateEmail = function updateEmail(email) {
+    return { type: actions.UPDATE_EMAIL, email: email };
 };
 
 var updateTenure = exports.updateTenure = function updateTenure(value) {
@@ -49617,8 +49622,9 @@ var Petition = function (_React$Component) {
             this.setState({ submitted: true });
             var onValidate = function onValidate(error) {
                 if (!error) {
-                    _utils.api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(_this2.getPayload()), JSON.stringify(_this2.getPayload()));
-                    _this2.props.onSuccess();
+                    var payload = _this2.getPayload();
+                    _utils.api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(payload));
+                    _this2.props.onSuccess(payload.email);
                 }
             };
             this.props.validate(onValidate);
@@ -49786,14 +49792,14 @@ var Phone = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Phone.__proto__ || Object.getPrototypeOf(Phone)).call(this, props));
 
         _this.state = {
-            phone: '',
+            phone_number: '',
             showForm: true,
             submitted: false
         };
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
-            phone: 'required'
+            phone_number: 'required'
         }, {
-            'required.phone': 'Phone number is required'
+            'required.phone_number': 'Phone number is required'
         });
         return _this;
     }
@@ -49828,11 +49834,19 @@ var Phone = function (_React$Component) {
             this.setState({ submitted: true });
             var onValidate = function onValidate(error) {
                 if (!error) {
-                    _utils.api.postJSON('/phone', JSON.stringify(_this2.getValidatorData()));
+                    _utils.api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(_this2.getPayload()), JSON.stringify(_this2.getPayload()));
                     _this2.setState({ showForm: false });
                 }
             };
             this.props.validate(onValidate);
+        }
+    }, {
+        key: 'getPayload',
+        value: function getPayload() {
+            return {
+                phone_number: this.getValidatorData().phone_number,
+                email: this.props.submitData.email
+            };
         }
     }, {
         key: 'render',
@@ -49851,7 +49865,7 @@ var Phone = function (_React$Component) {
                         { onSubmit: this.handleSubmit.bind(this), className: 'form', noValidate: true },
                         _react2.default.createElement(
                             'label',
-                            { htmlFor: 'phone' },
+                            { htmlFor: 'phone_number' },
                             'Phone number'
                         ),
                         _react2.default.createElement(
@@ -49860,14 +49874,14 @@ var Phone = function (_React$Component) {
                             _react2.default.createElement(
                                 'li',
                                 { className: 'col--2up' },
-                                _react2.default.createElement('input', { type: 'number', id: 'phone', value: this.state.phone,
-                                    onChange: this.handleChange.bind(this, 'phone'),
-                                    className: this.getFieldClass('phone'),
+                                _react2.default.createElement('input', { type: 'number', id: 'phone_number', value: this.state.phone_number,
+                                    onChange: this.handleChange.bind(this, 'phone_number'),
+                                    className: this.getFieldClass('phone_number'),
                                     required: true, 'aria-required': 'true' }),
                                 _react2.default.createElement(
                                     'div',
                                     { className: 'help-block' },
-                                    this.props.getValidationMessages('phone')[0]
+                                    this.props.getValidationMessages('phone_number')[0]
                                 )
                             ),
                             _react2.default.createElement(
@@ -50176,6 +50190,8 @@ var _Petition = require('../forms/Petition');
 
 var _Petition2 = _interopRequireDefault(_Petition);
 
+var _actions = require('../../actions');
+
 var _utils = require('../../utils');
 
 var _graph = require('../../data/graph.json');
@@ -50216,8 +50232,9 @@ var Future = function (_React$Component) {
         }
     }, {
         key: 'handleSubmit',
-        value: function handleSubmit(event) {
-            event.preventDefault();
+        value: function handleSubmit(email) {
+            this.props.updateEmail(email);
+            this.props.gotoNext();
         }
     }, {
         key: 'render',
@@ -50247,7 +50264,7 @@ var Future = function (_React$Component) {
                         { className: 'slide__title' },
                         'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government.'
                     ),
-                    _react2.default.createElement(_Petition2.default, { onSuccess: this.props.gotoNext, submitData: { yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure } })
+                    _react2.default.createElement(_Petition2.default, { onSuccess: this.handleSubmit.bind(this), submitData: { yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure } })
                 )
             );
         }
@@ -50262,9 +50279,15 @@ var stateToProps = function stateToProps(state) {
     return (0, _utils.pick)(state, ['postcode', 'yob', 'tenure']);
 };
 
-exports.default = (0, _reactRedux.connect)(stateToProps)(Future);
+exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
+    return {
+        updateEmail: function updateEmail(email) {
+            dispatch((0, _actions.updateEmail)(email));
+        }
+    };
+})(Future);
 
-},{"../../data/graph.json":369,"../../utils":372,"../Graph":351,"../forms/Petition":356,"react":326,"react-redux":111}],361:[function(require,module,exports){
+},{"../../actions":348,"../../data/graph.json":369,"../../utils":372,"../Graph":351,"../forms/Petition":356,"react":326,"react-redux":111}],361:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -50829,7 +50852,7 @@ var Share = function (_React$Component) {
                     )
                 );
             } else {
-                return _react2.default.createElement(_Phone2.default, null);
+                return _react2.default.createElement(_Phone2.default, { submitData: { email: this.props.email } });
             }
         }
     }, {
@@ -51329,7 +51352,10 @@ var initialState = {
     locationInflation: '',
 
     // Tenure
-    tenure: ''
+    tenure: '',
+
+    // User data
+    email: ''
 };
 
 exports.default = (0, _redux.createStore)(function () {
@@ -51346,6 +51372,8 @@ exports.default = (0, _redux.createStore)(function () {
         case _actions.actions.GOTO_SLIDE:
             _reactRouter.browserHistory.push(_config.URLS.baseUrl + '/' + action.nextSlug);
             return state;
+        case _actions.actions.UPDATE_EMAIL:
+            return _extends({}, state, { email: action.email });
         case _actions.actions.UPDATE_TENURE:
             return _extends({}, state, { tenure: action.value });
         case _actions.actions.UPDATE_YOB_DATA:

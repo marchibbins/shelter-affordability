@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Graph from '../Graph';
 import Petition from '../forms/Petition';
 
+import { updateEmail } from '../../actions';
 import { arrayFind, formatNumber, pick } from '../../utils';
 
 import graphData from '../../data/graph.json';
@@ -22,8 +23,9 @@ class Future extends React.Component {
         return formatNumber(Math.abs(diff)) + ' ' + (diff > 0 ? 'fewer' : 'more');
     }
 
-    handleSubmit (event) {
-        event.preventDefault();
+    handleSubmit (email) {
+        this.props.updateEmail(email);
+        this.props.gotoNext();
     }
 
     render () {
@@ -41,7 +43,7 @@ class Future extends React.Component {
                         Join us and call on Theresa May to commit to building more
                         affordable homes that we desperately need – and make this
                         a key priority for her new government.</h4>
-                    <Petition onSuccess={this.props.gotoNext} submitData={{yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure}}/>
+                    <Petition onSuccess={this.handleSubmit.bind(this)} submitData={{yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure}}/>
                 </article>
             </div>
         );
@@ -53,4 +55,10 @@ Future.slug = 'future';
 
 const stateToProps = state => pick(state, ['postcode', 'yob', 'tenure']);
 
-export default connect(stateToProps)(Future);
+export default connect(stateToProps, dispatch => {
+    return {
+        updateEmail: email => {
+            dispatch(updateEmail(email));
+        }
+    };
+})(Future);

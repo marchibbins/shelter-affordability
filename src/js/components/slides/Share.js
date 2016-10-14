@@ -64,7 +64,7 @@ class Share extends React.Component {
                 </div>
             );
         } else {
-            return <Phone/>;
+            return <Phone submitData={{email: this.props.email}}/>;
         }
     }
 
