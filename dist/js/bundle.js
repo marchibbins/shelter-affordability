@@ -49556,6 +49556,8 @@ var _reactValidationMixin2 = _interopRequireDefault(_reactValidationMixin);
 
 var _utils = require('../../utils');
 
+var _config = require('../../config');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -49724,7 +49726,7 @@ var Petition = function (_React$Component) {
                             'We will never share your personal details. ',
                             _react2.default.createElement(
                                 'a',
-                                { href: '#' },
+                                { href: _config.URLS.privacy, target: '_blank' },
                                 'Privacy policy'
                             ),
                             '.'
@@ -49752,7 +49754,7 @@ var Petition = function (_React$Component) {
 
 exports.default = (0, _reactValidationMixin2.default)(_reactValidatorjsStrategy2.default)(Petition);
 
-},{"../../utils":372,"react":326,"react-validation-mixin":172,"react-validatorjs-strategy":178}],357:[function(require,module,exports){
+},{"../../config":368,"../../utils":372,"react":326,"react-validation-mixin":172,"react-validatorjs-strategy":178}],357:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -51145,7 +51147,7 @@ var URLS = exports.URLS = {
     api: '//www.shelter.org.uk/content',
     baseUrl: window.baseUrl || '/affordability',
     lhs: 'http://www.shelter.org.uk/livinghomestandard',
-    privacy: '#'
+    privacy: 'http://england.shelter.org.uk/contact_us/privacy_and_cookies'
 };
 
 },{}],369:[function(require,module,exports){

@@ -4,6 +4,7 @@ import strategy from 'react-validatorjs-strategy';
 import validation from 'react-validation-mixin';
 
 import { api } from '../../utils';
+import { URLS } from '../../config';
 
 class Petition extends React.Component {
 
@@ -115,7 +116,7 @@ class Petition extends React.Component {
                             our work, campaigning and fundraising activities.
                         </span>
                         <span className="small">We will never share your personal
-                            details. <a href="#">Privacy policy</a>.
+                            details. <a href={URLS.privacy} target="_blank">Privacy policy</a>.
                         </span>
                         <span className="small">If you prefer not to hear from us,
                             please contact our supporter helpdesk on 0300 330 1234 or
