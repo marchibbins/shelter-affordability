@@ -50086,8 +50086,8 @@ var Yob = function (_React$Component) {
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
             yob: 'required|numeric|min:' + _this.earliestYear + '|max:' + _this.latestYear
         }, {
-            'min.yob': 'Birth year must be after ' + _this.earliestYear,
-            'max.yob': 'Birth year must be before ' + _this.latestYear,
+            'min.yob': 'Our data only goes from ' + _this.earliestYear + ' to ' + _this.latestYear,
+            'max.yob': 'Our data only goes from ' + _this.earliestYear + ' to ' + _this.latestYear,
             'numeric.yob': 'Birth year is invalid',
             'required.yob': 'Birth year is required'
         });

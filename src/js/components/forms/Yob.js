@@ -18,8 +18,8 @@ class Yob extends React.Component {
         this.validatorTypes = strategy.createSchema({
             yob: `required|numeric|min:${this.earliestYear}|max:${this.latestYear}`
         }, {
-            'min.yob': `Birth year must be after ${this.earliestYear}`,
-            'max.yob': `Birth year must be before ${this.latestYear}`,
+            'min.yob': `Our data only goes from ${this.earliestYear} to ${this.latestYear}`,
+            'max.yob': `Our data only goes from ${this.earliestYear} to ${this.latestYear}`,
             'numeric.yob': 'Birth year is invalid',
             'required.yob': 'Birth year is required'
         });
