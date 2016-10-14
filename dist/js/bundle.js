@@ -51113,6 +51113,7 @@ var Tenure = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var label = this.props.locationTempHouseholds > 0 ? 'How many people are struggling in the rest of ' + this.props.locationRegion + '?' : 'How many other people are struggling in your area?';
             return _react2.default.createElement(
                 'article',
                 { className: 'slide' },
@@ -51120,9 +51121,7 @@ var Tenure = function (_React$Component) {
                 _react2.default.createElement(
                     'button',
                     { onClick: this.props.gotoNext, className: 'button button--cta' },
-                    'How many people are struggling in the rest of ',
-                    this.props.locationRegion,
-                    '?'
+                    label
                 )
             );
         }

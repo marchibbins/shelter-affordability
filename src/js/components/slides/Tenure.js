@@ -47,12 +47,13 @@ class Tenure extends React.Component {
     }
 
     render () {
+        let label = this.props.locationTempHouseholds > 0 ?
+            `How many people are struggling in the rest of ${this.props.locationRegion}?`
+            : 'How many other people are struggling in your area?';
         return (
             <article className="slide">
                 {this.getStatement()}
-                <button onClick={this.props.gotoNext} className="button button--cta">
-                    How many people are struggling in the rest of {this.props.locationRegion}?
-                </button>
+                <button onClick={this.props.gotoNext} className="button button--cta">{label}</button>
             </article>
         );
     }
