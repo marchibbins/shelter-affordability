@@ -40,7 +40,7 @@ class Tenure extends React.Component {
             case tenures.TEMPORARY:
                 return (
                     <h3 className="slide__title">The lack of affordable housing means
-                        that {formatNumber(this.props.locationTempHouseholds)} households
+                        that {formatNumber(this.props.locationTempHouseholds || this.props.locationTempHouseholdsRegional)} households
                         are living in temporary accommodation in your area.</h3>
                 );
         }
@@ -68,6 +68,7 @@ const stateToProps = state => pick(state, [
     'locationRentAverage',
     'locationSocialHomes',
     'locationTempHouseholds',
+    'locationTempHouseholdsRegional',
     'tenure'
 ]);
 

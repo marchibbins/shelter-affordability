@@ -51104,7 +51104,7 @@ var Tenure = function (_React$Component) {
                         'h3',
                         { className: 'slide__title' },
                         'The lack of affordable housing means that ',
-                        (0, _utils.formatNumber)(this.props.locationTempHouseholds),
+                        (0, _utils.formatNumber)(this.props.locationTempHouseholds || this.props.locationTempHouseholdsRegional),
                         ' households are living in temporary accommodation in your area.'
                     );
             }
@@ -51133,7 +51133,7 @@ var Tenure = function (_React$Component) {
 Tenure.slug = 'tenure';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['location', 'locationRegion', 'locationLivingParents', 'locationRentAverage', 'locationSocialHomes', 'locationTempHouseholds', 'tenure']);
+    return (0, _utils.pick)(state, ['location', 'locationRegion', 'locationLivingParents', 'locationRentAverage', 'locationSocialHomes', 'locationTempHouseholds', 'locationTempHouseholdsRegional', 'tenure']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Tenure);
@@ -51349,6 +51349,7 @@ var initialState = {
     locationRentAverage: '',
     locationSocialHomes: '',
     locationTempHouseholds: '',
+    locationTempHouseholdsRegional: '',
     locationStruggling: '',
 
     // Inflation data
