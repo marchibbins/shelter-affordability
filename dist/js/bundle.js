@@ -49638,6 +49638,7 @@ var Petition = function (_React$Component) {
                 appeal_code: '20161017-ACT-CA-01',
                 postcode: this.props.submitData.postcode,
                 year_of_birth: this.props.submitData.yob,
+                price_increase: this.props.submitData.price_increase,
                 housing_tenure: this.props.submitData.tenure
             });
         }
@@ -50266,7 +50267,7 @@ var Future = function (_React$Component) {
                         { className: 'slide__title' },
                         'Things don\'t have to be this way. Join us and call on Theresa May to commit to building more affordable homes that we desperately need – and make this a key priority for her new government.'
                     ),
-                    _react2.default.createElement(_Petition2.default, { onSuccess: this.handleSubmit.bind(this), submitData: { yob: this.props.yob, postcode: this.props.postcode, tenure: this.props.tenure } })
+                    _react2.default.createElement(_Petition2.default, { onSuccess: this.handleSubmit.bind(this), submitData: { yob: this.props.yob, postcode: this.props.postcode, price_increase: this.props.yobAverageHousePrice.multiple, tenure: this.props.tenure } })
                 )
             );
         }
@@ -50278,7 +50279,7 @@ var Future = function (_React$Component) {
 Future.slug = 'future';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['postcode', 'yob', 'tenure']);
+    return (0, _utils.pick)(state, ['postcode', 'yob', 'yobAverageHousePrice', 'tenure']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {

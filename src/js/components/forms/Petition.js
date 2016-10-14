@@ -66,6 +66,7 @@ class Petition extends React.Component {
             appeal_code: '20161017-ACT-CA-01',
             postcode: this.props.submitData.postcode,
             year_of_birth: this.props.submitData.yob,
+            price_increase: this.props.submitData.price_increase,
             housing_tenure: this.props.submitData.tenure
         };
     }
