@@ -49014,7 +49014,7 @@ Object.defineProperty(exports, "__esModule", {
 var actions = exports.actions = {
     GOTO_NEXT: 'GOTO_NEXT',
     GOTO_SLIDE: 'GOTO_SLIDE',
-    UPDATE_EMAIL: 'UPDATE_EMAIL',
+    UPDATE_USERDATA: 'UPDATE_USERDATA',
     UPDATE_TENURE: 'UPDATE_TENURE',
     UPDATE_LOCATION_DATA: 'UPDATE_LOCATION_DATA',
     UPDATE_YOB_DATA: 'UPDATE_YOB_DATA'
@@ -49028,8 +49028,8 @@ var gotoSlide = exports.gotoSlide = function gotoSlide(nextSlug) {
     return { type: actions.GOTO_SLIDE, nextSlug: nextSlug };
 };
 
-var updateEmail = exports.updateEmail = function updateEmail(email) {
-    return { type: actions.UPDATE_EMAIL, email: email };
+var updateUserData = exports.updateUserData = function updateUserData(userData) {
+    return { type: actions.UPDATE_USERDATA, userData: userData };
 };
 
 var updateTenure = exports.updateTenure = function updateTenure(value) {
@@ -49626,7 +49626,7 @@ var Petition = function (_React$Component) {
                 if (!error) {
                     var payload = _this2.getPayload();
                     _utils.api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(payload));
-                    _this2.props.onSuccess(payload.email);
+                    _this2.props.onSuccess(payload);
                 }
             };
             this.props.validate(onValidate);
@@ -49762,6 +49762,8 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
@@ -49846,10 +49848,9 @@ var Phone = function (_React$Component) {
     }, {
         key: 'getPayload',
         value: function getPayload() {
-            return {
-                phone_number: this.getValidatorData().phone_number,
-                email: this.props.submitData.email
-            };
+            return _extends({
+                phone_number: this.getValidatorData().phone_number
+            }, this.props.submitData);
         }
     }, {
         key: 'render',
@@ -49896,7 +49897,7 @@ var Phone = function (_React$Component) {
                     )
                 );
             } else {
-                return _react2.default.createElement('div', null); // TODO
+                return _react2.default.createElement('div', null);
             }
         }
     }]);
@@ -50235,8 +50236,8 @@ var Future = function (_React$Component) {
         }
     }, {
         key: 'handleSubmit',
-        value: function handleSubmit(email) {
-            this.props.updateEmail(email);
+        value: function handleSubmit(userData) {
+            this.props.updateUserData(userData);
             this.props.gotoNext();
         }
     }, {
@@ -50284,8 +50285,8 @@ var stateToProps = function stateToProps(state) {
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
     return {
-        updateEmail: function updateEmail(email) {
-            dispatch((0, _actions.updateEmail)(email));
+        updateUserData: function updateUserData(email) {
+            dispatch((0, _actions.updateUserData)(email));
         }
     };
 })(Future);
@@ -50855,7 +50856,7 @@ var Share = function (_React$Component) {
                     )
                 );
             } else {
-                return _react2.default.createElement(_Phone2.default, { submitData: { email: this.props.email } });
+                return _react2.default.createElement(_Phone2.default, { submitData: this.props.userData });
             }
         }
     }, {
@@ -50879,7 +50880,7 @@ var Share = function (_React$Component) {
 
 Share.slug = 'share';
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['yobAverageHousePrice']);
+    return (0, _utils.pick)(state, ['yobAverageHousePrice', 'userData']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps)(Share);
@@ -51359,7 +51360,7 @@ var initialState = {
     tenure: '',
 
     // User data
-    email: ''
+    userData: {}
 };
 
 exports.default = (0, _redux.createStore)(function () {
@@ -51376,8 +51377,8 @@ exports.default = (0, _redux.createStore)(function () {
         case _actions.actions.GOTO_SLIDE:
             _reactRouter.browserHistory.push(_config.URLS.baseUrl + '/' + action.nextSlug);
             return state;
-        case _actions.actions.UPDATE_EMAIL:
-            return _extends({}, state, { email: action.email });
+        case _actions.actions.UPDATE_USERDATA:
+            return _extends({}, state, { userData: action.userData });
         case _actions.actions.UPDATE_TENURE:
             return _extends({}, state, { tenure: action.value });
         case _actions.actions.UPDATE_YOB_DATA:

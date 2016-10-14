@@ -58,7 +58,7 @@ const initialState = {
     tenure: '',
 
     // User data
-    email: ''
+    userData: {}
 };
 
 export default createStore((state = initialState, action) => {
@@ -71,8 +71,8 @@ export default createStore((state = initialState, action) => {
         case (actions.GOTO_SLIDE):
             browserHistory.push(URLS.baseUrl + '/' + action.nextSlug);
             return state;
-        case (actions.UPDATE_EMAIL):
-            return {...state, email: action.email};
+        case (actions.UPDATE_USERDATA):
+            return {...state, userData: action.userData};
         case (actions.UPDATE_TENURE):
             return {...state, tenure: action.value};
         case (actions.UPDATE_YOB_DATA):

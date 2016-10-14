@@ -54,7 +54,7 @@ class Petition extends React.Component {
             if (!error) {
                 let payload = this.getPayload();
                 api.getJSON('/remote_content/affordability/shelter/?json=' + JSON.stringify(payload));
-                this.props.onSuccess(payload.email);
+                this.props.onSuccess(payload);
             }
         };
         this.props.validate(onValidate);

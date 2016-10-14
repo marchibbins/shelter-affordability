@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Graph from '../Graph';
 import Petition from '../forms/Petition';
 
-import { updateEmail } from '../../actions';
+import { updateUserData } from '../../actions';
 import { arrayFind, formatNumber, pick } from '../../utils';
 
 import graphData from '../../data/graph.json';
@@ -23,8 +23,8 @@ class Future extends React.Component {
         return formatNumber(Math.abs(diff)) + ' ' + (diff > 0 ? 'fewer' : 'more');
     }
 
-    handleSubmit (email) {
-        this.props.updateEmail(email);
+    handleSubmit (userData) {
+        this.props.updateUserData(userData);
         this.props.gotoNext();
     }
 
@@ -57,8 +57,8 @@ const stateToProps = state => pick(state, ['postcode', 'yob', 'yobAverageHousePr
 
 export default connect(stateToProps, dispatch => {
     return {
-        updateEmail: email => {
-            dispatch(updateEmail(email));
+        updateUserData: email => {
+            dispatch(updateUserData(email));
         }
     };
 })(Future);

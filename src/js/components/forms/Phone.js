@@ -54,7 +54,7 @@ class Phone extends React.Component {
     getPayload () {
         return {
             phone_number: this.getValidatorData().phone_number,
-            email: this.props.submitData.email
+            ...this.props.submitData
         };
     }
 
@@ -84,7 +84,7 @@ class Phone extends React.Component {
                 </div>
             );
         } else {
-            return <div/>; // TODO
+            return <div/>;
         }
     }
 

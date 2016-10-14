@@ -64,7 +64,7 @@ class Share extends React.Component {
                 </div>
             );
         } else {
-            return <Phone submitData={{email: this.props.email}}/>;
+            return <Phone submitData={this.props.userData}/>;
         }
     }
 
@@ -80,7 +80,7 @@ class Share extends React.Component {
 }
 
 Share.slug = 'share';
-const stateToProps = state => pick(state, ['yobAverageHousePrice']);
+const stateToProps = state => pick(state, ['yobAverageHousePrice', 'userData']);
 
 export default connect(stateToProps)(Share);
 
