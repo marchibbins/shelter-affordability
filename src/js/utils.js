@@ -44,7 +44,7 @@ export const pick = (obj, props) => {
 
 export const tenures = {
     HOMEOWNER: 'Homeowner',
-    RENTER: 'Renter',
+    RENTER: 'Private renter',
     SOCIAL_RENTER: 'Social renter',
     PARENTS: 'Living with parents',
     TEMPORARY: 'Living in temporary accommodation'
