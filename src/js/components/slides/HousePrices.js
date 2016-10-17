@@ -13,7 +13,7 @@ class HousePrices extends React.Component {
         return (
             <article className="slide">
                 <h3 className="slide__title">
-                    {openingStatement}, the average cost of a three-bedroom house in the UK
+                    {openingStatement}, the average cost of a house in the UK
                     was {formatCurrency(this.props.yobAverageHousePrice.house_price, '0,0')}.</h3>
                 <h3 className="slide__title">
                     Today, it's shot up to {formatCurrency(this.props.todayAverageHousePrice, '0,0')}.</h3>
