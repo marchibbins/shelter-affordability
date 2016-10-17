@@ -24,6 +24,8 @@ export default class Graph extends React.Component {
 
         this.peakPosition = (new Date(this.peakYear, 0).getTime() - this.start) / (this.end - this.start);
         this.yobPosition = (new Date(yob, 0).getTime() - this.start) / (this.end - this.start);
+
+        this.handleResize = this.handleResize.bind(this);
     }
 
     handleResize () {
@@ -42,12 +44,12 @@ export default class Graph extends React.Component {
     }
 
     componentDidMount () {
-        window.addEventListener('resize', this.handleResize.bind(this));
-        setTimeout(this.handleResize.bind(this), 10);
+        window.addEventListener('resize', this.handleResize);
+        setTimeout(this.handleResize, 10);
     }
 
     componentWillUnmount () {
-        window.removeEventListener('resize', this.handleResize.bind(this));
+        window.removeEventListener('resize', this.handleResize);
     }
 
     getColours () {

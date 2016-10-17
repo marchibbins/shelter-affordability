@@ -49238,6 +49238,8 @@ var Graph = function (_React$Component) {
 
         _this.peakPosition = (new Date(_this.peakYear, 0).getTime() - _this.start) / (_this.end - _this.start);
         _this.yobPosition = (new Date(yob, 0).getTime() - _this.start) / (_this.end - _this.start);
+
+        _this.handleResize = _this.handleResize.bind(_this);
         return _this;
     }
 
@@ -49265,13 +49267,13 @@ var Graph = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            window.addEventListener('resize', this.handleResize.bind(this));
-            setTimeout(this.handleResize.bind(this), 10);
+            window.addEventListener('resize', this.handleResize);
+            setTimeout(this.handleResize, 10);
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            window.removeEventListener('resize', this.handleResize.bind(this));
+            window.removeEventListener('resize', this.handleResize);
         }
     }, {
         key: 'getColours',
