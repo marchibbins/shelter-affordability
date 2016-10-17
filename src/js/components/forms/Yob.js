@@ -12,14 +12,12 @@ class Yob extends React.Component {
             submitted: false
         };
 
-        this.earliestYear = 1947;
-        this.latestYear = 2016 - 18;
+        this.latestYear = 2015;
 
         this.validatorTypes = strategy.createSchema({
-            yob: `required|numeric|min:${this.earliestYear}|max:${this.latestYear}`
+            yob: `required|numeric|max:${this.latestYear}`
         }, {
-            'min.yob': `Our data only goes from ${this.earliestYear} to ${this.latestYear}`,
-            'max.yob': `Our data only goes from ${this.earliestYear} to ${this.latestYear}`,
+            'max.yob': `Our data only goes up to ${this.latestYear}`,
             'numeric.yob': 'Birth year is invalid',
             'required.yob': 'Birth year is required'
         });

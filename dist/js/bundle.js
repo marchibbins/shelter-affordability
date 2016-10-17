@@ -49222,7 +49222,8 @@ var Graph = function (_React$Component) {
             yobClass: ''
         };
 
-        var series = _this.props.data[0].values;
+        var series = _this.props.data[0].values,
+            yob = _this.props.yobAgeReplacement ? parseInt(_this.props.yob, 10) + _this.props.yobAgeReplacement : _this.props.yob;
 
         _this.start = new Date(series[0][0], 0).getTime();
         _this.end = new Date(series[series.length - 1][0], 0).getTime();
@@ -49236,7 +49237,7 @@ var Graph = function (_React$Component) {
         })[0];
 
         _this.peakPosition = (new Date(_this.peakYear, 0).getTime() - _this.start) / (_this.end - _this.start);
-        _this.yobPosition = (new Date(_this.props.yob, 0).getTime() - _this.start) / (_this.end - _this.start);
+        _this.yobPosition = (new Date(yob, 0).getTime() - _this.start) / (_this.end - _this.start);
         return _this;
     }
 
@@ -49330,7 +49331,8 @@ var Graph = function (_React$Component) {
                         'div',
                         { className: 'graph-wrapper__marker ' + this.state.yobClass,
                             style: { left: this.yobPosition * 100 + '%' }, ref: 'yobMarker' },
-                        'Year you were born'
+                        'Year you were ',
+                        this.props.yobAgeReplacement ? this.props.yobAgeReplacement : 'born'
                     )
                 )
             );
@@ -50080,14 +50082,12 @@ var Yob = function (_React$Component) {
             submitted: false
         };
 
-        _this.earliestYear = 1947;
-        _this.latestYear = 2016 - 18;
+        _this.latestYear = 2015;
 
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
-            yob: 'required|numeric|min:' + _this.earliestYear + '|max:' + _this.latestYear
+            yob: 'required|numeric|max:' + _this.latestYear
         }, {
-            'min.yob': 'Our data only goes from ' + _this.earliestYear + ' to ' + _this.latestYear,
-            'max.yob': 'Our data only goes from ' + _this.earliestYear + ' to ' + _this.latestYear,
+            'max.yob': 'Our data only goes up to ' + _this.latestYear,
             'numeric.yob': 'Birth year is invalid',
             'required.yob': 'Birth year is required'
         });
@@ -50219,11 +50219,12 @@ var Future = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Future.__proto__ || Object.getPrototypeOf(Future)).call(this, props));
 
         (0, _utils.arrayFind)();
+        var yob = _this.props.yobAgeReplacement ? parseInt(_this.props.yob, 10) + _this.props.yobAgeReplacement : _this.props.yob;
         _this.buildsLastYear = _graph2.default[0].values.find(function (year) {
             return year[0] === 2015;
         })[1];
         _this.buildsYob = _graph2.default[0].values.find(function (year) {
-            return year[0].toString() === _this.props.yob;
+            return year[0].toString() === yob.toString();
         })[1];
         return _this;
     }
@@ -50256,9 +50257,11 @@ var Future = function (_React$Component) {
                         (0, _utils.formatNumber)(this.buildsLastYear),
                         ' homes in the UK – ',
                         this.getBuildsDiff(),
-                        ' than in the year you were born.'
+                        ' than in the year you were ',
+                        this.props.yobAgeReplacement ? this.props.yobAgeReplacement : 'born',
+                        '.'
                     ),
-                    _react2.default.createElement(_Graph2.default, { data: _graph2.default, yob: this.props.yob })
+                    _react2.default.createElement(_Graph2.default, { data: _graph2.default, yob: this.props.yob, yobAgeReplacement: this.props.yobAgeReplacement })
                 ),
                 _react2.default.createElement(
                     'article',
@@ -50280,7 +50283,7 @@ var Future = function (_React$Component) {
 Future.slug = 'future';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['postcode', 'yob', 'yobAverageHousePrice', 'tenure']);
+    return (0, _utils.pick)(state, ['postcode', 'yob', 'yobAgeReplacement', 'yobAverageHousePrice', 'tenure']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
@@ -50940,16 +50943,15 @@ var Start = function (_React$Component) {
             error: false,
             pending: false
         };
+        _this.earliestYear = 1947;
         return _this;
     }
 
     _createClass(Start, [{
         key: 'handleMissingYears',
         value: function handleMissingYears(yob, data) {
-            var missingYears = arguments.length <= 2 || arguments[2] === undefined ? [1939, 1945] : arguments[2];
-
-            if (yob >= missingYears[0] && yob <= missingYears[1]) {
-                data['yobAgeReplacement'] = missingYears[1] + 1 - yob;
+            if (yob < this.earliestYear) {
+                data['yobAgeReplacement'] = this.earliestYear - yob;
             } else {
                 data['yobAgeReplacement'] = null;
             }
@@ -50963,7 +50965,7 @@ var Start = function (_React$Component) {
                 error: false,
                 pending: true
             });
-            _utils.api.getJSON('/api/YoBData/' + formData.yob).then(function (data) {
+            _utils.api.getJSON('/api/YoBData/' + Math.max(formData.yob, this.earliestYear)).then(function (data) {
                 _this2.handleMissingYears(formData.yob, data);
                 _this2.props.updateYobData(_extends({ yob: formData.yob }, data));
                 _this2.props.gotoNext();

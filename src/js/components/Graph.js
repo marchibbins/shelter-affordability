@@ -12,7 +12,8 @@ export default class Graph extends React.Component {
             yobClass: ''
         };
 
-        let series = this.props.data[0].values;
+        let series = this.props.data[0].values,
+            yob = this.props.yobAgeReplacement ? parseInt(this.props.yob, 10) + this.props.yobAgeReplacement : this.props.yob;
 
         this.start = new Date(series[0][0], 0).getTime();
         this.end = new Date(series[series.length - 1][0], 0).getTime();
@@ -22,7 +23,7 @@ export default class Graph extends React.Component {
         })[0];
 
         this.peakPosition = (new Date(this.peakYear, 0).getTime() - this.start) / (this.end - this.start);
-        this.yobPosition = (new Date(this.props.yob, 0).getTime() - this.start) / (this.end - this.start);
+        this.yobPosition = (new Date(yob, 0).getTime() - this.start) / (this.end - this.start);
     }
 
     handleResize () {
@@ -92,7 +93,7 @@ export default class Graph extends React.Component {
                     </div>
                     <div className={'graph-wrapper__marker ' + this.state.yobClass}
                         style={{left: `${this.yobPosition * 100}%`}} ref="yobMarker">
-                        Year you were born
+                        Year you were {this.props.yobAgeReplacement ? this.props.yobAgeReplacement : 'born'}
                     </div>
                 </div>
             </div>

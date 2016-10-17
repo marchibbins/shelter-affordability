@@ -16,11 +16,12 @@ class Start extends React.Component {
             error: false,
             pending: false
         };
+        this.earliestYear = 1947;
     }
 
-    handleMissingYears (yob, data, missingYears = [1939, 1945]) {
-        if (yob >= missingYears[0] && yob <= missingYears[1]) {
-            data['yobAgeReplacement'] = (missingYears[1] + 1) - yob;
+    handleMissingYears (yob, data) {
+        if (yob < this.earliestYear) {
+            data['yobAgeReplacement'] = this.earliestYear - yob;
         } else {
             data['yobAgeReplacement'] = null;
         }
@@ -31,7 +32,7 @@ class Start extends React.Component {
             error: false,
             pending: true
         });
-        api.getJSON(`/api/YoBData/${formData.yob}`)
+        api.getJSON(`/api/YoBData/${Math.max(formData.yob, this.earliestYear)}`)
             .then(data => {
                 this.handleMissingYears(formData.yob, data);
                 this.props.updateYobData({yob: formData.yob, ...data});

@@ -14,8 +14,9 @@ class Future extends React.Component {
     constructor (props) {
         super(props);
         arrayFind();
+        let yob = this.props.yobAgeReplacement ? parseInt(this.props.yob, 10) + this.props.yobAgeReplacement : this.props.yob;
         this.buildsLastYear = graphData[0].values.find(year => year[0] === 2015)[1];
-        this.buildsYob = graphData[0].values.find(year => year[0].toString() === this.props.yob)[1];
+        this.buildsYob = graphData[0].values.find(year => year[0].toString() === yob.toString())[1];
     }
 
     getBuildsDiff () {
@@ -35,8 +36,9 @@ class Future extends React.Component {
                     <h3 className="slide__title">Home-building has been declining for years,
                         which has contributed to prices rocketing. In 2015, we only
                         built {formatNumber(this.buildsLastYear)} homes in the
-                        UK – {this.getBuildsDiff()} than in the year you were born.</h3>
-                    <Graph data={graphData} yob={this.props.yob}/>
+                        UK – {this.getBuildsDiff()} than in the year you
+                        were {this.props.yobAgeReplacement ? this.props.yobAgeReplacement : 'born'}.</h3>
+                    <Graph data={graphData} yob={this.props.yob} yobAgeReplacement={this.props.yobAgeReplacement}/>
                 </article>
                 <article className="slide">
                     <h4 className="slide__title">Things don't have to be this way.
@@ -53,7 +55,7 @@ class Future extends React.Component {
 
 Future.slug = 'future';
 
-const stateToProps = state => pick(state, ['postcode', 'yob', 'yobAverageHousePrice', 'tenure']);
+const stateToProps = state => pick(state, ['postcode', 'yob', 'yobAgeReplacement', 'yobAverageHousePrice', 'tenure']);
 
 export default connect(stateToProps, dispatch => {
     return {
