@@ -50447,7 +50447,7 @@ var HousePrices = function (_React$Component) {
                     'h3',
                     { className: 'slide__title' },
                     openingStatement,
-                    ', the average cost of a three-bedroom house in the UK was ',
+                    ', the average cost of a house in the UK was ',
                     (0, _utils.formatCurrency)(this.props.yobAverageHousePrice.house_price, '0,0'),
                     '.'
                 ),
@@ -50539,7 +50539,7 @@ var InYourArea = function (_React$Component) {
                     'Since 1995 house prices in ',
                     this.props.location,
                     ' have risen ',
-                    Math.round(this.props.locationInflation / 100),
+                    this.props.locationFold,
                     ' fold. It\'s only getting harder and harder to rent or buy.'
                 ),
                 _react2.default.createElement(
@@ -50575,7 +50575,7 @@ var InYourArea = function (_React$Component) {
 InYourArea.slug = 'in-your-area';
 
 var stateToProps = function stateToProps(state) {
-    return (0, _utils.pick)(state, ['location', 'locationInflation']);
+    return (0, _utils.pick)(state, ['location', 'locationFold']);
 };
 
 exports.default = (0, _reactRedux.connect)(stateToProps, function (dispatch) {
@@ -50653,7 +50653,9 @@ var Milk = function (_React$Component) {
             _utils.api.getJSON('/api/HouseData/' + formData.postcode).then(function (houseData) {
                 _this2.props.updateLocationData(_extends({ postcode: formData.postcode }, houseData));
                 _utils.api.getJSON('/api/HouseInflation/' + formData.postcode).then(function (inflationData) {
-                    _this2.props.updateLocationData({ locationInflation: inflationData.inflation });
+                    _this2.props.updateLocationData({
+                        locationFold: inflationData.fold
+                    });
                     _utils.api.getJSON('/api/Struggling/' + formData.postcode).then(function (strugglingData) {
                         _this2.props.updateLocationData({
                             struggling: strugglingData.struggling
@@ -51353,7 +51355,7 @@ var initialState = {
     Struggling: '',
 
     // Inflation data
-    locationInflation: '',
+    locationFold: '',
 
     // Tenure
     tenure: '',
@@ -51449,7 +51451,7 @@ var pick = exports.pick = function pick(obj, props) {
 
 var tenures = exports.tenures = {
     HOMEOWNER: 'Homeowner',
-    RENTER: 'Renter',
+    RENTER: 'Private renter',
     SOCIAL_RENTER: 'Social renter',
     PARENTS: 'Living with parents',
     TEMPORARY: 'Living in temporary accommodation'
