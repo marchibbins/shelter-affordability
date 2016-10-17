@@ -52,7 +52,7 @@ const initialState = {
     Struggling: '',
 
     // Inflation data
-    locationInflation: '',
+    locationFold: '',
 
     // Tenure
     tenure: '',
