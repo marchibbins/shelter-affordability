@@ -47,13 +47,12 @@ class Tenure extends React.Component {
     }
 
     render () {
-        let label = (this.props.tenure == tenures.TEMPORARY && this.props.locationTempHouseholds <= 50) ?
-            'How many other people are struggling in your area?'
-            : `How many people are struggling in the rest of ${this.props.locationRegion}?`;
         return (
             <article className="slide">
                 {this.getStatement()}
-                <button onClick={this.props.gotoNext} className="button button--cta">{label}</button>
+                <button onClick={this.props.gotoNext} className="button button--cta">
+                    How many people are struggling in the rest of {this.props.locationRegion}?
+                </button>
             </article>
         );
     }
