@@ -49955,9 +49955,8 @@ var Postcode = function (_React$Component) {
             submitted: false
         };
         _this.validatorTypes = _reactValidatorjsStrategy2.default.createSchema({
-            postcode: 'required|regex:/^[A-Z]{1,2}[0-9]{1,2} ?[0-9][A-Z]{2}$/i'
+            postcode: 'required'
         }, {
-            'regex.postcode': 'Postcode is invalid',
             'required.postcode': 'Postcode is required'
         });
         return _this;
