@@ -50544,7 +50544,7 @@ var InYourArea = function (_React$Component) {
                     this.props.location,
                     ' have risen ',
                     this.props.locationFold,
-                    ' fold. It\'s only getting harder and harder to rent or buy.'
+                    ' fold. It\'s getting harder and harder to rent or buy.'
                 ),
                 _react2.default.createElement(
                     'form',
@@ -51085,7 +51085,7 @@ var Tenure = function (_React$Component) {
                         { className: 'slide__title' },
                         'Only ',
                         (0, _utils.formatNumber)(this.props.locationSocialHomes),
-                        ' social homes were built in your area last year. That means there are fewer for those who need them.'
+                        ' social homes were built in your area last year. There are nowhere near enough for people who need them.'
                     );
                 case _utils.tenures.PARENTS:
                     return _react2.default.createElement(
@@ -51110,7 +51110,7 @@ var Tenure = function (_React$Component) {
                         'h3',
                         { className: 'slide__title' },
                         'The lack of affordable housing means that ',
-                        (0, _utils.formatNumber)(this.props.locationTempHouseholds || this.props.locationTempHouseholdsRegional),
+                        (0, _utils.formatNumber)(this.props.locationTempHouseholds > 50 ? this.props.locationTempHouseholds : this.props.locationTempHouseholdsRegional),
                         ' households are living in temporary accommodation in your area.'
                     );
             }
@@ -51118,7 +51118,7 @@ var Tenure = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var label = this.props.locationTempHouseholds > 0 ? 'How many people are struggling in the rest of ' + this.props.locationRegion + '?' : 'How many other people are struggling in your area?';
+            var label = this.props.locationTempHouseholds > 50 ? 'How many people are struggling in the rest of ' + this.props.locationRegion + '?' : 'How many other people are struggling in your area?';
             return _react2.default.createElement(
                 'article',
                 { className: 'slide' },

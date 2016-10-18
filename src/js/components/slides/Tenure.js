@@ -25,8 +25,8 @@ class Tenure extends React.Component {
             case tenures.SOCIAL_RENTER:
                 return (
                     <h3 className="slide__title">Only {formatNumber(this.props.locationSocialHomes)} social
-                        homes were built in your area last year. That means there are
-                        fewer for those who need them.</h3>
+                        homes were built in your area last year. There are nowhere near enough
+                        for people who need them.</h3>
                 );
             case tenures.PARENTS:
                 return (
@@ -40,14 +40,14 @@ class Tenure extends React.Component {
             case tenures.TEMPORARY:
                 return (
                     <h3 className="slide__title">The lack of affordable housing means
-                        that {formatNumber(this.props.locationTempHouseholds || this.props.locationTempHouseholdsRegional)} households
+                        that {formatNumber(this.props.locationTempHouseholds > 50 ? this.props.locationTempHouseholds : this.props.locationTempHouseholdsRegional)} households
                         are living in temporary accommodation in your area.</h3>
                 );
         }
     }
 
     render () {
-        let label = this.props.locationTempHouseholds > 0 ?
+        let label = this.props.locationTempHouseholds > 50 ?
             `How many people are struggling in the rest of ${this.props.locationRegion}?`
             : 'How many other people are struggling in your area?';
         return (
