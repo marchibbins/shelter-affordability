@@ -47,9 +47,9 @@ class Tenure extends React.Component {
     }
 
     render () {
-        let label = this.props.locationTempHouseholds > 50 ?
-            `How many people are struggling in the rest of ${this.props.locationRegion}?`
-            : 'How many other people are struggling in your area?';
+        let label = (this.props.tenure == tenures.TEMPORARY && this.props.locationTempHouseholds <= 50) ?
+            'How many other people are struggling in your area?'
+            : `How many people are struggling in the rest of ${this.props.locationRegion}?`;
         return (
             <article className="slide">
                 {this.getStatement()}

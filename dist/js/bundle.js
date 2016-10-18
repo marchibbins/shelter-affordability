@@ -51118,7 +51118,7 @@ var Tenure = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var label = this.props.locationTempHouseholds > 50 ? 'How many people are struggling in the rest of ' + this.props.locationRegion + '?' : 'How many other people are struggling in your area?';
+            var label = this.props.tenure == _utils.tenures.TEMPORARY && this.props.locationTempHouseholds <= 50 ? 'How many other people are struggling in your area?' : 'How many people are struggling in the rest of ' + this.props.locationRegion + '?';
             return _react2.default.createElement(
                 'article',
                 { className: 'slide' },
