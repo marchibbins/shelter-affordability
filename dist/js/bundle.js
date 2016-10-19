@@ -51262,12 +51262,22 @@ var _config = require('./config');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var handleUpdate = function handleUpdate() {
+    if (window.dataLayer && window.location.pathname !== _config.URLS.baseUrl) {
+        window.dataLayer.push({
+            'event': 'VirtualPageview',
+            'virtualPageURL': window.location.pathname,
+            'virtualPageTitle': 'Affordability (More Homes)  – ' + window.location.pathname.split('/').pop()
+        });
+    }
+};
+
 _reactDom2.default.render(_react2.default.createElement(
     _reactRedux.Provider,
     { store: _store2.default },
     _react2.default.createElement(
         _reactRouter.Router,
-        { history: _reactRouter.browserHistory },
+        { history: _reactRouter.browserHistory, onUpdate: handleUpdate },
         _react2.default.createElement(_reactRouter.Route, { path: _config.URLS.baseUrl, component: _App2.default }),
         _react2.default.createElement(_reactRouter.Route, { path: _config.URLS.baseUrl + '/:slug', component: _App2.default })
     )
